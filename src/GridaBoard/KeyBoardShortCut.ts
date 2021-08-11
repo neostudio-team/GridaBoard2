@@ -13,7 +13,7 @@ import { showAlert } from "./store/reducers/listReducer";
 import { PEN_THICKNESS } from '../nl-lib/common/enums';
 import $ from "jquery";
 import { setPointerTracer } from "./store/reducers/pointerTracer";
-import { showShortCut } from './store/reducers/ui';
+import { setleftDrawerOpen, showShortCut } from './store/reducers/ui';
 
 
 /* 
@@ -126,9 +126,13 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
         // onBtn_fitHeight();
         setViewFit(ZoomFitEnum.HEIGHT);
         break;
-      case "KeyL": //L
-        (document.querySelector("#arrow-btn") as HTMLElement).click();
+      case "KeyL":{ //L
+        const activePageNo = store.getState().activePage.activePageNo;
+        const leftDrawerOpen = store.getState().ui.simpleUiData.leftDrawerOpen;
+        if(activePageNo === -1) break ;
+        setleftDrawerOpen(!leftDrawerOpen);
         break;
+      }
       case "KeyP":{ // P
         evt.preventDefault(); //web 기본 탭 기능 정지
         const activePageNo = store.getState().activePage.activePageNo;
@@ -268,8 +272,9 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
         break;
       }
       case "Escape" : {
-        (document.querySelector("#arrow-btn") as HTMLElement).click();
-        
+        const activePageNo = store.getState().activePage.activePageNo;
+        if(activePageNo === -1) break ;
+        setleftDrawerOpen(false);
         break ;
       }
 

@@ -28,6 +28,7 @@ export const UIActionTypes = Object.freeze({
   SHOW_HELPMENU: `${ActionGroup}.SHOW_HELPMENU`,
   GET_THEME: `${ActionGroup}.GET_THEME`,
   SET_THEME: `${ActionGroup}.SET_THEME`,
+  SET_LEFT_DRAWER_OPEN : `${ActionGroup}.SET_LEFT_DRAWER_OPEN`
 });
 //]
 
@@ -173,7 +174,12 @@ export const showHelpMenu = (show: boolean, option : {main: number, sub: number}
     sub: option.sub
   });
 }
-
+export const setleftDrawerOpen = (show:boolean)=>{
+  store.dispatch({
+    type: UIActionTypes.SET_LEFT_DRAWER_OPEN,
+    show : show
+  });
+}
 //]
 
 
@@ -214,6 +220,9 @@ const initialState = {
   shotcut : {
     show : false
   },
+  simpleUiData : {
+    leftDrawerOpen : true
+  },
   helpMenu : {
     show : false,
     main : 1,
@@ -225,6 +234,15 @@ const initialState = {
 //[Reducer
 export default (state = initialState, action) => {
   switch (action.type) {
+    case UIActionTypes.SET_LEFT_DRAWER_OPEN : {
+      return {
+        ...state,
+        simpleUiData : {
+          ...state.simpleUiData,
+          leftDrawerOpen : action.show
+        }
+      }
+    }
     case UIActionTypes.SET_THEME: {
       return {
         ...state,

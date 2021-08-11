@@ -16,6 +16,7 @@ import RotateButton from "../components/buttons/RotateButton";
 import PageClearButton from "../components/buttons/PageClearButton";
 import PageDeleteButton from "../components/buttons/PageDeleteButton";
 import SimpleTooltip from "../components/SimpleTooltip";
+import { setleftDrawerOpen } from "../store/reducers/ui";
 
 /**
  *
@@ -102,7 +103,8 @@ const ViewLayer = (props: Props) => {
   const classes = useStyles();
   const [isView, setHeaderView] = useState(true); //헤더 뷰
   const [debugOpen, setDebugOpen] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(true);
+  // const [drawerOpen, setDrawerOpen] = useState(true);
+  const drawerOpen = useSelector((state: RootState) => state.ui.simpleUiData.leftDrawerOpen);
 
   const activePageNo_store = useSelector((state: RootState) => state.activePage.activePageNo);
 
@@ -116,7 +118,8 @@ const ViewLayer = (props: Props) => {
 
   const handleDrawerOpen = () => {
     if(activePageNo_store === -1) return ;
-    setDrawerOpen((prev)=>!prev);
+    setleftDrawerOpen(!drawerOpen);
+    // setDrawerOpen((prev)=>!prev);
   };
 
   const hiddenTest = true;
@@ -135,7 +138,7 @@ const ViewLayer = (props: Props) => {
 
         <div className={classes.tool}>
 
-          <div id="arrow-btn" className={classes.opener} onClick={handleDrawerOpen}>
+          <div className={classes.opener} onClick={handleDrawerOpen}>
             <CustomBadge badgeContent={`L`}>
               <IconButton disabled={false}>
                 {drawerOpen? (<FirstPage style={{color: "#ffffff"}}/>) : (<LastPage style={{color: "#ffffff"}}/>)}
