@@ -179,7 +179,13 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
         break;
       }
       case "KeyY" : {
-        (document.querySelector("#pageClearButton") as HTMLElement).click();
+        const activePageNo = store.getState().activePage.activePageNo;
+        if(activePageNo === -1) return ;
+
+        showAlert({
+          type: "clearPage",
+          selected: null,
+        })
         break;
       }
       case "KeyZ" : {
