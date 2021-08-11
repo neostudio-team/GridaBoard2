@@ -28,7 +28,8 @@ export const UIActionTypes = Object.freeze({
   SHOW_HELPMENU: `${ActionGroup}.SHOW_HELPMENU`,
   GET_THEME: `${ActionGroup}.GET_THEME`,
   SET_THEME: `${ActionGroup}.SET_THEME`,
-  SET_LEFT_DRAWER_OPEN : `${ActionGroup}.SET_LEFT_DRAWER_OPEN`
+  SET_LEFT_DRAWER_OPEN : `${ActionGroup}.SET_LEFT_DRAWER_OPEN`,
+  SET_SAVE_OPEN : `${ActionGroup}.SET_SAVE_OPEN`,
 });
 //]
 
@@ -181,6 +182,12 @@ export const setleftDrawerOpen = (show:boolean)=>{
   });
 }
 //]
+export const setSaveOpen = (open:boolean)=>{
+  store.dispatch({
+    type: UIActionTypes.SET_SAVE_OPEN,
+    open : open
+  });
+}
 
 
 const defaultDrawerWidth = 220;
@@ -221,7 +228,8 @@ const initialState = {
     show : false
   },
   simpleUiData : {
-    leftDrawerOpen : true
+    leftDrawerOpen : true,
+    saveOpen : false
   },
   helpMenu : {
     show : false,
@@ -234,6 +242,15 @@ const initialState = {
 //[Reducer
 export default (state = initialState, action) => {
   switch (action.type) {
+    case UIActionTypes.SET_SAVE_OPEN : {
+      return {
+        ...state,
+        simpleUiData : {
+          ...state.simpleUiData,
+          saveOpen : action.open
+        }
+      }
+    }
     case UIActionTypes.SET_LEFT_DRAWER_OPEN : {
       return {
         ...state,

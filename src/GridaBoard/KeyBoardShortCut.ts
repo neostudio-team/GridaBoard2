@@ -13,7 +13,7 @@ import { showAlert } from "./store/reducers/listReducer";
 import { PEN_THICKNESS } from '../nl-lib/common/enums';
 import $ from "jquery";
 import { setPointerTracer } from "./store/reducers/pointerTracer";
-import { setleftDrawerOpen, showShortCut } from './store/reducers/ui';
+import { setleftDrawerOpen, setSaveOpen, showShortCut } from './store/reducers/ui';
 
 
 /* 
@@ -157,14 +157,7 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
         const activePageNo = store.getState().activePage.activePageNo;
         //페이지가 하나도 없으면 저장 못함
         if(activePageNo === -1) break;
-        if((document.querySelector(".save_drop_down") as HTMLElement) == null)
-          (document.querySelector(".saveButton") as HTMLElement).click();
-        //1틱 뒤에 동작해야함
-        setTimeout(()=>{
-          const saveBtn = document.querySelector(".save_drop_down") as HTMLElement;
-          if(saveBtn !== null)
-            saveBtn.click();
-        },0);
+        setSaveOpen(true);
         break;
       }
       case "KeyT": {// t
