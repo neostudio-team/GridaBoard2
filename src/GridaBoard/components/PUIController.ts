@@ -258,19 +258,6 @@ export default class PUIController {
       case "pointer": {
         const isTrace = store.getState().pointerTracer.isTrace;
         store.dispatch(setPointerTracer(!isTrace));
-
-        const $elem = $(`#${"btn_tracepoint"}`);
-        if (!isTrace) {
-          const $elem = $("#btn_tracepoint").find(".c2");
-          $elem.addClass("checked");
-          $('#btn_tracepoint').css('background', 'white');
-          $('#tracer_svg_icon').css('color', '#688FFF');
-        } else {
-          const $elem = $("#btn_tracepoint").find(".c2");
-          $elem.removeClass("checked");
-          $('#btn_tracepoint').css('background', 'none');
-          $('#tracer_svg_icon').css('color', '#58627D');
-        }
         break;
       }
       case "erase_all": {

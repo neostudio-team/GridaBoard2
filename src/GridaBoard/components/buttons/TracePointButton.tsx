@@ -19,29 +19,26 @@ const TracePointButton = () => {
   const isTrace = useSelector((state: RootState) => state.pointerTracer.isTrace)
   const dispatch = useDispatch();
 
-  const setEnable = (elem_name: string, sw: boolean) => {
-    const $elem = $(`#${elem_name}`);
+  const setEnable = (sw: boolean) => {
     if (sw) {
       const $elem = $("#btn_tracepoint").find(".c2");
       $elem.addClass("checked");
-      // $('#btn_tracepoint').css('background', 'white');
+      $('#btn_tracepoint').css('background', 'white');
       $('#tracer_svg_icon').css('color', '#688FFF');
     } else {
       const $elem = $("#btn_tracepoint").find(".c2");
       $elem.removeClass("checked");
-      // $('#btn_tracepoint').css('background', 'none');
+      $('#btn_tracepoint').css('background', 'none');
       $('#tracer_svg_icon').css('color', '#58627D');
     }
   }
 
   const onTogglePointerTracer = () => {
-    // $('#btn_tracepoint').css('background', 'white');
-    $('#tracer_svg_icon').css('color', '#688FFF');
     dispatch(setPointerTracer(!isTrace));
-    setEnable("btn_tracepoint", !isTrace);
+    setEnable(!isTrace);
   }
 
-  setEnable("btn_tracepoint", isTrace);
+  setEnable(isTrace);
 
   return (
     <IconButton id="btn_tracepoint" style={pointerStyle} onClick={() => onTogglePointerTracer()}>
