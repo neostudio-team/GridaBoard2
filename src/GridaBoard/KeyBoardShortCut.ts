@@ -14,7 +14,7 @@ import { PEN_THICKNESS } from '../nl-lib/common/enums';
 import $ from "jquery";
 import { setPointerTracer } from "./store/reducers/pointerTracer";
 import { setleftDrawerOpen, setSaveOpen, showShortCut } from './store/reducers/ui';
-
+import { onToggleRotate } from "./components/buttons/RotateButton";
 
 /* 
 let _isCtrl = false;
@@ -194,7 +194,7 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
       }
       case "Tab": {// <TAB>
         evt.preventDefault(); //web 기본 탭 기능 정지
-        (document.querySelector("#pageRotateButton") as HTMLElement).click();
+        onToggleRotate();
         break;
       }
 

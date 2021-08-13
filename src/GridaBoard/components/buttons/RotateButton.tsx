@@ -8,41 +8,45 @@ import { IconButton, IconButtonProps, makeStyles, SvgIcon } from "@material-ui/c
 import { RotateRight } from "@material-ui/icons";
 import SimpleTooltip2 from "../SimpleTooltip2";
 import getText from 'GridaBoard/language/language';
+import { store } from "GridaBoard/client/pages/GridaBoard";
 
-const RotateButton = (props: IconButtonProps) => {
+export const onToggleRotate = () => {
+  const activePageNo = store.getState().activePage.activePageNo;
+  const rotationTrigger = store.getState().rotate.rotationTrigger;
   const doc = GridaDoc.getInstance();
-  const [isVertical, setIsVertical] = useState(true);
-  const rotationTrigger = useSelector((state: RootState) => state.rotate.rotationTrigger);
-  const activePageNo_store = useSelector((state: RootState) => state.activePage.activePageNo);
+  
+  if(activePageNo === -1) return ;
 
-  const onToggleRotate = () => {
-    if(activePageNo_store === -1) return ;
+  setRotationTrigger(!rotationTrigger);
 
-    setRotationTrigger(!rotationTrigger);
+  const page = doc.getPageAt(activePageNo);
 
-    const page = doc.getPageAt(activePageNo_store);
-
-    if (page._pdfPage !== undefined) {
-      if (page._pdfPage.viewport.rotation >= 270) {
-        page._pdfPage.viewport.rotation = 0;
-      } else {
-        page._pdfPage.viewport.rotation += 90;
-      }
-    }
-
-    if (page.pageOverview.rotation >= 270) {
-      page._rotation = 0;
+  if (page._pdfPage !== undefined) {
+    if (page._pdfPage.viewport.rotation >= 270) {
+      page._pdfPage.viewport.rotation = 0;
     } else {
-      page._rotation += 90;
+      page._pdfPage.viewport.rotation += 90;
     }
-
-    setIsVertical((prev)=>!prev);
-
-    const tmp = page.pageOverview.sizePu.width ;
-    page.pageOverview.sizePu.width = page.pageOverview.sizePu.height;
-    page.pageOverview.sizePu.height = tmp;
   }
 
+  if (page.pageOverview.rotation >= 270) {
+    page._rotation = 0;
+  } else {
+    page._rotation += 90;
+  }
+
+  // setIsVertical((prev)=>!prev);
+
+  const tmp = page.pageOverview.sizePu.width ;
+  page.pageOverview.sizePu.width = page.pageOverview.sizePu.height;
+  page.pageOverview.sizePu.height = tmp;
+}
+
+const RotateButton = (props: IconButtonProps) => {
+  // const doc = GridaDoc.getInstance();
+  // // const [isVertical, setIsVertical] = useState(true);
+  // const rotationTrigger = useSelector((state: RootState) => state.rotate.rotationTrigger);
+  // const activePageNo_store = useSelector((state: RootState) => state.activePage.activePageNo);
 
   
   const pathArr = [
