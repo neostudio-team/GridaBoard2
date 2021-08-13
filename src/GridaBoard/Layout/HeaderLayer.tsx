@@ -177,6 +177,12 @@ interface Props {
   hidden: boolean;
 }
 
+export function fileOpenHandler() {
+  const input = document.querySelector('#fileForconvert') as HTMLInputElement;
+  input.value = '';
+  input.click();
+}
+
 const HeaderLayer = (props: Props) => {
   const { handlePdfOpen, ...rest } = props;
 
@@ -185,11 +191,6 @@ const HeaderLayer = (props: Props) => {
 
   const docName = useSelector((state: RootState) => state.docConfig.docName);
 
-  function fileOpenHandler() {
-    const input = document.querySelector('#fileForconvert') as HTMLInputElement;
-    input.value = '';
-    input.click();
-  }
 
   const makePdfUrl = async () => {
     const doc = GridaDoc.getInstance();
@@ -375,7 +376,6 @@ const HeaderLayer = (props: Props) => {
               <div>
                 <CustomBadge badgeContent={`Ctrl-O`}>
                   <Button
-                    id="loadFileButton"
                     className={`loadDropDown ${classes.buttonStyle} ${classes.buttonFontStyle}`}
                     onClick={fileOpenHandler}>
                     {getText('load_file')}

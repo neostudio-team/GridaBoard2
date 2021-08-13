@@ -60,7 +60,7 @@ const RotateButton = (props: IconButtonProps) => {
     //     tail: "TAB 가로쓰기/세로쓰기 전환"
     //   }} title={undefined}>
   return (
-    <IconButton id="pageRotateButton" onClick={onToggleRotate} {...props}>
+    <IconButton onClick={onToggleRotate} {...props}>
       <SimpleTooltip2 title={getText('sideMenu_rotate')}>
         <RotateRight/>
       </SimpleTooltip2>

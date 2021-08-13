@@ -15,6 +15,7 @@ import $ from "jquery";
 import { setPointerTracer } from "./store/reducers/pointerTracer";
 import { setleftDrawerOpen, setSaveOpen, showShortCut } from './store/reducers/ui';
 import { onToggleRotate } from "./components/buttons/RotateButton";
+import { fileOpenHandler } from "./Layout/HeaderLayer";
 
 /* 
 let _isCtrl = false;
@@ -58,6 +59,7 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
   const cmd = (isCtrl ? 1 : 0) | (isAlt ? 2 : 0) | (isShift ? 4 : 0) | (evt.metaKey ? 8 : 0);
 
   // console.log(`key down cmd=${cmd} ==> code=${evt.code}  key => ${evt.key}`); 
+  
   if (cmd == 0 || (isShift && evt.key === "+")) {
     switch (evt.code) {
       case "Digit0":
@@ -139,6 +141,7 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
         //페이지가 하나도 없으면 인쇄 못함
         if(activePageNo === -1) break;
 
+        //TODO : 의존성
         (document.querySelector("#printBtn") as HTMLElement).click();
         break;
   
@@ -283,17 +286,18 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
     }
   } else if (cmd == 1) {
     switch (evt.code) {
-      case "keyO":{ // ctrl-o
+      case "KeyO":{ // ctrl-o
         evt.preventDefault(); //web 기본 오픈 기능 강제 스탑
-        (document.querySelector("#loadFileButton") as HTMLSpanElement).click();
+        fileOpenHandler();
+        // (document.querySelector("#loadFileButton") as HTMLSpanElement).click();
         
         break;
       }
-      case "keyZ": // ctrl-Z
+      case "KeyZ": // ctrl-Z
         // onBtnUndo();
         break;
 
-      case "keyY": // ctrl-Z
+      case "KeyY": // ctrl-Z
         // onBtnRedo();
         break;
 
