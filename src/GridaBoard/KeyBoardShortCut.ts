@@ -16,6 +16,7 @@ import { setPointerTracer } from "./store/reducers/pointerTracer";
 import { setleftDrawerOpen, setSaveOpen, showShortCut } from './store/reducers/ui';
 import { onToggleRotate } from "./components/buttons/RotateButton";
 import { fileOpenHandler } from "./Layout/HeaderLayer";
+import { startPrint } from "../nl-lib/ncodepod/NcodePrint/PrintNcodedPdfButton";
 
 /* 
 let _isCtrl = false;
@@ -141,8 +142,7 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
         //페이지가 하나도 없으면 인쇄 못함
         if(activePageNo === -1) break;
 
-        //TODO : 의존성
-        (document.querySelector("#printBtn") as HTMLElement).click();
+        startPrint();
         break;
   
       }
@@ -289,8 +289,6 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
       case "KeyO":{ // ctrl-o
         evt.preventDefault(); //web 기본 오픈 기능 강제 스탑
         fileOpenHandler();
-        // (document.querySelector("#loadFileButton") as HTMLSpanElement).click();
-        
         break;
       }
       case "KeyZ": // ctrl-Z

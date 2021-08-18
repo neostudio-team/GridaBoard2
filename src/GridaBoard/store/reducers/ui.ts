@@ -30,6 +30,13 @@ export const UIActionTypes = Object.freeze({
   SET_THEME: `${ActionGroup}.SET_THEME`,
   SET_LEFT_DRAWER_OPEN : `${ActionGroup}.SET_LEFT_DRAWER_OPEN`,
   SET_SAVE_OPEN : `${ActionGroup}.SET_SAVE_OPEN`,
+
+
+  SET_PRINT_progressPercent : `${ActionGroup}.SET_PRINT_progressPercent`,
+  SET_PRINT_status : `${ActionGroup}.SET_PRINT_status`,
+  SET_PRINT_progressOn : `${ActionGroup}.SET_PRINT_progressOn`,
+  SET_PRINT_optionOn : `${ActionGroup}.SET_PRINT_optionOn`,
+  SET_PRINT_waitingOn : `${ActionGroup}.SET_PRINT_waitingOn`
 });
 //]
 
@@ -188,6 +195,14 @@ export const setSaveOpen = (open:boolean)=>{
     open : open
   });
 }
+export const setPrintOption = (types:string, data)=>{
+  store.dispatch({
+    type : UIActionTypes["SET_PRINT_" + types],
+    data : data
+  })
+}
+
+
 
 
 const defaultDrawerWidth = 220;
@@ -229,7 +244,14 @@ const initialState = {
   },
   simpleUiData : {
     leftDrawerOpen : true,
-    saveOpen : false
+    saveOpen : false,
+    print : {
+      progressPercent : 0,
+      status : "N/A",
+      progressOn : false,
+      optionOn : false,
+      waitingOn : false
+    }
   },
   helpMenu : {
     show : false,
@@ -242,6 +264,66 @@ const initialState = {
 //[Reducer
 export default (state = initialState, action) => {
   switch (action.type) {
+    case UIActionTypes.SET_PRINT_progressPercent : {
+      return {
+        ...state,
+        simpleUiData : {
+          ...state.simpleUiData,
+          print : {
+            ...state.simpleUiData.print,
+            progressPercent : action.data
+          }
+        }
+      }
+    }
+    case UIActionTypes.SET_PRINT_status : {
+      return {
+        ...state,
+        simpleUiData : {
+          ...state.simpleUiData,
+          print : {
+            ...state.simpleUiData.print,
+            status : action.data
+          }
+        }
+      }
+    }
+    case UIActionTypes.SET_PRINT_progressOn : {
+      return {
+        ...state,
+        simpleUiData : {
+          ...state.simpleUiData,
+          print : {
+            ...state.simpleUiData.print,
+            progressOn : action.data
+          }
+        }
+      }
+    }
+    case UIActionTypes.SET_PRINT_optionOn : {
+      return {
+        ...state,
+        simpleUiData : {
+          ...state.simpleUiData,
+          print : {
+            ...state.simpleUiData.print,
+            optionOn : action.data
+          }
+        }
+      }
+    }
+    case UIActionTypes.SET_PRINT_waitingOn : {
+      return {
+        ...state,
+        simpleUiData : {
+          ...state.simpleUiData,
+          print : {
+            ...state.simpleUiData.print,
+            waitingOn : action.data
+          }
+        }
+      }
+    }
     case UIActionTypes.SET_SAVE_OPEN : {
       return {
         ...state,

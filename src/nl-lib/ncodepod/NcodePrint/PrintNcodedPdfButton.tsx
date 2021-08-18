@@ -11,6 +11,9 @@ import { cloneObj } from "nl-lib/common/util";
 import Button from '@material-ui/core/Button';
 import $ from "jquery";
 import getText from "GridaBoard/language/language";
+import { setPrintOption } from "../../../GridaBoard/store/reducers/ui";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../GridaBoard/store/rootReducer";
 
 interface Props extends ButtonProps {
   /** 인쇄될 문서의 url, printOption.url로 들어간다. */
@@ -47,67 +50,45 @@ let _promise: Promise<IPrintOption>;
 /** _promise의 resolve callback */
 let _resolve;
 
-/**
- * Class
- */
-export default function PrintNcodedPdfButton(props: Props) {
-  const { url, filename, reportProgress, printOptionCallback, ...rest } = props;
+let worker:PrintNcodedPdfWorker;
+let _props : Props;
 
-  const [progressPercent, setProgressPercent] = useState(0);
-  const [status, setStatus] = useState("N/A");
-  const [progressOn, setProgressOn] = useState(false);
-  const [optionOn, setOptionOn] = useState(false);
-  const [worker, setWorker] = useState(undefined as PrintNcodedPdfWorker);
-  const [waitingOn, setWaitingOn] = useState(false);
+const closeOptionDialog = () => setPrintOption("optionOn", false);
+const openOptionDialog = () => setPrintOption("optionOn", true);
 
-  const closeOptionDialog = () => setOptionOn(false);
-  const openOptionDialog = () => setOptionOn(true);
+export const startPrint = async () => {
+  // if (props.url && props.filename) {
+    // setStart(true);
+    const _worker = new PrintNcodedPdfWorker(_props, onProgress);
+    worker = _worker;
+    // setWorker(worker);
 
-  useEffect(() => {
-    // console.log(`status = ${status}, progress=${progressPercent}`);
-  }, [status, progressPercent]);
+    setPrintOption("progressPercent", 0);
 
-  useEffect(() => {
-    if (optionOn) {
-      props.handkeTurnOnAppShortCutKey(false);
+    /**
+     * worker의 startPrint에서는
+     * 1) 기본 printOptino의 설정을 마치고,
+     * 2) onConfigurePrintOption를 불러서 다이얼로그를 띄운다
+     * 3) 다이얼로그의 OK를 클릭하게 되면, worker는 계속 진행, cancel을 클릭하면 worker가 exit
+     * 4) worker가 exit하고 나면 worker.startPrint 다음의 행이 실행된다.
+     */
+
+    let url = '';
+    if (_props.url === undefined) {
+      url = await _props.handlePdfUrl();
+    } else {
+      url = _props.url;
     }
-    else {
-      props.handkeTurnOnAppShortCutKey(true);
-    }
+    await worker.startPrint(url, 'GridaBoard', onConfigurePrintOption);
 
-  }, [optionOn]);
+    console.log("CANCEL, worker canceled");
+    setPrintOption("progressOn", false);
+    setPrintOption("waitingOn", false);
+}
 
   /**
    * 인쇄의 시작, worker가 PDF를 만들고 viewer를 띄우는 등 모든 작업을 한다.
    */
-  const startPrint = async () => {
-    // if (props.url && props.filename) {
-      // setStart(true);
-      const worker = new PrintNcodedPdfWorker(props, onProgress);
-      setWorker(worker);
-
-      setProgressPercent(0);
-
-      /**
-       * worker의 startPrint에서는
-       * 1) 기본 printOptino의 설정을 마치고,
-       * 2) onConfigurePrintOption를 불러서 다이얼로그를 띄운다
-       * 3) 다이얼로그의 OK를 클릭하게 되면, worker는 계속 진행, cancel을 클릭하면 worker가 exit
-       * 4) worker가 exit하고 나면 worker.startPrint 다음의 행이 실행된다.
-       */
-
-      let url = '';
-      if (props.url === undefined) {
-        url = await props.handlePdfUrl();
-      } else {
-        url = props.url;
-      }
-      await worker.startPrint(url, 'GridaBoard', onConfigurePrintOption);
-
-      console.log("CANCEL, worker canceled");
-      setProgressOn(false);
-      setWaitingOn(false);
-  }
 
   /**
    * worker에서 callback으로 불려지는, printOption의 개인 설정 다이얼로그를 처리하는 부분
@@ -117,7 +98,7 @@ export default function PrintNcodedPdfButton(props: Props) {
    *
    * @param printOption
    */
-  const onConfigurePrintOption = (printOption: IPrintOption): Promise<IPrintOption> => {
+   const onConfigurePrintOption = (printOption: IPrintOption): Promise<IPrintOption> => {
     // 리턴값을 준비
     const promise = new Promise((resolve) => {
       _resolve = resolve;
@@ -145,7 +126,7 @@ export default function PrintNcodedPdfButton(props: Props) {
   const onOK = (printOption: IPrintOption) => {
     // 디이얼로그를 닫고, 프로그레스 바를 보여준다.
     closeOptionDialog();
-    setProgressOn(true);
+    setPrintOption("progressOn", true);
 
     // default option으로 저장해 둔다.
     _printOptionPointer = printOption;
@@ -181,8 +162,8 @@ export default function PrintNcodedPdfButton(props: Props) {
    */
 
   const onProgress = (event: IPrintingReport) => {
-    setProgressPercent(event.totalCompletion);
-    setStatus(event.status);
+    setPrintOption("progressPercent", event.totalCompletion);
+    setPrintOption("status", event.status);
   }
 
 
@@ -190,8 +171,8 @@ export default function PrintNcodedPdfButton(props: Props) {
    * worker가 인쇄를 마쳤다는 시그널을 주는 callback
    */
   const onAfterPrint = () => {
-    setProgressOn(false);
-    setWaitingOn(false);
+    setPrintOption("progressOn", false);
+    setPrintOption("waitingOn", false);
 
     _workingOption = undefined;
     _resolve = undefined;
@@ -206,10 +187,42 @@ export default function PrintNcodedPdfButton(props: Props) {
    * 시그널을 준다고 당장 중지되지는 않는다.
    */
   const cancelPrint = () => {
-    setWaitingOn(true);
+    setPrintOption("waitingOn", true);
     worker.cancelPrint();
   }
 
+
+  
+/**
+ * Class
+ */
+export default function PrintNcodedPdfButton(props: Props) {
+  const { url, filename, reportProgress, printOptionCallback, ...rest } = props;
+  _props = props;
+
+  // setPrintOption
+  // const test = useSelector((state: RootState) => state.ui.simpleUiData.print);
+  // const [progressPercent, setProgressPercent] = useState(0);
+  const progressPercent = useSelector((state: RootState) => state.ui.simpleUiData.print.progressPercent);
+  const status = useSelector((state: RootState) => state.ui.simpleUiData.print.status);
+  const progressOn = useSelector((state: RootState) => state.ui.simpleUiData.print.progressOn);
+  const optionOn = useSelector((state: RootState) => state.ui.simpleUiData.print.optionOn);
+  const waitingOn = useSelector((state: RootState) => state.ui.simpleUiData.print.waitingOn);
+  // const [status, setStatus] = useState("N/A");
+
+  // useEffect(() => {
+  //   // console.log(`status = ${status}, progress=${progressPercent}`);
+  // }, [status, progressPercent]);
+
+  useEffect(() => {
+    if (optionOn) {
+      props.handkeTurnOnAppShortCutKey(false);
+    }
+    else {
+      props.handkeTurnOnAppShortCutKey(true);
+    }
+
+  }, [optionOn]);
 
 
 
