@@ -6,6 +6,7 @@ export class NeoDot {
   f: number; // - force
   x: number; // - x
   y: number; // - y
+  point ?: { x: number; y: number; f: any; }
 
   constructor(dot: NeoDot) {
     const { dotType, deltaTime, time, f, x, y } = dot;

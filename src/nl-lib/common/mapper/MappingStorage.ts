@@ -628,9 +628,9 @@ export class MappingStorage {
     const str = JSON.stringify(obj, null, "  ");
     const arr = str.split("\n");
 
-    for (let i = 0; i < arr.length; i++) {
-      console.log(`[${prefix}] ${arr[i]}`);
-    }
+    // for (let i = 0; i < arr.length; i++) {
+    //   console.log(`[${prefix}] ${arr[i]}`);
+    // }
   }
   clear = () => {
     this.reset();

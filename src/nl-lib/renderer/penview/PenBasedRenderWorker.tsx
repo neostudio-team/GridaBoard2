@@ -227,22 +227,24 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
 
     const dot = event.dot;
 
+
+    let pt;
+    if (!isPlate && !isSamePage(pageInfo, nullNcode())) {
+        pt = this.ncodeToPdfXy(dot);
+    } else if (isPlate) { //플레이트일 경우
+        pt = this.ncodeToPdfXy_plate(dot, pageInfo);
+    }
+    dot.point = pt;
+
     //지우개 구현
     const pen = event.pen;
 
     const cursor = this.penCursors[event.mac];
     if (pen && pen.penRendererType === IBrushType.ERASER) {
-      let pdf_xy;
-      if (!isPlate) {
-        pdf_xy = this.ncodeToPdfXy(dot);
-      } else if (isPlate) { //플레이트일 경우
-        pdf_xy = this.ncodeToPdfXy_plate(dot, pageInfo);
-      }
-
       if (cursor.eraserLastPoint !== undefined) {
-        this.eraseOnLine(cursor.eraserLastPoint.x, cursor.eraserLastPoint.y, pdf_xy.x, pdf_xy.y, live.stroke, isPlate);
+        this.eraseOnLine(cursor.eraserLastPoint.x, cursor.eraserLastPoint.y, dot.point.x, dot.point.y, live.stroke, isPlate);
       }
-      cursor.eraserLastPoint = { x: pdf_xy.x, y: pdf_xy.y };
+      cursor.eraserLastPoint = { x: dot.point.x, y: dot.point.y };
     } else {
       if (!live.pathObj) {
         const new_pathObj = this.createFabricPath(live.stroke, false, pageInfo);
@@ -801,17 +803,9 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
       isPlate = true;
     }
 
-    if (!isPlate && !isSamePage(pageInfo, nullNcode())) {
-      dotArray.forEach(dot => {
-        const pt = this.ncodeToPdfXy(dot);
-        pointArray.push(pt);
-      });
-    } else if (isPlate) { //플레이트일 경우
-      dotArray.forEach(dot => {
-        const pdf_xy = this.ncodeToPdfXy_plate(dot, pageInfo);
-        pointArray.push(pdf_xy);
-      });
-    }
+    dotArray.forEach(dot => {
+      pointArray.push(dot.point);
+    });
 
     let strokeThickness = thickness / 64;
     switch (brushType) {
@@ -831,24 +825,10 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     const { dotArray, brushType, thickness } = stroke;
 
     const pointArray = [];
-    const pageInfo = {section: stroke.section, owner: stroke.owner, book: stroke.book, page: stroke.page};
 
-    let isPlate = false;
-    if (isSamePage(pageInfo, PlateNcode_1) || isSamePage(pageInfo, PlateNcode_2)){
-      isPlate = true;
-    }
-
-    if (!isPlate){
-      dotArray.forEach(dot => {
-        const pt = this.ncodeToPdfXy_strokeHomography(dot, stroke.h);
-        pointArray.push(pt);
-      });
-    } else {
-      dotArray.forEach(dot => {
-        const pt = this.ncodeToPdfXy_plate(dot, pageInfo);
-        pointArray.push(pt);
-      });
-    }
+    dotArray.forEach(dot => {
+      pointArray.push(dot.point);
+    });
 
     let strokeThickness = thickness / 64;
     switch (brushType) {
@@ -867,24 +847,10 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
   createPathData = (stroke: NeoStroke, pageInfo: IPageSOBP) => {
     const { dotArray, brushType, thickness } = stroke;
 
-    let isPlate = false;
-    if (isSamePage(PlateNcode_1, pageInfo) || isSamePage(PlateNcode_2, pageInfo)) {
-      isPlate = true;
-    }
-
     const pointArray = [];
-
-    if (!isPlate && !isSamePage(pageInfo, nullNcode())) {
-      dotArray.forEach(dot => {
-        const pt = this.ncodeToPdfXy(dot);
-        pointArray.push(pt);
-      });
-    } else if (isPlate) {
-      dotArray.forEach(dot => {
-        const pt = this.ncodeToPdfXy_plate(dot, pageInfo);
-        pointArray.push(pt);
-      });
-    }
+    dotArray.forEach(dot => {
+      pointArray.push(dot.point);
+    });
       
     let strokeThickness = thickness / 64;
     switch (brushType) {

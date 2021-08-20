@@ -41,6 +41,7 @@
     "no-var": "warn",
     "prefer-const": "warn",
     "prefer-spread": "warn",
-    "react/prop-types": "warn"
+    "react/prop-types": "warn",
+    "no-debugger" : "off"
   }
 }
