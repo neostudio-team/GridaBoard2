@@ -804,6 +804,9 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     }
 
     dotArray.forEach(dot => {
+      if(dot.point === undefined){
+        dot.point = this.ncodeToPdfXy(dot);
+      }
       pointArray.push(dot.point);
     });
 
@@ -827,6 +830,9 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     const pointArray = [];
 
     dotArray.forEach(dot => {
+      if(dot.point === undefined){
+        dot.point = this.ncodeToPdfXy(dot);
+      }
       pointArray.push(dot.point);
     });
 
@@ -849,6 +855,9 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
 
     const pointArray = [];
     dotArray.forEach(dot => {
+      if(dot.point === undefined){
+        dot.point = this.ncodeToPdfXy(dot);
+      }
       pointArray.push(dot.point);
     });
       
