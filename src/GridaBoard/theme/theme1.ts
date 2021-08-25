@@ -31,17 +31,21 @@ declare module '@material-ui/core/styles/createMuiTheme' {
 export const theme1 = createMuiTheme({
   custom:{
     white: {
+      "100" : "rgba(255,255,255,1)",
       "90" : "rgba(255,255,255,0.9)",
       "80" : "rgba(255,255,255,0.8)",
-      "25" : "rgba(255, 255, 255, 0.25)",
-      "50" : "rgba(255, 255, 255, 0.5)"
+      "50" : "rgba(255, 255, 255, 0.5)",
+      "25" : "rgba(255, 255, 255, 0.25)"
     },
     black: {
       "5" : "rgba(0,0,0,0.05)"
     },
     grey: [
       "rgba(88, 98, 125, 0.75)",
-      "#E5E5E5"
+      "#E5E5E5",
+      "#E7E7E7",
+      "#E9E9E9",
+      "#828282"
     ],
     icon:{
       blue : ["#313747","#58627D","#CED3E2","#E8ECF5", "#F5F5F9"],
@@ -59,8 +63,12 @@ export const theme1 = createMuiTheme({
       main: "#688FFF",
       // dark: "rgba(0,0,0,0.05)",
     },
+    secondary: {
+      main: "#FFFFFF",
+      contrastText : "#666666"
+    },
     error: {
-      main: "#ff0000",
+      main: "#FF4C4C",
     },
     background: {
       paper: "#FFFFFF", 
@@ -69,7 +77,7 @@ export const theme1 = createMuiTheme({
     text: {
       primary: "#121212",
       secondary: "#666666",
-      // disabled: "#aaaaaa",
+      disabled: "#AAAAAA",
       hint: "rgba(0, 0, 0, 0.87)",
     },
     action: {

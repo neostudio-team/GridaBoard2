@@ -60,7 +60,7 @@ const useStyle = makeStyles(theme => ({
 
 const BoardList = () => {
   const cookies = new Cookies();
-  const [theme, settheme] = useState(neolabTheme.theme);
+  const [theme, settheme] = useState(neolabTheme.theme1);
   const [docsObj, setDocsObj] = useState({
     docs: [],
     category: [],
