@@ -147,10 +147,25 @@ const BoardList = () => {
     const path = `/app`;
     await history.push(path);
 
-    //firebase storage에 url로 json을 갖고 오기 위해서 CORS 구성이 선행되어야 함(gsutil 사용)
-    fetch(nowDocs.grida_path)
+    //firebase storage에 url로 json을 갖고 오기 위해서 CORS 구성이 선행되어야 함(gsutil 사용)\
+    const uid =  firebase.auth().currentUser.uid;
+
+    const storage = secondaryFirebase.storage();
+    const storageRef = storage.ref();
+    console.log(`grida/${uid}/${nowDocs.docId}`);
+
+    let gridaPath = "";
+
+    try{
+      gridaPath = await storageRef.child(`grida/${uid}/${nowDocs.docId}.grida`).getDownloadURL();
+    }catch(e){
+     gridaPath = await storageRef.child(`grida/${nowDocs.docId}.grida`).getDownloadURL();
+    }
+
+    fetch(gridaPath)
     .then(response => response.json())
     .then(async data => {
+      console.log(data);
       const pdfRawData = data.pdf.pdfInfo.rawData;
       const neoStroke = data.stroke;
 

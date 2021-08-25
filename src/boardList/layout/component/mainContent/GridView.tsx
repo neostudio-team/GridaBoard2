@@ -5,6 +5,7 @@ import { getTimeStamp } from '../../../BoardListPageFunc';
 import { IBoardData } from '../../../structures/BoardStructures';
 import { showDropDown } from 'GridaBoard/store/reducers/listReducer';
 import getText from "GridaBoard/language/language";
+import firebase, { secondaryFirebase } from 'GridaBoard/util/firebase_config';
 
 interface Props extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
   docsList?: Array<any>;
@@ -77,6 +78,32 @@ const useStyle = makeStyles(theme => ({
 
   }
 }));
+const getThumbNailPath = async (docsList)=>{
+  const storage = secondaryFirebase.storage();
+  const storageRef = storage.ref();
+  const user = firebase.auth().currentUser;
+  if(user === null){
+    return [];
+  }
+  const uid = user.uid;
+
+  const pathList = [];
+  for(let i = 0; i < docsList.length; i++){
+    let thumbNailPath;
+    if(docsList[i].thumbNailPath !== undefined){
+      thumbNailPath = docsList[i].thumbNailPath;
+    }else{
+      try{
+        thumbNailPath = await storageRef.child(`thumbnail/${uid}/${docsList[i].docId}.png`).getDownloadURL();
+      }catch(e){
+      thumbNailPath = await storageRef.child(`thumbnail/${docsList[i].docId}.png`).getDownloadURL();
+      }
+    }
+    pathList.push(thumbNailPath);
+    docsList[i].thumbNailPath = thumbNailPath;
+  }
+  return pathList;
+}
 
 const GridView = (props: Props) => {
   const classes = useStyle();
@@ -87,9 +114,19 @@ const GridView = (props: Props) => {
   const [showCheckBoxes, setShowCheckBoxes] = useState([]);
   const [forcedToShowCheckBoxes, setForcedToShowCheckBoxes] = useState([]);
   const [forcedNotToShowMoreBtns, setForcedNotToShowMoreBtns] = useState(false);
+  const [pathList, setPathList] = useState([]);
 
+  const getData = async ()=>{
+    const _pathList = await getThumbNailPath(docsList);
+    setPathList(_pathList);
+  }
+  
+  useEffect(()=>{
+    getData();
+  },[]); 
   useEffect(() => {
     //초기화 
+    setPathList([]);
     showMoreBtns.length = 0;
     showCheckBoxes.length = 0;
     forcedToShowCheckBoxes.length = 0;
@@ -101,6 +138,7 @@ const GridView = (props: Props) => {
     }
     
     setForcedNotToShowMoreBtns(false);
+    getData();
   }, [docsList.length]);
 
   useEffect(() => {
@@ -168,7 +206,6 @@ const GridView = (props: Props) => {
   };
 
   if(docsList.length === 0){
-    console.log()
     return (
       <React.Fragment>
         <div className={classes.emptyField}>
@@ -189,10 +226,12 @@ const GridView = (props: Props) => {
   return (
     <React.Fragment>
       {docsList.map((el, idx) => {
+        const path = pathList[idx];
         const times = new Date(el.last_modified.seconds * 1000);
         const docCategory = el.category == 'Unshelved' ? '' : el.category;
         const timestamp = getTimeStamp(el.created);
         const keyStr = el.doc_name + '_' + timestamp;
+        
         return (
           <React.Fragment key={keyStr}>
             <div
@@ -200,7 +239,7 @@ const GridView = (props: Props) => {
               className={`contentItem`}
               onMouseOver={e => updateShowBtns(idx, true)}
               onMouseLeave={e => updateShowBtns(idx, false)}>
-              <div style={{ backgroundImage: `url(${el.thumb_path})` }} onClick={() => routeChange(el.key)} />
+              <div style={{ backgroundImage: `url(${path})` }} onClick={() => routeChange(el.key)} />
               <div>
                 <div>{el.doc_name}</div>
                 <div className="contentData">
