@@ -24,6 +24,7 @@ import {setLongPressImpossible, setLongPressPen} from "../../../GridaBoard/store
 import {incrementTapCount, initializeDiagonal, initializeTapCount, setFirstTap, setLeftDiagonal, setRightDiagonal} from "../../../GridaBoard/store/reducers/tapReducer";
 import {PenManager} from "../../neosmartpen";
 import { setActivePageNo } from "../../../GridaBoard/store/reducers/activePageReducer";
+import { stroke } from "pdf-lib";
 
 /**
  * Properties
@@ -584,21 +585,14 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
     // 불가능하지 않고(impossibility), long press 상태가 아니고, checkLongPress 로직을 만족하는지 체크
     if (!this.props.impossible && !this.props.isLongPress && this.checkLongPress(stroke)) {
-      if (stroke.brushType === IBrushType.MARKER) {
-        console.log("it's marker long press");
-        let timer = setInterval(function(){
-          if (stroke.thickness > 0.6) {
-            stroke.thickness = 0
-            return
-          }
-          stroke.thickness += 0.01;
-        }, 1000);
-        return
-      }
       this.props.setLongPressPen2(true);
-      stroke.isCommand = true;
-      PenManager.getInstance().setPenRendererType(IBrushType.ERASER);
-      return
+      const res = this.findDotPostionOnPlate(stroke.dotArray[0])
+      if (res === 'left') {
+        this.renderer.recoveryAllCanvasObject();
+      } 
+      else {
+        PenManager.getInstance().setPenRendererType(IBrushType.MARKER);
+      }
     }
 
     if (this.renderer) {
@@ -644,57 +638,28 @@ class PenBasedRenderer extends React.Component<Props, State> {
    */
   onLivePenUp = (event: IPenToViewerEvent) => {
     const { stroke } = event;
+
     // tap count 별로 PenManager를 통해 pen type을 바꿔준다.
     if (this.checkTap(stroke)) {
-      console.log(this.props.tapCount)
       if (this.props.tapCount === 2) {
-        stroke.isCommand = true;
-    
-
-        if (stroke.isPlate) {
-          const res = this.findDotPostionInPlate(stroke.dotArray[0]);
-          if (res === 'top') {
-            this.prevChange();
-          }
-          else if (res === 'bottom') {
-            this.nextChange();
-          }
-          
-        } 
-        this.test2(stroke);
-        this.nextChange();
-      
-        // stroke.section = this.renderer.pageInfo.section
-        // stroke.owner = this.renderer.pageInfo.owner
-        // stroke.book = this.renderer.pageInfo.book
-        // stroke.page = this.renderer.pageInfo.page
-        console.log();
-        this.props.initializeTapCount2();
-        // 흠,,,,, => 좀 별론데...
-        const strokesAll = this.renderer.storage.getPageStrokes(this.props.pageInfo)
-        const targetStroke = strokesAll[strokesAll.length-2]
-        // if (targetStroke) targetStroke.brushType = 3;
-        // PenManager.getInstance().setPenRendererType(IBrushType.PEN);
+        this.doubleTapProcess(stroke.isPlate, stroke.dotArray[0]);
       }
-      // else if (this.props.tapCount === 3) {
-      //   stroke.isCommand = true;
-      //   PenManager.getInstance().setPenRendererType(IBrushType.MARKER);
-      // }
-      // console.log(this.props.activePageNo);
+      else if (this.props.tapCount === 3) {
+        // triple tap touch process
+      }
     }
 
-    // this.test(stroke);
+    this.crossLineTest(stroke);
 
-    if (stroke.isCommand)
-    {
-      console.log('stroke command on');
-      stroke.brushType = 3;
-      this.renderer.redrawStrokes(this.props.pageInfo, this.props.isMainView);
-    }
+    // if (stroke.isCommand)
+    // {
+    //   stroke.brushType = 3;
+    //   this.renderer.redrawStrokes(this.props.pageInfo, this.props.isMainView);
+    //   return
+    // }
 
     // 기본적으로 up할때 longPress를 초기화 시켜줌
     this.initLongPress();
-    this.props.initializeDiagonal2();
 
     if (this.props.calibrationMode) {
       this.onCalibrationUp(event);
@@ -705,14 +670,49 @@ class PenBasedRenderer extends React.Component<Props, State> {
   }
 
   
+  /** Touble tap process */
+  doubleTapProcess = (isPlate: boolean, dot: NeoDot) => {
+    // tap touch stroke를 지우게 하기 위해 만들어놓은 임시...
+    const strokesAll = this.renderer.storage.completed;
+    const targetStroke = strokesAll[strokesAll.length-2];
+    if (targetStroke) targetStroke.brushType = IBrushType.ERASER;
+    const target2 = strokesAll[strokesAll.length-1];
+    if (target2) target2.brushType = IBrushType.ERASER;
 
+    // plate에서 작업하는 중에 발생하는 double tap 처리를 영역별로 구분
+    if (isPlate) {
+      const res = this.findDotPostionOnPlate(dot);
+      if (res === 'top') {
+        this.prevChange();
+      }
+      else if (res === 'bottom') {
+        this.nextChange();
+      }
+      else if (res === 'left') {
+        // 필기 숨기기
+        this.renderer.removeAllCanvasObject();
+      }
+      else if (res === 'right') {
+        // 확대 - 축소 -> 임시로 지우개로 만들어놓음.
+        // this.renderer.setCanvasZoomByButton(150);
+        PenManager.getInstance().setPenRendererType(IBrushType.ERASER);
+      }
+    }
 
-  test = (stroke: NeoStroke) => {
+    this.props.initializeTapCount2();
+  }
+
+  /**
+   * Paper에 X를 그렸을 때, stroke를 지우게 하기 위한 로직
+   */ 
+  crossLineTest = (stroke: NeoStroke) => {
     const width: number = this.props.pdfSize.width;
     const height: number = this.props.pdfSize.height;
     const [first, last] = this.getFirstLastItems(stroke.dotArray);
-    console.log(first, last)
-    console.log(width*0.3, height*0.3, width*0.7, height*0.7);
+    
+    // 임시, 플레이트 윗 파티션은 stroke 에 dotArray 가 들어오지 않으므로 예외처리 해놓음.
+    if (!first?.point || !last?.point) return
+
     if (first.point.x < width*0.3 && first.point.y < height*0.3 && last.point.x > width*0.7 && last.point.y > height*0.7) {
       console.log('left to right cross line');
       this.props.setRightDiagonal2();
@@ -721,32 +721,21 @@ class PenBasedRenderer extends React.Component<Props, State> {
       console.log('right to left cross line');
       this.props.setLeftDiagonal2();
     }
-    console.log(this.props.leftDiagonal);
-    console.log(this.props.rightDiagonal);
+
     if (this.props.leftDiagonal && this.props.rightDiagonal) {
+      // 일단 임시.... storage에서는 삭제가 안되나? 
       this.renderer.removeAllCanvasObject();
-      // this.inkStorage.completedOnPage.
+      this.inkStorage.resetStrokes();
+      this.renderer.redrawStrokes(this.props.pageInfo, this.props.isMainView);
       this.props.initializeDiagonal2();
     }
-
-    console.log(stroke);
   }
-
-  test2 = (stroke: NeoStroke) => {
-    if (!stroke.dotArray) return
-    const width: number = this.props.pdfSize.width;
-    const height: number = this.props.pdfSize.height;
-    const [first, last] = this.getFirstLastItems(stroke.dotArray);
-
-
-  }
-
 
   /**
    * Tap count 하는 로직
    *
    * 1. 해당 동작이 Tap이 맞는지 아닌지 확인 -> dotArray의 맨 처음과 끝이 차이가 거의 없고, timeDiff 도 작은것만 tap으로 취급
-   *    -> tap 이 맞다면 아래 실행
+   *    -> 이 맞다면 아래 실행
    * 2. firstDot이 null이면 해당 tap을 실행할때의 dotArray의 첫번째 값을 firstDot으로 설정해준다.
    * 3. firstDot이 존재한다면 거리를 비교해서 특정 값 범위 안에 들어와있을경우 tap count를 증가시켜준다.
    *
@@ -916,7 +905,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   /**
    *
-   * @param {{strokeKey:string, mac:string, stroke:NeoStroke, dot:NeoDot}} event
+   * @param {{strokeKey:string, mac:string, stroke:NeoStroke, dot:NeoDxot}} event
    */
 
   onLiveHoverMove = (event: IPenToViewerEvent) => {
@@ -932,48 +921,58 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   /**
    *
-   * Gesture 계산식
+   * Gesture 인식을 위한 dot 계산식
    */
   getFirstLastItems = (array: NeoDot[]) => {
     return [array[0], array[array.length-1]]
   }
 
   getDistance = (d1: NeoDot, d2: NeoDot) => {
-    return d1 && d2 ? Math.sqrt(Math.pow(d1.x-d2.x, 2) + Math.pow(d1.y-d2.y, 2)) : 0;
+    return d1 && d2 ? Math.sqrt(Math.pow(d1.x-d2.x, 2) + Math.pow(d1.y-d2.y, 2)) : null;
   }
 
   getTimeDiff = (d1: NeoDot, d2: NeoDot) => {
-    return d1 && d2 ? Math.abs(d1.time - d2.time) : 0;
+    return d1 && d2 ? Math.abs(d1.time - d2.time) : null;
   }
 
   
-  /** activePageNo -> 0부터 시작, numDocpages -> 1부터 시작 */
+  /** 
+   * Page Up, Down 처리
+   * activePageNo -> 0부터 시작, numDocpages -> 1부터 시작 
+   */
+
+  // Page Up
   prevChange = () => {
-    if (this.props.activePageNo < 0) return
+    if (this.props.activePageNo <= 0) return
     setActivePageNo(this.props.activePageNo-1);    
   }
 
+  // Page Down
   nextChange = () => {
-    if (this.props.activePageNo >= this.state.numDocPages-1) return
+    if (this.props.activePageNo === this.state.numDocPages-1) return
     setActivePageNo(this.props.activePageNo+1);
   }
 
-  findDotPostionInPlate = (dot: NeoDot) => {
+  findDotPostionOnPlate = (dot: NeoDot) => {
     if (!dot) return
-
-    const width: number = 1800;
-    const height: number = 965;
     
-    if (width*0.4 < dot.point.x && dot.point.x < width*0.6 && dot.point.y < height*0.2) {
+    /** 
+     * Plate 의 width, height 
+     * 따라서, dot.x 와 dot.y 는 raw data 의 좌표로 계산 
+     * */
+    const width: number = 107;
+    const height: number = 57;
+    
+    if (width*0.3 < dot.x && dot.x < width*0.7 && dot.y < height*0.3) {
       return 'top'
     }
-    else if (width*0.4 < dot.point.x && dot.point.x < width*0.6 && dot.point.y > height*0.8) {
+    else if (width*0.3 < dot.x && dot.x < width*0.7 && dot.y > height*0.7) {
       return 'bottom'
     }
-    else if (dot.point.x < width*0.2 && height*0.4 < dot.point.y && dot.point.y < height*0.6) {
+    else if (dot.x < width*0.3 && height*0.3 < dot.y && dot.y < height*0.7) {
       return 'left'
     }
-    else if (width*0.8 < dot.point.x && height*0.4 < dot.point.y && dot.point.y < height*0.6) {
+    else if (width*0.7 < dot.x && height*0.3 < dot.y && dot.y < height*0.7) {
       return 'right'
     }
   }
