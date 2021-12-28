@@ -175,6 +175,7 @@ export default class InkStorage {
     let pageId = InkStorage.makeNPageIdStr({ section, owner, book, page });
 
     const activePageNo = store.getState().activePage.activePageNo;
+
     if ((isPlatePaper(pageInfo) || isPUI(pageInfo)) && activePageNo === -1) {
       if (isPlatePaper(pageInfo)) {
         alert(getText("alert_needPage"));
@@ -182,7 +183,12 @@ export default class InkStorage {
       return;
     }
 
-    const basePageInfo = GridaDoc.getInstance().getPage(activePageNo).basePageInfo;
+    const gridaDoc = GridaDoc.getInstance();
+    if (gridaDoc.numPages === 0) {
+      return;
+    }
+
+    const basePageInfo = gridaDoc.getPage(activePageNo).basePageInfo;
 
     if (isSameNcode(DefaultPlateNcode, {section, owner, book, page})) {
       pageId = InkStorage.makeNPageIdStr({ section: basePageInfo.section, book: basePageInfo.book, owner: basePageInfo.owner, page: basePageInfo.page });

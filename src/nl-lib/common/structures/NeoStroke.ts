@@ -87,6 +87,7 @@ export class NeoStroke implements INeoStrokeProps {
   plateBook: number;
   platePage: number;
   isPlate: boolean;
+  isCommand: boolean;
 
   /**
    *

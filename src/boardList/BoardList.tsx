@@ -147,6 +147,8 @@ const BoardList = () => {
     const path = `/app`;
     await history.push(path);
 
+    GridaDoc.getInstance()._pages = [];
+
     //firebase storage에 url로 json을 갖고 오기 위해서 CORS 구성이 선행되어야 함(gsutil 사용)\
     const uid =  firebase.auth().currentUser.uid;
 

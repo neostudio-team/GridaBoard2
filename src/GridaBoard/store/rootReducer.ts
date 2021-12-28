@@ -16,6 +16,9 @@ import docConfigReducer from './reducers/docConfigReducer';
 import zoomReducer from './reducers/zoomReducer';
 import listReducer from './reducers/listReducer';
 import activePenReducer from './reducers/activePenReducer';
+import longPressReducer from "./reducers/longPressReducer";
+import tapReducer from "./reducers/tapReducer";
+
 
 const rootReducer = combineReducers({
   progress: progressDlgReducer,
@@ -34,7 +37,10 @@ const rootReducer = combineReducers({
   activePage: activePageReducer,
   activePen: activePenReducer,
   zoomReducer,
-  list : listReducer
+  list : listReducer,
+
+  longPress: longPressReducer,
+  tap: tapReducer
 });
 
 export default rootReducer;
