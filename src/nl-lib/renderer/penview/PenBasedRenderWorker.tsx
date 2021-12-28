@@ -344,12 +344,29 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
       y1_pu: pdf_y1,
     };
 
+    const eraserSvgPathData = 'M ' + pdf_x0 + ' ' + pdf_y0 + ' L ' + pdf_x1 + ' ' + pdf_y1 + 'z';
+    const eraserPath = new fabric.Path(eraserSvgPathData, 
+      {    stroke: 'red',
+            strokeWidth: 1,
+    })
+
+
     for (let i = 0; i < this.localPathArray.length; i++) {
       const fabricPath = this.localPathArray[i];
       const pathDataStr = fabricPath.path.join();
 
       let needThumbnailRedraw = false;
 
+      const targetPath = new fabric.Path(pathDataStr);
+      const bound = targetPath.getBoundingRect();
+      if (eraserLine.x0_pu < bound.left || eraserLine.x0_pu > bound.left+bound.width ||
+          eraserLine.x1_pu < bound.left || eraserLine.x1_pu > bound.left+bound.width ||
+          eraserLine.y0_pu < bound.top || eraserLine.y0_pu > bound.top+bound.height ||
+          eraserLine.y1_pu < bound.top || eraserLine.y1_pu > bound.top+bound.height)
+          continue
+
+
+      // if (this.storage.collisionTest(fabricPath, eraserPath)) {
       if (this.storage.collisionTest(pathDataStr, eraserLine)) {
         this.canvasFb.remove(fabricPath);
         needThumbnailRedraw = true;
@@ -780,6 +797,14 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     }
   };
 
+  recoveryAllCanvasObject = () => {
+    if (this.localPathArray) {
+      this.localPathArray.forEach(path => {
+        this.canvasFb.add(path);
+      });
+    }
+  }
+
   /**
    * @private
    * @param {Array<NeoStroke>} strokes
@@ -979,7 +1004,6 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
       originX: 'left',
       originY: 'top',
       selectable: false,
-
       data: STROKE_OBJECT_ID, // neostroke
       evented: true,
       key: key,
