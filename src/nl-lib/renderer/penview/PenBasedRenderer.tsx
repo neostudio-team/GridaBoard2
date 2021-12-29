@@ -24,7 +24,6 @@ import {setLongPressImpossible, setLongPressPen} from "../../../GridaBoard/store
 import {incrementTapCount, initializeDiagonal, initializeTapCount, setFirstTap, setLeftDiagonal, setRightDiagonal} from "../../../GridaBoard/store/reducers/tapReducer";
 import {PenManager} from "../../neosmartpen";
 import { setActivePageNo } from "../../../GridaBoard/store/reducers/activePageReducer";
-import { stroke } from "pdf-lib";
 
 /**
  * Properties
@@ -723,10 +722,17 @@ class PenBasedRenderer extends React.Component<Props, State> {
     }
 
     if (this.props.leftDiagonal && this.props.rightDiagonal) {
-      // 일단 임시.... storage에서는 삭제가 안되나? 
-      this.renderer.removeAllCanvasObject();
-      this.inkStorage.resetStrokes();
-      this.renderer.redrawStrokes(this.props.pageInfo, this.props.isMainView);
+      // storage 안의 stroke reset
+      this.renderer.storage.resetStrokes();
+      
+      // Thumbnail 영역 redraw 를 위한 dispath 추가
+      this.renderer.storage.dispatcher.dispatch(PenEventName.ON_ERASER_MOVE, {
+        section: this.renderer.pageInfo.section,
+        owner: this.renderer.pageInfo.owner,
+        book: this.renderer.pageInfo.book,
+        page: this.renderer.pageInfo.page,
+      });
+
       this.props.initializeDiagonal2();
     }
   }
