@@ -16,8 +16,7 @@ import docConfigReducer from './reducers/docConfigReducer';
 import zoomReducer from './reducers/zoomReducer';
 import listReducer from './reducers/listReducer';
 import activePenReducer from './reducers/activePenReducer';
-import longPressReducer from "./reducers/longPressReducer";
-import tapReducer from "./reducers/tapReducer";
+import gestureReducer from "./reducers/gestureReducer";
 
 
 const rootReducer = combineReducers({
@@ -39,8 +38,7 @@ const rootReducer = combineReducers({
   zoomReducer,
   list : listReducer,
 
-  longPress: longPressReducer,
-  tap: tapReducer
+  gesture: gestureReducer
 });
 
 export default rootReducer;
