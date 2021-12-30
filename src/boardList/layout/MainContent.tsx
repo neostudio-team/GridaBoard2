@@ -7,18 +7,14 @@ import MainTrashButton from './component/mainContent/MainTrashButton';
 import GridView from './component/mainContent/GridView';
 import ListView from './component/mainContent/ListView';
 import { forceUpdateBoardList } from '../../GridaBoard/store/reducers/appConfigReducer';
-import { ControlPointSharp, DeleteOutline, Restore } from '@material-ui/icons';
+import { DeleteOutline, Restore } from '@material-ui/icons';
 import { IBoardData } from '../structures/BoardStructures';
 import { deleteBoardFromLive, deleteBoardsFromTrash, restoreBoardsFromTrash } from '../BoardListPageFunc';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../GridaBoard/store/rootReducer';
 import { showSnackbar } from '../../GridaBoard/store/reducers/listReducer';
 import { store } from "GridaBoard/client/pages/GridaBoard";
-import { wrap } from 'node:module';
-import { on } from 'node:stream';
-import { copyStringIntoBuffer } from 'pdf-lib';
-import ConvertFileLoad from '../../GridaBoard/Load/ConvertFileLoad';
-import { IFileBrowserReturn } from '../../nl-lib/common/structures';
+
 const useStyle = makeStyles(theme => ({
   wrap: {
     padding: '32px',

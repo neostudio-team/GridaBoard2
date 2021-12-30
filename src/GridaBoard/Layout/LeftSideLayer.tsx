@@ -1,21 +1,10 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useRef, useEffect, useCallback } from "react";
 import { RootState } from "../store/rootReducer";
 import { useSelector } from "react-redux";
-import { makeStyles, ButtonProps } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
 import PersistentDrawerRight from "../View/Drawer/PersistentDrawerRight";
 import { updateDrawerWidth } from "../store/reducers/ui";
-import GridaDoc from '../../GridaBoard/GridaDoc';
-import getText from 'GridaBoard/language/language';
-import { IFileBrowserReturn, IPageSOBP } from '../../nl-lib/common/structures';
-import { ControlPointSharp, Label } from "@material-ui/icons";
-import CloudConvert from 'cloudconvert';
-import { InkStorage } from '../../nl-lib/common/penstorage';
-import { setLoadingVisibility } from '../store/reducers/loadingCircle';
-import { useHistory } from 'react-router';
-import { scrollToBottom } from '../../nl-lib/common/util';
-import { setDocName } from '../store/reducers/docConfigReducer';
-import { FileCopyRounded } from '@material-ui/icons';
-import { resetGridaBoard } from "../../boardList/BoardListPageFunc";
+import { fileOpenHandler } from "./HeaderLayer";
 
 
 const useStyle = props => makeStyles(theme=>({
@@ -73,128 +62,8 @@ interface Props {
 }
 
 
-//////////////////////
-
-
-const CLOUDCONVERT_APIKEY = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiZWY2MzlhMzFiMTRkMDkwMmJlMzE5ZmM3YmI3NzVlODhjNmE0NmU1NDYwZjY5ZTNmNTM3OTkzMjhiMWQwNDg0MDhiNzg4ZTJhYjAzMzk2MDciLCJpYXQiOiIxNjE3NTg5ODc0LjcxMTQxMSIsIm5iZiI6IjE2MTc1ODk4NzQuNzExNDE0IiwiZXhwIjoiNDc3MzI2MzQ3NC42NzEwNzgiLCJzdWIiOiI0OTUwMjk4OSIsInNjb3BlcyI6WyJ0YXNrLndyaXRlIiwidGFzay5yZWFkIl19.SD_Q-xL9vs66TdDIv5StDAsRkBBuhAnTukJ12MyWVnshWAnFcFOn7PcJ6m-RMOhtIFy5EQ2PQZ4NMzx8czyQ2LjBE4W8-so_b5ZoJ9skCiONxUYJiKzuRM6DUrqrCLFVetGG-yzujqwRyklT9X866FxlkrJADC5VsecgeLEdYOfKn-opC-KeX2iZ-OI8_00B09eGy8-NbNXZLwpewhslkTcXxPwfziC9KOEzKXlLfm-_qPVmD4uApsZXJT7l0Wo3yBqOZ2kxL6YDGXSMsIw4_dwOqXJojLYF4X0nUivvclwn8jIpBlIWLx9h7ALz6k37II0CQ2gzofmVcLWovd7x_2jqgczEEYe3J6qYa8NEFWufAyhSRZ-Cqe9dPtn20pDp98u1bAmrL5vXdZwi9NEomaL1WzFrLbWQViuNfp4eu65nwEljLMcBrerRAv4ROVRGBn_PH7PcIqh6ZfcCuWeSfKKvAAaXeFtHjMsVNOHpMNrjD4rnRxA1JRDiWaq2nu0Jk3h34y4NZKYEWvSAdc-COZf5AUIQaapp8Stb9TAa20OFlKljT2B_2B9wJmKitZibgHP6yXY1lzdgsdGtjC6uXtpKfKu2UAj9at7Skg_d7JeOyf8srZe5MGwY2D_gryvWMhnMHEu4C2zuJnYUJ1AkxyYC7q853_XzhEPJeuSyGwc";
-const cloudConvert = new CloudConvert(CLOUDCONVERT_APIKEY);
-interface Form {
-  parameters: Array<string>,
-  url : string
-}
-interface Result {
-  form : Form
-}
-interface Data {
-  result : Result
-}
-interface cloudImportResponse {
-  data : Data
-}
-
-// interface Props extends ButtonProps {
-//   handlePdfOpen: (event: IFileBrowserReturn) => void,
-// }
-
-
-function fileConvert(selectedFile){
-
-  if (selectedFile.result === "success") {
-    const file = selectedFile.file;
-    const reader = new FileReader();
-
-    let url = selectedFile.url;
-    let jsonFile = null;
-
-    reader.readAsText(file);
-    reader.onload = async function(e) {
-      jsonFile = e.target.result;
-
-      const gridaInfo = JSON.parse(jsonFile);
-      const pdfRawData = gridaInfo.pdf.pdfInfo.rawData;
-      const neoStroke = gridaInfo.stroke;
-
-      const pageInfos = gridaInfo.pdf.pdfInfo.pageInfos;
-      const basePageInfos = gridaInfo.pdf.pdfInfo.basePageInfos;
-
-      // pdf의 url을 만들어 주기 위해 rawData를 blob으로 만들어 createObjectURL을 한다
-      const rawDataBuf = new ArrayBuffer(pdfRawData.length*2);
-      const rawDataBufView = new Uint8Array(rawDataBuf);
-      for (let i = 0; i < pdfRawData.length; i++) {
-        rawDataBufView[i] = pdfRawData.charCodeAt(i);
-      }
-      const blob = new Blob([rawDataBufView], {type: 'application/pdf'});
-      url = await URL.createObjectURL(blob);
-
-      const completed = InkStorage.getInstance().completedOnPage;
-      completed.clear();
-
-      const gridaArr = [];
-      const pageId = []
-
-      for (let i = 0; i < neoStroke.length; i++) {
-
-        pageId[i] = InkStorage.makeNPageIdStr(neoStroke[i][0]);
-        if (!completed.has(pageId[i])) {
-          completed.set(pageId[i], new Array(0));
-        }
-
-        gridaArr[i] = completed.get(pageId[i]);
-        for (let j = 0; j < neoStroke[i].length; j++){
-          gridaArr[i].push(neoStroke[i][j]);
-        }
-      }
-
-      const doc = GridaDoc.getInstance();
-      await doc.openGridaFile({ url: url, filename: file.name }, pdfRawData, neoStroke, pageInfos, basePageInfos);
-      setLoadingVisibility(false);
-      scrollToBottom("drawer_content");
-      
-    }
-  } else {
-      alert(getText("alert_fileOpenCancel"));
-  }
-}
-
-const checkPdfIsEncryptted = (selectedFile) => {
-  
-  if (selectedFile.result === "success") {
-    const file = selectedFile.file;
-    const reader = new FileReader();
-
-    let pdfData = null;
-    
-    reader.readAsText(file);
-    reader.onload = async function(e) {
-      pdfData = e.target.result;
-      const n = pdfData.indexOf("/Encrypt");
-
-      if (n !== -1) {
-        confirm("PDF가 암호화 되어있습니다. 인쇄 혹은 인쇄 페이지 순서 등록 기능을 사용하려면 암호를 해제하여야 합니다.")
-        return true;
-      } else {
-        return false;
-      }
-    }
-
-    return false;
-  }
-}
-
-/////////////////////
-
-
-
-
 
 const LeftSideLayer = (props: Props) => {
-
-  const [canConvert, setCanConvert] = useState(true);
-  const history = useHistory();
-
-
-
-  const [dropEvent, setDropEvent] = useState();
   const {drawerOpen} = props;
   // const [drawerOpen, setDrawerOpen] = useState(false);
   const setDrawerWidth = (width: number) => updateDrawerWidth({ width });
@@ -203,7 +72,7 @@ const LeftSideLayer = (props: Props) => {
   const onDrawerResize = (size) => {
     setDrawerWidth(size);
   }
-  
+
   const brZoom = useSelector((state: RootState) => state.ui.browser.zoom);
   const drawerWidth = useSelector((state: RootState) => state.ui.drawer.width);
   const classes = useStyle({brZoom:brZoom, drawerOpen:drawerOpen, drawerWidth:drawerWidth})()
@@ -215,46 +84,39 @@ const LeftSideLayer = (props: Props) => {
   }
 
 
+
+  /**
+   * Drag And Drop Code
+   */
   ///////////////////////////////////////////////
 
-
-  const handlePdfOpen = async (event: IFileBrowserReturn, pageInfo?: IPageSOBP, basePageInfo?: IPageSOBP) => {
-    console.log(event.url);
-    if (event.result === 'success') {
-      const doc = GridaDoc.getInstance();
-      doc._pdfd = [];
-      await doc.openPdfFile({ url: event.url, filename: event.file.name }, pageInfo, basePageInfo);
-    } else if (event.result === 'canceled') {
-      alert(getText('alert_fileOpenCancel'));
-    }
-  };
-
   const dragRef = useRef<HTMLDivElement | null >(null);
+
   const handleDragIn = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
   }, [])
   const handleDragOut = useCallback((e) => {
-    console.log("드래그아웃!!!!!!!!!!!!!!!!!")
-    // dragRef.current.style.backgroundColor = "white"
+    console.log("Drag Out Layer")
+    dragRef.current.style.background = "rgba(0,0,0,0)"
     e.preventDefault();
     e.stopPropagation();
   }, [])
   const handleDragOver = useCallback((e) => {
-    console.log("드래그오버!!!!!!!!!!!!!!!!")
-    // dragRef.current.style.backgroundColor = "#CCFFCC"
+    console.log("Drag Over Layer")
+    dragRef.current.style.background = "rgba(0,0,0,0.1)"
     e.preventDefault();
     e.stopPropagation();
   }, [])
-  const handleDrop = (e) => {
-    console.log("드랍!!!!!!!!!!!!!!!!!!!!")
-    // dragRef.current.style.backgroundColor = "white"
-    resetGridaBoard();
-    LeftSideDragNDrop(handlePdfOpen, e)
+  const handleDrop = useCallback((e) => {
+    console.log("Drop to Layer")
+    dragRef.current.style.background = "rgba(0,0,0,0)"
+    // resetGridaBoard();
+    fileOpenHandler(e.dataTransfer.files)
     e.preventDefault();
     e.stopPropagation();
     e.stopImmediatePropagation();
-  }
+  }, [])
   const initDragEvents = useCallback(() => {
     if(dragRef.current !== null){
       dragRef.current.addEventListener("dragenter", handleDragIn);
@@ -277,210 +139,6 @@ const LeftSideLayer = (props: Props) => {
     initDragEvents();
     return () => resetDragEvents();
   }, [initDragEvents, resetDragEvents])
-
-
-
-  const LeftSideDragNDrop = (handlePdf, dropEvent) => {
-    // const { handlePdfOpen } = handlePdf;
-    
-    async function inputDnD(dataFileDnd)
-    {
-      const path = `/app`;
-      history.push(path);
-      let inputer = "";
-      let fullFileName = "";
-      if(dataFileDnd.files){
-        inputer = dataFileDnd.files
-        fullFileName = dataFileDnd.files[0].name;
-      }
-      let pos = 0;
-      const searchvalue = '.';
-      const foundPosArr = []
-  
-      for (;;) {
-        const foundPos = dataFileDnd.files[0].name.indexOf(searchvalue, pos)
-        if (foundPos === -1) break;
-        foundPosArr.push(foundPos);  
-        pos = foundPos + 1;
-      }
-      
-      const fileType = fullFileName.substring(foundPosArr[foundPosArr.length - 1] + 1, fullFileName.length);
-      fullFileName = fullFileName.substring(0, foundPosArr[foundPosArr.length - 1]);
-      setDocName(fullFileName);
-  
-      const result = {
-        result : "success",
-        file : null,
-        url : null
-      };
-      setLoadingVisibility(true);
-      if(fileType == "pdf" || fileType == "grida"){
-        result.file = inputer[0];
-        result.url = URL.createObjectURL(result.file);
-        if(fileType == "pdf"){
-          await handlePdf(result as IFileBrowserReturn);
-          setLoadingVisibility(false);
-          checkPdfIsEncryptted(result as IFileBrowserReturn);
-        }else if(fileType == "grida"){
-          fileConvert(result as IFileBrowserReturn);
-        }
-      }else{
-        doFileConvert(inputer);
-      }
-    }
-  
-    async function doFileConvert(inputer){
-      if(!canConvert) return ;
-      
-      //converting을 기다려야 하기 때문에 로딩 서클 켜주기
-      
-      //cloudconvert에 업로드 할 수 있는 위치 및 시그니처 받기
-      const res = await fetch("https://api.cloudconvert.com/v2/import/upload", {
-        method: "POST",
-        headers : {
-          "Authorization" : "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNDNiZDVkZGIxNDMyNzAyNWQ0MzExMjJlYWY3ODc2M2FiNTZmMTJhNzBlYWQ4ZjgzM2YzNGYxODZhNTU4ZWM1MDkwM2Q3MmY5NWIyMWM1MGIiLCJpYXQiOiIxNjE3MjYxMDQ4LjY1NTQ4OCIsIm5iZiI6IjE2MTcyNjEwNDguNjU1NDkwIiwiZXhwIjoiNDc3MjkzNDY0OC42MTcwNDUiLCJzdWIiOiI0OTUwMjk4OSIsInNjb3BlcyI6WyJ0YXNrLnJlYWQiLCJ0YXNrLndyaXRlIl19.WgvnklhnmULiHZp5HKuWNlJcaahq7FJbJBMc9T9PqIMSxAovBEi4ikSPMHw4Q1E_ZGkc63Pmp5QZm5oERAWnEILWWu5IQRXDTf7BDWfvPpX0uetiBhqyzPD2WEqwWoLAN6Vc5p0PHcMOkmKDJzNBIyZf7Rrm17wQ0j5CgmwMcc6gO_grnrwTR1-w71rlsPI7YXTc1pTFp0nUgmGDqHOxqdq_u_zeO2HCxoaPqda5kHfEVyTuAjQGG1nyHbkT_tDB1pmk1j-nVShMgDJ5OQl1Rx_81qWHnla3JEHAo4j03JY3SAXkRQjJGtIi_EvbV7CKDItPuhpWiyxGR-aUMsIUPba03EsyMzudFlBQfviITl-bUqGNDBRMWUyGuR2X8i1hETCDIfyIJCdJuxcXPXtj8jxFXQG7fODc4all6KKwYqxqgz91iE8vwmAuUSsfpwMv__VQLpUqMbk_z0wNFCz2hZ4NdcDB52IqIPJcqCV32WKOkNRRpn6cVZy-6wboaU0oYnv1YvlnnZ1NTjykO8Hu8Sxs1yDmJmSous17g9i01vysA5XcT1HqIGV0Q7eCzov73ICZ_Sa-tbavLyrxUwWtSEhAPLAaTPCkRKW47oyaMdA9AaFIoxbPfD6eIBla11P3IKbQgAWmSefa-UWp8lPq2HkQBmRKHItdgejtTW7sfx0",
-          "Content-type": "application/json"
-        }
-      });
-      
-      const responJson:cloudImportResponse = await res.json();
-      
-      //전송할 form 데이터 생성
-      // const inputer = document.getElementById("fileForconvert") as HTMLInputElement;
-      const formData = new FormData();
-      
-      for(const key in responJson.data.result.form.parameters){
-        formData.set(key, responJson.data.result.form.parameters[key]);
-      }
-      formData.set("file", inputer[0])   
-  
-      const xhr = new XMLHttpRequest();
-      
-      xhr.open("POST" , responJson.data.result.form.url , true);
-      xhr.onreadystatechange = () => {
-          if(xhr.readyState == 4){
-            const response: HTMLAllCollection = xhr.responseXML.all;
-            //전송 완료
-            //TODO : 예외처리 해줘야 함
-            //어떤 예외처리?? 모르겠음 찾아봐야함 분명 문제 생길듯
-            setTask(response);
-          }
-      }
-      xhr.send(formData);
-    } 
-  
-    async function setTask(res:HTMLAllCollection){
-      //컨버팅 중
-        try{
-          const subOption = {};
-          if(res[3].textContent.split("/")[1].split(".")[1] === "txt"){
-            (subOption as any).engine = "calibre";
-          }
-          let job = await cloudConvert.jobs.create({
-              "tasks": {
-                  "task-1": {
-                      ...subOption,
-                      "operation": "convert", 
-                      "input": [res[3].textContent.split("/")[0]],
-                      "output_format": "pdf"
-                  }
-              }
-          });
-          job = await cloudConvert.jobs.wait(job.id);
-          //password가 필요 없으면 export만 추가로 해주면 됨
-          const task : any = {
-            "export-1": {
-                "operation": "export/url",
-                "input": [
-                  job.tasks[0].id
-                ],
-                "inline": false,
-                "archive_multiple_files": false
-            } 
-          };
-          let isPassword = false;
-          let password = "";
-          if(job.tasks[0].code === "INVALID_PASSWORD"){
-            //password 필요함
-            //convert를 다시 해주어야 함
-            password = prompt(getText("need_password"));
-            //여기서 취소 누르면 null
-  
-            isPassword = true;
-  
-            task["task-1"] = {
-                "operation": "convert", 
-                "input": [res[3].textContent.split("/")[0]],
-                "output_format": "pdf",
-                "password": password
-            }
-            task["export-1"].input = ["task-1"];
-          }
-  
-          if(!isPassword || (isPassword && password !== null )){
-            //패스워드가 필요 없거나, 패스워드가 필요한데 받았거나
-            job = await cloudConvert.jobs.create({
-                "tasks": task
-            });
-            job = await cloudConvert.jobs.wait(job.id);
-  
-            if(isPassword && job.tasks[1].code === "INVALID_PASSWORD"){
-              //비밀번호 틀림
-              alert(getText("wrong_password"));
-            }else{
-              //모든게 괜찮을 경우 open
-              const url = job.tasks[0].result.files[0].url;
-              console.log(url);
-        
-              const doc = GridaDoc.getInstance();
-              await doc.openPdfFile({ url: url, filename: job.tasks[0].result.files[0].filename });
-            }  
-          }
-        }catch(e){
-          /** 
-           * 422 (invalid data)
-           * 429 (too many requests)
-           * 500 (internal server error)
-           * 503 (temporary unavailable)
-           */
-          //에러 로그 출력
-          //TODO : Unhandled Rejection (TypeError): Cannot read property 'status' of undefined
-          if(e.response === undefined && e.message === "Cannot read property 'files' of null"){
-            console.log(e);
-          }else{
-            switch(e.response.status){
-              case 422 : {
-                //잘못된 파일 => 컨버트 할 수 없는 파일
-                //input type으로 한번 걸렀으나, alert 처리 해주면 좋을듯
-                alert(getText("alert_wrongFileType"));
-                break;
-              }
-              case 429 : {
-                //요청이 너무 많음 => 일시 사용 불가로 변환해주어야 함
-                setCanConvert(false);
-                setTimeout(()=>{
-                    setCanConvert(true);
-                } ,60000); //60초
-                break ;
-              }
-              case 500 : {
-                //클라우드 컨버트 서버 오류 => 답이 없음
-                break ;
-              }
-              case 503 : {
-                //일시적으로 사용할 수 없음 => 요건 어떤 상황인지 잘 모르겠음
-                break ;
-              }
-            }
-          }
-        }
-        setLoadingVisibility(false);
-        return 1;
-    }
-
-    return inputDnD(dropEvent.dataTransfer)
-  }
-
 
   ////////////////////////////////////////////////////////////////
   
