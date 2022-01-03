@@ -241,7 +241,10 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     const cursor = this.penCursors[event.mac];
     if (pen && pen.penRendererType === IBrushType.ERASER) {
       if (cursor.eraserLastPoint !== undefined) {
-        this.eraseOnLine(cursor.eraserLastPoint.x, cursor.eraserLastPoint.y, dot.point.x, dot.point.y, live.stroke, isPlate);
+        // 문제점: 스트로크가 빠르게 움직이먄 지우개가 제대로 동작하지 않음. -> 빠르게 움직이면 eraserLastPoint와 dot.point의 값이 같게 들어오는데 이를 잡지 못하는 듯
+        if (Math.abs(cursor.eraserLastPoint.x - dot.point.x) > 0.1 && Math.abs(cursor.eraserLastPoint.y - dot.point.y) > 0.1) {
+          this.eraseOnLine(cursor.eraserLastPoint.x, cursor.eraserLastPoint.y, dot.point.x, dot.point.y, live.stroke, isPlate);
+        }
       }
       cursor.eraserLastPoint = { x: dot.point.x, y: dot.point.y };
     } else {
@@ -343,26 +346,13 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
       y1_pu: pdf_y1,
     };
 
-    const eraserSvgPathData = 'M ' + pdf_x0 + ' ' + pdf_y0 + ' L ' + pdf_x1 + ' ' + pdf_y1 + 'z';
-    const eraserPath = new fabric.Path(eraserSvgPathData, 
-      {    stroke: 'red',
-            strokeWidth: 1,
-    })
-
     for (let i = 0; i < this.localPathArray.length; i++) {
       const fabricPath = this.localPathArray[i];
       const pathDataStr = fabricPath.path.join();
 
       let needThumbnailRedraw = false;
 
-      const targetPath = new fabric.Path(pathDataStr);
-      const bound = targetPath.getBoundingRect();
-      if (eraserLine.x0_pu < bound.left || eraserLine.x0_pu > bound.left+bound.width ||
-          eraserLine.x1_pu < bound.left || eraserLine.x1_pu > bound.left+bound.width ||
-          eraserLine.y0_pu < bound.top || eraserLine.y0_pu > bound.top+bound.height ||
-          eraserLine.y1_pu < bound.top || eraserLine.y1_pu > bound.top+bound.height)
-          continue
-
+      if (this.eraseLineOutOfBound(pathDataStr, eraserLine)) continue
 
       // if (this.storage.collisionTest(fabricPath, eraserPath)) {
       if (this.storage.collisionTest(pathDataStr, eraserLine)) {
@@ -390,6 +380,27 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
         }
       }
     }
+  }
+
+  eraseLineOutOfBound = (pathDataStr, eraserLine) => {
+    const targetPath = new fabric.Path(pathDataStr);
+    const bound = targetPath.getBoundingRect();
+    
+    if 
+    (
+        (eraserLine.x0_pu >= bound.left 
+        && eraserLine.x0_pu <= bound.left+bound.width 
+        && eraserLine.y0_pu >= bound.top 
+        && eraserLine.y0_pu <= bound.top+bound.height) 
+      ||
+        (eraserLine.x1_pu >= bound.left 
+        && eraserLine.x1_pu <= bound.left+bound.width 
+        && eraserLine.y1_pu >= bound.top 
+        && eraserLine.y1_pu <= bound.top+bound.height)
+    )  
+      return false
+        
+    return true
   }
 
   createHoverCursor = (pen: INeoSmartpen) => {
