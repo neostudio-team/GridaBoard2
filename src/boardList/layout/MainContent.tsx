@@ -469,7 +469,7 @@ const MainContent = (props: Props) => {
         <SnackbarContent 
           message={
             <React.Fragment>
-              <span>{snackbarMsg} </span>
+              <span>{snackbarMsg}</span>
               <span style={{borderBottom: "1px solid"}} className={`${snackBarMoveTo===undefined? "" : classes.canClick}`} onClick={()=>{
                 if(snackBarMoveTo !== undefined){
                   console.log(snackBarMoveTo);

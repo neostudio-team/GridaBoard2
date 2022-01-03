@@ -288,7 +288,7 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
     switch (evt.code) {
       case "KeyO":{ // ctrl-o
         evt.preventDefault(); //web 기본 오픈 기능 강제 스탑
-        fileOpenHandler();
+        fileOpenHandler("");
         break;
       }
       case "KeyZ": // ctrl-Z

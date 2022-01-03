@@ -169,24 +169,24 @@ const ConvertFileLoad = (props: Props) => {
     if(!canConvert) return ;
     
     //converting을 기다려야 하기 때문에 로딩 서클 켜주기
-
+    
     //cloudconvert에 업로드 할 수 있는 위치 및 시그니처 받기
     const res = await fetch("https://api.cloudconvert.com/v2/import/upload", {
-        method: "POST",
-        headers : {
-            "Authorization" : "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNDNiZDVkZGIxNDMyNzAyNWQ0MzExMjJlYWY3ODc2M2FiNTZmMTJhNzBlYWQ4ZjgzM2YzNGYxODZhNTU4ZWM1MDkwM2Q3MmY5NWIyMWM1MGIiLCJpYXQiOiIxNjE3MjYxMDQ4LjY1NTQ4OCIsIm5iZiI6IjE2MTcyNjEwNDguNjU1NDkwIiwiZXhwIjoiNDc3MjkzNDY0OC42MTcwNDUiLCJzdWIiOiI0OTUwMjk4OSIsInNjb3BlcyI6WyJ0YXNrLnJlYWQiLCJ0YXNrLndyaXRlIl19.WgvnklhnmULiHZp5HKuWNlJcaahq7FJbJBMc9T9PqIMSxAovBEi4ikSPMHw4Q1E_ZGkc63Pmp5QZm5oERAWnEILWWu5IQRXDTf7BDWfvPpX0uetiBhqyzPD2WEqwWoLAN6Vc5p0PHcMOkmKDJzNBIyZf7Rrm17wQ0j5CgmwMcc6gO_grnrwTR1-w71rlsPI7YXTc1pTFp0nUgmGDqHOxqdq_u_zeO2HCxoaPqda5kHfEVyTuAjQGG1nyHbkT_tDB1pmk1j-nVShMgDJ5OQl1Rx_81qWHnla3JEHAo4j03JY3SAXkRQjJGtIi_EvbV7CKDItPuhpWiyxGR-aUMsIUPba03EsyMzudFlBQfviITl-bUqGNDBRMWUyGuR2X8i1hETCDIfyIJCdJuxcXPXtj8jxFXQG7fODc4all6KKwYqxqgz91iE8vwmAuUSsfpwMv__VQLpUqMbk_z0wNFCz2hZ4NdcDB52IqIPJcqCV32WKOkNRRpn6cVZy-6wboaU0oYnv1YvlnnZ1NTjykO8Hu8Sxs1yDmJmSous17g9i01vysA5XcT1HqIGV0Q7eCzov73ICZ_Sa-tbavLyrxUwWtSEhAPLAaTPCkRKW47oyaMdA9AaFIoxbPfD6eIBla11P3IKbQgAWmSefa-UWp8lPq2HkQBmRKHItdgejtTW7sfx0",
-            "Content-type": "application/json"
-        }
+      method: "POST",
+      headers : {
+        "Authorization" : "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNDNiZDVkZGIxNDMyNzAyNWQ0MzExMjJlYWY3ODc2M2FiNTZmMTJhNzBlYWQ4ZjgzM2YzNGYxODZhNTU4ZWM1MDkwM2Q3MmY5NWIyMWM1MGIiLCJpYXQiOiIxNjE3MjYxMDQ4LjY1NTQ4OCIsIm5iZiI6IjE2MTcyNjEwNDguNjU1NDkwIiwiZXhwIjoiNDc3MjkzNDY0OC42MTcwNDUiLCJzdWIiOiI0OTUwMjk4OSIsInNjb3BlcyI6WyJ0YXNrLnJlYWQiLCJ0YXNrLndyaXRlIl19.WgvnklhnmULiHZp5HKuWNlJcaahq7FJbJBMc9T9PqIMSxAovBEi4ikSPMHw4Q1E_ZGkc63Pmp5QZm5oERAWnEILWWu5IQRXDTf7BDWfvPpX0uetiBhqyzPD2WEqwWoLAN6Vc5p0PHcMOkmKDJzNBIyZf7Rrm17wQ0j5CgmwMcc6gO_grnrwTR1-w71rlsPI7YXTc1pTFp0nUgmGDqHOxqdq_u_zeO2HCxoaPqda5kHfEVyTuAjQGG1nyHbkT_tDB1pmk1j-nVShMgDJ5OQl1Rx_81qWHnla3JEHAo4j03JY3SAXkRQjJGtIi_EvbV7CKDItPuhpWiyxGR-aUMsIUPba03EsyMzudFlBQfviITl-bUqGNDBRMWUyGuR2X8i1hETCDIfyIJCdJuxcXPXtj8jxFXQG7fODc4all6KKwYqxqgz91iE8vwmAuUSsfpwMv__VQLpUqMbk_z0wNFCz2hZ4NdcDB52IqIPJcqCV32WKOkNRRpn6cVZy-6wboaU0oYnv1YvlnnZ1NTjykO8Hu8Sxs1yDmJmSous17g9i01vysA5XcT1HqIGV0Q7eCzov73ICZ_Sa-tbavLyrxUwWtSEhAPLAaTPCkRKW47oyaMdA9AaFIoxbPfD6eIBla11P3IKbQgAWmSefa-UWp8lPq2HkQBmRKHItdgejtTW7sfx0",
+        "Content-type": "application/json"
+      }
     });
-
+    
     const responJson:cloudImportResponse = await res.json();
-
+    
     //전송할 form 데이터 생성
     // const inputer = document.getElementById("fileForconvert") as HTMLInputElement;
     const formData = new FormData();
-
+    
     for(const key in responJson.data.result.form.parameters){
-        formData.set(key, responJson.data.result.form.parameters[key]);
+      formData.set(key, responJson.data.result.form.parameters[key]);
     }
     formData.set("file", inputer.files[0]);
 

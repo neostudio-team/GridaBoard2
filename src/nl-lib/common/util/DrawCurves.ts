@@ -119,7 +119,7 @@ export const drawCurvePath = (points: IPoint[]): string => {
       controlPoints.push(p);
       continue;
     }
-
+    
     const endPoint = {
       x: (controlPoints[2].x + p.x) / 2,
       y: (controlPoints[2].y + p.y) / 2,

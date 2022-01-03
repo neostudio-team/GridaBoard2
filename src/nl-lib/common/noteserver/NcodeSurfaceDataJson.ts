@@ -43,10 +43,10 @@ export const g_paperType_default: IPaperTypeSet = {
     "owner": 27,
     "book": 1096,
     "margin": {
-      "Xmin": 0,
-      "Ymin": 0,
-      "Xmax": 3553,
-      "Ymax": 2125
+      "Xmin": 28,//0
+      "Ymin": 29,//0
+      "Xmax": 540,//3553
+      "Ymax": 334//2125
     },
     "title": "boogieboard",
     "pdf_name": "boogieboard",
