@@ -227,7 +227,6 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
 
     const dot = event.dot;
 
-
     let pt;
     if (!isPlate && !isSamePage(pageInfo, nullNcode())) {
         pt = this.ncodeToPdfXy(dot);
