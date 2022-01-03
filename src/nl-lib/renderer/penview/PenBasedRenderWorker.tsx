@@ -350,7 +350,6 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
             strokeWidth: 1,
     })
 
-
     for (let i = 0; i < this.localPathArray.length; i++) {
       const fabricPath = this.localPathArray[i];
       const pathDataStr = fabricPath.path.join();
