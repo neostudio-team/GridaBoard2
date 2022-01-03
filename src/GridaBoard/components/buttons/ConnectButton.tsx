@@ -67,7 +67,7 @@ const ConnectButton = (props: Props) => {
           + {getText("pen_connect")}
         </Button>
       ) : (
-        <Button className={classes.connectBtn} variant="contained" color="primary" onClick={() => handleConnectPen()}>
+        <Button className={classes.connectBtn} variant="contained" color="inherit" onClick={() => handleConnectPen()}>
         {getText("pen_connect_count")} ({numPens})
         </Button>
       )}

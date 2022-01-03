@@ -125,8 +125,14 @@ const ThumbnailItem = (props: Props) => {
   const sizePu = pageOverview.sizePu;
   const pageInfo = page.pageInfos[0];
 
+  const moveToThumbnailScroll = (pageNo:number) => {
+    const thumbnail= document.getElementById("thumbnail - " + pageNo + " -mixed_view");
+    thumbnail.scrollIntoView({block: "center", behavior: "smooth"});
+  }
+  
   const handleMouseDown = (pageNo:number) => {
     setActivePageNo(pageNo);
+    moveToThumbnailScroll(pageNo);
   };
 
   const wh_ratio = sizePu.width / sizePu.height;

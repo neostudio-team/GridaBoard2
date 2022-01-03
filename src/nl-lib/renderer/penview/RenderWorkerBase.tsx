@@ -998,15 +998,15 @@ export default abstract class RenderWorkerBase {
     this._opt.rotation = rotation;
 
     switch (rotation) {
-      case 90: {
+      case -270: {
         this._opt.h = calcRotatedH90(this.h, { width: pdfSize.width, height: pdfSize.height });
         break;
       }
-      case 180: {
+      case -180: {
         this._opt.h = calcRotatedH180(this.h, { width: pdfSize.height, height: pdfSize.width });
         break;
       }
-      case 270: {
+      case -90: {
         this._opt.h = calcRotatedH270(this.h, { width: pdfSize.width, height: pdfSize.height });
         break;
       }
@@ -1023,15 +1023,15 @@ export default abstract class RenderWorkerBase {
     // this.h_rev = calcRevH(h);
 
     switch (this._opt.rotation) {
-      case 90: {
+      case -270: {
         this._opt.h = calcRotatedH90(this.h, { width: pdfSize_pu.width, height: pdfSize_pu.height });
         break;
       }
-      case 180: {
+      case -180: {
         this._opt.h = calcRotatedH180(this.h, { width: pdfSize_pu.height, height: pdfSize_pu.width });
         break;
       }
-      case 270: {
+      case -90: {
         this._opt.h = calcRotatedH270(this.h, { width: pdfSize_pu.width, height: pdfSize_pu.height });
         break;
       }
