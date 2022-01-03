@@ -7,6 +7,8 @@ const INITIALIZE_DIAGONAL = 'INITIALIZE_DIAGONAL';
 const SET_LEFT_TO_RIGHT_DIAGONAL = 'SET_LEFT_TO_RIGHT_DIAGONAL';
 const SET_RIGHT_TO_LEFT_DIAGONAL = 'SET_RIGHT_TO_LEFT_DIAGONAL';
 
+const SET_HIDE_CANVAS = 'SET_HIDE_CANVAS';
+
 // 액션 생성 함수
 export const setActivatedLongPressure = (activatedLongPressure: boolean) => {
   store.dispatch({
@@ -38,6 +40,12 @@ export const initializeDiagonal = () => {
   });
 };
 
+export const setHideCanvas = (hideCanvas: boolean) => {
+  store.dispatch({
+    type: SET_HIDE_CANVAS, hideCanvas
+  });
+};
+
 // 초기 상태
 const initialState = {
   longPressure: {
@@ -47,7 +55,8 @@ const initialState = {
   crossLine: {
     leftToRightDiagonal: false,
     rightToLeftDiagonal: false
-  }
+  },
+  hideCanvas: false
 };
 
 // 리듀서
@@ -92,6 +101,11 @@ export default function gestureReducer(state = initialState, action) {
           ...state.crossLine,
           rightToLeftDiagonal: true
         }
+      }
+    case SET_HIDE_CANVAS:
+      return {
+        ...state,
+        hideCanvas: action.hideCanvas
       }
     default:
       return state;
