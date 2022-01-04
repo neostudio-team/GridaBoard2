@@ -31,6 +31,7 @@ interface cloudImportResponse {
 
 interface Props extends ButtonProps {
   handlePdfOpen: (event: IFileBrowserReturn) => void,
+  isNewLoad?: Boolean
 }
 // 그리다 파일을 불러왔을때 이용
 function fileConvert(selectedFile){
@@ -118,7 +119,7 @@ const checkPdfIsEncryptted = (selectedFile) => {
 
 const ConvertFileLoad = (props: Props) => {
   const [canConvert, setCanConvert] = useState(true);
-  const { handlePdfOpen } = props;
+  const { handlePdfOpen, isNewLoad } = props;
   const history = useHistory();
 
   async function inputChange()
@@ -142,8 +143,8 @@ const ConvertFileLoad = (props: Props) => {
     
     const fileType = fullFileName.substring(foundPosArr[foundPosArr.length - 1] + 1, fullFileName.length);
     fullFileName = fullFileName.substring(0, foundPosArr[foundPosArr.length - 1]);
-    setDocName(fullFileName);
-
+    (isNewLoad) ? setDocName(fullFileName) : null;
+    
     const result = {
       result : "success",
       file : null,
