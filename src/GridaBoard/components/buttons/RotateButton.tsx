@@ -5,7 +5,7 @@ import { setRotationTrigger } from '../../store/reducers/rotate';
 import { useSelector } from 'react-redux';
 import GridaDoc from "../../GridaDoc";
 import { IconButton, IconButtonProps, makeStyles, SvgIcon } from "@material-ui/core";
-import { RotateRight } from "@material-ui/icons";
+import { RotateRight, RotateLeft } from "@material-ui/icons";
 import SimpleTooltip2 from "../SimpleTooltip2";
 import getText from 'GridaBoard/language/language';
 import { store } from "GridaBoard/client/pages/GridaBoard";
@@ -22,17 +22,17 @@ export const onToggleRotate = () => {
   const page = doc.getPageAt(activePageNo);
 
   if (page._pdfPage !== undefined) {
-    if (page._pdfPage.viewport.rotation >= 270) {
+    if (page._pdfPage.viewport.rotation <= -270) {
       page._pdfPage.viewport.rotation = 0;
     } else {
-      page._pdfPage.viewport.rotation += 90;
+      page._pdfPage.viewport.rotation -= 90;
     }
   }
 
-  if (page.pageOverview.rotation >= 270) {
+  if (page.pageOverview.rotation <= -270) {
     page._rotation = 0;
   } else {
-    page._rotation += 90;
+    page._rotation -= 90;
   }
 
   // setIsVertical((prev)=>!prev);
@@ -62,7 +62,7 @@ const RotateButton = (props: IconButtonProps) => {
   return (
     <IconButton onClick={onToggleRotate} {...props}>
       <SimpleTooltip2 title={getText('sideMenu_rotate')}>
-        <RotateRight/>
+        <RotateLeft/>
       </SimpleTooltip2>
     </IconButton>
   );
