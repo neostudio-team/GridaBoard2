@@ -89,6 +89,7 @@ const BoardNewButton = () => {
     const pageNo = await doc.addBlankPage();
     setActivePageNo(pageNo);
     scrollToBottom("drawer_content");
+    document.getElementById("thumbnail - " + pageNo + " -mixed_view").scrollIntoView({behavior: "smooth"});
     setOpen(false);
 
     firebaseAnalytics.logEvent('new_page', {

@@ -128,6 +128,9 @@ export default class GridaDoc {
         activePageNo = state.activePage.activePageNo;
       }
       this.setActivePageNo(activePageNo);
+      document.getElementById("thumbnail - " + activePageNo + " -mixed_view").scrollIntoView({behavior: "smooth"});
+      
+
     }
   }
 
@@ -152,6 +155,7 @@ export default class GridaDoc {
       
       scrollToBottom("drawer_content");
       this.setActivePageNo(activePageNo);
+      document.getElementById("thumbnail - " + activePageNo + " -mixed_view").scrollIntoView({behavior: "smooth"});
 
       const msi = MappingStorage.getInstance();
       msi.dispatcher.dispatch(MappingStorageEventName.ON_MAPINFO_REFRESHED, null);
@@ -384,6 +388,7 @@ export default class GridaDoc {
           const activePageNo = this.addNcodePage(pageInfo);
           setDocNumPages(this._pages.length);
           setActivePageNo(activePageNo);
+          document.getElementById("thumbnail - " + activePageNo + " -mixed_view").scrollIntoView({behavior: "smooth"});
           break;
         }
       }
