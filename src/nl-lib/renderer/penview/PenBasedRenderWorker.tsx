@@ -352,7 +352,7 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
 
       let needThumbnailRedraw = false;
 
-      if (this.eraseLineOutOfBound(pathDataStr, eraserLine)) continue
+      if (this.pathBoundsNotIncludeEraseLine(pathDataStr, eraserLine)) continue
 
       // if (this.storage.collisionTest(fabricPath, eraserPath)) {
       if (this.storage.collisionTest(pathDataStr, eraserLine)) {
@@ -382,7 +382,7 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     }
   }
 
-  eraseLineOutOfBound = (pathDataStr, eraserLine) => {
+  pathBoundsNotIncludeEraseLine = (pathDataStr, eraserLine) => {
     const targetPath = new fabric.Path(pathDataStr);
     const bound = targetPath.getBoundingRect();
     
