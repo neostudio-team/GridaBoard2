@@ -585,6 +585,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
      * 
     */
     if (this.props.isLongPressure && !this.props.activatedLongPressure && this.checkLongPressure(stroke)) {
+      stroke.isCommand = true;
       this.longPressureProcess(stroke.dotArray[0]);
     }
 
@@ -693,17 +694,17 @@ class PenBasedRenderer extends React.Component<Props, State> {
     // 기본적으로 up할 때, long pressure의 상태 초기화
     this.initLongPressure();
 
+    if (stroke.isCommand)
+    {
+      this.removeCommandStrokeOnActivePage(this.renderer.pageInfo);
+    }
+
     if (this.props.calibrationMode) {
       this.onCalibrationUp(event);
     }
     else if (this.renderer) {
       this.renderer.closeLiveStroke(event);
     }
-
-    // if (stroke.isCommand) 
-    // {
-    //   this.removeCommandStrokeOnActivePage(this.renderer.pageInfo);
-    // }
   }
 
   /** Paper에 X를 그렸을 때, stroke를 지우게 하기 위한 로직 */ 
@@ -867,6 +868,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
   removeCommandStrokeOnActivePage = (pageInfo: IPageSOBP) => {
     const completed = this.renderer.storage.getPageStrokes(pageInfo);
     completed.splice(-1);
+    // hideCanvas가 되어있을시 redraw 로직을 실행하면 다시 stroke가 생성되므로 로직이 실행되지 않도록 함수를 종료시켜준다. 
     if (this.props.hideCanvas) return
     this.renderer.redrawStrokes(pageInfo);
   }
