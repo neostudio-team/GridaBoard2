@@ -5,7 +5,7 @@ import getText from 'GridaBoard/language/language';
 import GridaDoc from 'GridaBoard/GridaDoc';
 import { IFileBrowserReturn, IPageSOBP } from 'nl-lib/common/structures';
 import ConvertFileLoad from 'GridaBoard/Load/ConvertFileLoad';
-import { scrollToBottom } from '../../../nl-lib/common/util';
+import { scrollToThumbnail } from '../../../nl-lib/common/util';
 import { setActivePageNo } from '../../store/reducers/activePageReducer';
 import { firebaseAnalytics } from '../../util/firebase_config';
 
@@ -88,7 +88,7 @@ const BoardNewButton = () => {
     const doc = GridaDoc.getInstance();
     const pageNo = await doc.addBlankPage();
     setActivePageNo(pageNo);
-    scrollToBottom("drawer_content");
+    scrollToThumbnail(pageNo);
     setOpen(false);
 
     firebaseAnalytics.logEvent('new_page', {

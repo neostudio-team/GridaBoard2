@@ -450,7 +450,13 @@ export function callstackDepth() {
 
 export function scrollToBottom(id: string) {
   const ele = document.querySelector("#" + id);
-  ele.scrollIntoView({ behavior: "smooth", block: "end" });
+  (ele) ? ele.scrollIntoView({ behavior: "smooth", block: "end" }) : null;
+  // (ele) ? ele.scrollTo(0, ele.scrollHeight) : null;
+}
+
+export function scrollToThumbnail(pageNo : Number){
+  const ele = document.getElementById("thumbnail - " + pageNo + " -mixed_view");
+  (ele) ? ele.scrollIntoView({behavior: "smooth"}) : null;
 }
 
 
