@@ -184,7 +184,7 @@ const MainNewButton = () => {
                       />
                     </SvgIcon>
                     <span style={{ marginLeft: '9px' }}>{options[1]}</span>
-                    <ConvertFileLoad handlePdfOpen={handlePdfOpen} />
+                    <ConvertFileLoad handlePdfOpen={handlePdfOpen} isNewLoad={true}/>
                   </MenuItem>
                 </MenuList>
               </ClickAwayListener>
