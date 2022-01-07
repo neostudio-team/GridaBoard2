@@ -14,7 +14,7 @@ import {INeoSmartpen, IPenToViewerEvent} from "nl-lib/common/neopen";
 import {MappingStorage} from "nl-lib/common/mapper";
 import {DefaultPlateNcode, DefaultPUINcode} from "nl-lib/common/constants";
 import {InkStorage} from "nl-lib/common/penstorage";
-import {isPlatePaper, isPUI} from "nl-lib/common/noteserver";
+import {isPlatePaper, isPUI, getNPaperInfo} from "nl-lib/common/noteserver";
 
 import {setCalibrationData} from 'GridaBoard/store/reducers/calibrationDataReducer';
 import {store} from "GridaBoard/client/pages/GridaBoard";
@@ -882,7 +882,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
   removeDoubleTapStrokeOnActivePage = (pageInfo: IPageSOBP) => {
     const completed = this.renderer.storage.getPageStrokes(pageInfo);
     completed.splice(-2, 2);
-    
+
     // hideCanvas가 되어있을시 redraw 로직을 실행하면 다시 stroke가 생성되므로 로직이 실행되지 않도록 함수를 종료시켜준다. 
     if (this.props.hideCanvas) return
     this.renderer.redrawStrokes(pageInfo);
@@ -957,18 +957,18 @@ class PenBasedRenderer extends React.Component<Props, State> {
     if (!dot) return
     
     /** Plate의 width, height */
-    const [width, height] = this.getPlateSize();
+    const [width, height, gestureArea] = this.getPaperSize();
 
-    if (this.onTopControlZone(dot.x, dot.y, width, height)) {
+    if (this.onTopControlZone(dot.x, dot.y, width, height, gestureArea)) {
       return 'top'
     }
-    else if (this.onBottomControlZone(dot.x, dot.y, width, height)) {
+    else if (this.onBottomControlZone(dot.x, dot.y, width, height, gestureArea)) {
       return 'bottom'
     }
-    else if (this.onLeftControlZone(dot.x, dot.y, width, height)) {
+    else if (this.onLeftControlZone(dot.x, dot.y, width, height, gestureArea)) {
       return 'left'
     }
-    else if (this.onRightControlZone(dot.x, dot.y, width, height)) {
+    else if (this.onRightControlZone(dot.x, dot.y, width, height, gestureArea)) {
       return 'right'
     }
     else if (this.onTopLeftControlZone(dot.x, dot.y, width, height)) {
@@ -976,35 +976,39 @@ class PenBasedRenderer extends React.Component<Props, State> {
     }
   }
   
-  onTopControlZone = (x: number, y: number, width: number, height: number) => {
-    return  x > width*0.3 && 
-            x < width*0.7 && 
-            y < height*0.3
+  onTopControlZone = (x: number, y: number, width: number, height: number, gestureArea: number) => {
+    return  x > (width-gestureArea)/2 && 
+            x < width-(width-gestureArea)/2 && 
+            y < gestureArea
   }
-  onBottomControlZone = (x: number, y: number, width: number, height: number) => {
-    return  x > width*0.3 && 
-            x < width*0.7 && 
-            y > height*0.7
+  onBottomControlZone = (x: number, y: number, width: number, height: number, gestureArea: number) => {
+    return  x > (width-gestureArea)/2 && 
+            x < width-(width-gestureArea)/2 && 
+            y > height-(height-gestureArea)/2
   }
-  onLeftControlZone = (x: number, y: number, width: number, height: number) => {
-    return  x < width*0.3 && 
-            y > height*0.3 && 
-            y < height*0.7
+  onLeftControlZone = (x: number, y: number, width: number, height: number, gestureArea: number) => {
+    return  x < gestureArea && 
+            y > (height-gestureArea)/2 && 
+            y < height-(height-gestureArea)/2
   }
-  onRightControlZone = (x: number, y: number, width: number, height: number) => {
-    return  x > width*0.7 && 
-            y > height*0.3 && 
-            y < height*0.7
+  onRightControlZone = (x: number, y: number, width: number, height: number, gestureArea: number) => {
+    return  x > width-(width-gestureArea)/2 && 
+            y > (height-gestureArea)/2 && 
+            y < height-(height-gestureArea)/2
   }
   onTopLeftControlZone = (x: number, y: number, width: number, height: number) => {
     return x < width * 0.2 && y < height * 0.2
   }
 
-  getPlateSize = () => {
-    const width: number = 107;
-    const height: number = 57;
+  getPaperSize = () => {
+    const noteItem = getNPaperInfo(this.props.pageInfo);
+    const npaperWidth = noteItem.margin.Xmax - noteItem.margin.Xmin;
+    const npaperHeight = noteItem.margin.Ymax - noteItem.margin.Ymin;
 
-    return [width, height]
+    // 짧은면을 기준으로 1/3 만큼을 gesture 가능범위로 설정
+    const gestureArea = npaperWidth > npaperHeight ? npaperHeight/3 : npaperWidth/3
+
+    return [npaperWidth, npaperHeight, gestureArea]
   }
 
   render() {
