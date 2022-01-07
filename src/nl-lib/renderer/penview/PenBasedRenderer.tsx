@@ -583,7 +583,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   /** Touble tap process */
   doubleTapProcess = (isPlate: boolean, dot: NeoDot) => {
-    this.removeDoubleTapStrokeOnActivePage(this.renderer.pageInfo);
+    this.removeStrokeOnActivePage(this.renderer.pageInfo, -2);
     
     // plate에서 작업하는 중에 발생하는 double tap 처리를 영역별로 구분
     if (isPlate) {
@@ -738,19 +738,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     }
     
     if (this.props.leftToRightDiagonal && this.props.rightToLeftDiagonal) {
-      /** 페이지에 있는 stroke 를 삭제하는 부분. 임시 -> 로직 분리할 예정 */
-      const pageId = InkStorage.makeNPageIdStr(this.renderer.pageInfo);
-      const completed = this.renderer.storage.completedOnPage.get(pageId);
-      completed.splice(0);
-      
-      // Thumbnail 영역 redraw 를 위한 dispath 추가
-      this.renderer.storage.dispatcher.dispatch(PenEventName.ON_ERASER_MOVE, {
-        section: this.renderer.pageInfo.section,
-        owner: this.renderer.pageInfo.owner,
-        book: this.renderer.pageInfo.book,
-        page: this.renderer.pageInfo.page,
-      });
-
+      this.removeStrokeOnActivePage(this.renderer.pageInfo, 0);
       this.props.initializeDiagonal();
     }
   }
@@ -879,9 +867,11 @@ class PenBasedRenderer extends React.Component<Props, State> {
     }
   }
 
-  removeDoubleTapStrokeOnActivePage = (pageInfo: IPageSOBP) => {
+
+  /** 특정 위치부터의 stroke를 지우기 위한 로직 */
+  removeStrokeOnActivePage = (pageInfo: IPageSOBP, startPos: number) => {
     const completed = this.renderer.storage.getPageStrokes(pageInfo);
-    completed.splice(-2, 2);
+    completed.splice(startPos);
 
     // hideCanvas가 되어있을시 redraw 로직을 실행하면 다시 stroke가 생성되므로 로직이 실행되지 않도록 함수를 종료시켜준다. 
     if (this.props.hideCanvas) return
@@ -1001,6 +991,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
   }
 
   getPaperSize = () => {
+    // plate일 때, 해당 plate의 info를 가져옴.
     const noteItem = getNPaperInfo(this.props.pageInfo);
     const npaperWidth = noteItem.margin.Xmax - noteItem.margin.Xmin;
     const npaperHeight = noteItem.margin.Ymax - noteItem.margin.Ymin;
