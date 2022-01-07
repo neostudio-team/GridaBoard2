@@ -19,8 +19,7 @@ import {isPlatePaper, isPUI} from "nl-lib/common/noteserver";
 import {setCalibrationData} from 'GridaBoard/store/reducers/calibrationDataReducer';
 import {store} from "GridaBoard/client/pages/GridaBoard";
 import GridaDoc from "GridaBoard/GridaDoc";
-import { setIsLongPressure, setActivatedLongPressure, initializeDiagonal, setLeftToRightDiagonal, setRightToLeftDiagonal, setHideCanvas} from "../../../GridaBoard/store/reducers/gestureReducer";
-import {PenManager} from "../../neosmartpen";
+import { setIsLongPressure, setActivatedLongPressure, initializeDiagonal, setLeftToRightDiagonal, setRightToLeftDiagonal, setHideCanvas, incrementTapCount, initializeTapCount, setFirstTap } from "../../../GridaBoard/store/reducers/gestureReducer";
 import { setActivePageNo } from "../../../GridaBoard/store/reducers/activePageReducer";
 
 /**
@@ -79,6 +78,12 @@ interface Props { // extends MixedViewProps {
   setIsLongPressure: any;
   activatedLongPressure: boolean;
   setActivatedLongPressure: any;
+
+  tapCount: number;
+  firstDot: NeoDot;
+  incrementTapCount: any;
+  initializeTapCount: any;
+  setFirstTap: any;
 
   initializeDiagonal: any;
   leftToRightDiagonal: boolean;
@@ -643,6 +648,90 @@ class PenBasedRenderer extends React.Component<Props, State> {
   }
 
 
+  /** Touble tap process */
+  doubleTapProcess = (isPlate: boolean, dot: NeoDot) => {
+    /** tap stroke 를 보이지 않게 하기 위한 로직 
+     *  끝에서 두개의 stroke의 타입을 지우개로 바꿔준다.
+    */
+    const strokesAll = this.renderer.storage.getPageStrokes(this.renderer.pageInfo);
+    strokesAll.splice(-2, 2);
+    this.renderer.redrawStrokes(this.renderer.pageInfo);
+
+    // plate에서 작업하는 중에 발생하는 double tap 처리를 영역별로 구분
+    if (isPlate) {
+      switch(this.findDotPositionOnPlate(dot)) {
+        case "top":
+          this.topControlZone();
+          break;
+        case "bottom":
+          this.bottomControlZone();
+          break;
+        case "left":
+          this.leftControlZone();
+          break;
+        case "right":
+          this.rightControlZone();
+          break;
+        case "top-left":
+          this.topLeftControlZone();
+          break;
+      }
+    }
+    this.props.initializeTapCount();
+  }
+
+  /**
+   * Tap count 하는 로직
+   *
+   * 1. 해당 동작이 Tap이 맞는지 아닌지 확인 -> dotArray의 맨 처음과 끝이 차이가 거의 없고, timeDiff 도 작은것만 tap으로 취급
+   *    -> 이 맞다면 아래 실행
+   * 2. firstDot이 null이면 해당 tap을 실행할때의 dotArray의 첫번째 값을 firstDot으로 설정해준다.
+   * 3. firstDot이 존재한다면 거리를 비교해서 특정 값 범위 안에 들어와있을경우 tap count를 증가시켜준다.
+   *
+   */
+  checkTap = (stroke: NeoStroke) => {
+    const [first, last] = this.getFirstLastItems(stroke.dotArray);
+    const timeDiff: number = this.getTimeDiff(first, last);
+    const distance: number = this.getDistance(first, last);
+
+    if (this.isTap(timeDiff, distance)) {
+      if (!this.props.firstDot) {
+        this.props.setFirstTap(first);
+        return true
+      }
+      else {
+        return this.isNotFirstTap(first);
+      }
+    }
+    else {
+      this.props.initializeTapCount();
+      return false
+    }
+  }
+
+  /**
+   * 해당 동작이 tap인지 아닌지 파악하는 로직
+   * -> 짧은 시간동안 동작했고, 라인의 첫부분과 끝부분의 좌표값 차이가 매우 작을때 tap touch라고 판단한다.
+   */
+  isTap = (timeDiff, distance) => {
+    return timeDiff < 170 && distance < 0.8 ? true: false
+  }
+
+  /**
+   * is not first tap case
+   * -> 현재 탭동작이 첫번째 탭이 아닐경우 첫번째 탭과의 거리를 비교한다.
+   * -> 거리가 가까우면 탭 카운트를 증가시켜주고, 멀면 현재탭은 첫번째 탭으로 설정해준다.
+   */
+  isNotFirstTap = (first) => {
+    if (this.getDistance(this.props.firstDot, first) < 3) {
+      this.props.incrementTapCount();
+      return true
+    } else {
+      this.props.setFirstTap(first);
+      return false
+    }
+  }
+
   /** Top Control Zone - Page Up */
   topControlZone = () => {
     this.prevChange();
@@ -690,6 +779,12 @@ class PenBasedRenderer extends React.Component<Props, State> {
   onLivePenUp = (event: IPenToViewerEvent) => {
     const { stroke } = event;
     this.crossLineEraser(stroke);
+
+    if (this.checkTap(stroke)) {
+      if (this.props.tapCount === 2) {
+        this.doubleTapProcess(stroke.isPlate, stroke.dotArray[0]);
+      }
+    }
     
     // 기본적으로 up할 때, long pressure의 상태 초기화
     this.initLongPressure();
@@ -1052,6 +1147,8 @@ const mapStateToProps = (state) => ({
   calibrationMode: state.calibration.calibrationMode,
   isLongPressure: state.gesture.longPressure.isLongPressure,
   activatedLongPressure: state.gesture.longPressure.activatedLongPressure,
+  tapCount: state.gesture.doubleTap.tapCount,
+  firstDot: state.gesture.doubleTap.firstDot,
   leftToRightDiagonal: state.gesture.crossLine.leftToRightDiagonal,
   rightToLeftDiagonal: state.gesture.crossLine.rightToLeftDiagonal,
   hideCanvas: state.gesture.hideCanvas,
@@ -1062,6 +1159,9 @@ const mapDispatchToProps = (dispatch) => ({
   setCalibrationData: cali => setCalibrationData(cali),
   setIsLongPressure: bool => setIsLongPressure(bool),
   setActivatedLongPressure: bool => setActivatedLongPressure(bool),
+  incrementTapCount: () => incrementTapCount(),
+  initializeTapCount: () => initializeTapCount(),
+  setFirstTap: (dot) => setFirstTap(dot),
   setLeftToRightDiagonal: () => setLeftToRightDiagonal(),
   setRightToLeftDiagonal: () => setRightToLeftDiagonal(),
   initializeDiagonal: () => initializeDiagonal(),

@@ -1,7 +1,12 @@
+import { NeoDot } from "../../../nl-lib/common/structures";
 import { store } from "../../client/pages/GridaBoard";
 
 const SET_ACTIVATED_LONG_PRESSURE = 'SET_ACTIVATED_LONG_PRESSURE';
 const SET_IS_LONG_PRESSURE = 'SET_IS_LONG_PRESSURE';
+
+const INCREMENT_TAP_COUNT = 'INCREMENT_TAP_COUNT';
+const INITIALIZE_TAP_COUNT = 'INITIALIZE_TAP_COUNT';
+const SET_FIRST_TAP = 'SET_FIRST_TAP';
 
 const INITIALIZE_DIAGONAL = 'INITIALIZE_DIAGONAL';
 const SET_LEFT_TO_RIGHT_DIAGONAL = 'SET_LEFT_TO_RIGHT_DIAGONAL';
@@ -19,6 +24,24 @@ export const setActivatedLongPressure = (activatedLongPressure: boolean) => {
 export const setIsLongPressure = (isLongPressure: boolean) => {
   store.dispatch({
     type: SET_IS_LONG_PRESSURE, isLongPressure
+  });
+};
+
+export const incrementTapCount = () => {
+  store.dispatch({
+    type: INCREMENT_TAP_COUNT
+  });
+};
+
+export const initializeTapCount = () => {
+  store.dispatch({
+    type: INITIALIZE_TAP_COUNT
+  });
+};
+
+export const setFirstTap = (firstDot: NeoDot) => {
+  store.dispatch({
+    type: SET_FIRST_TAP, firstDot
   });
 };
 
@@ -52,6 +75,10 @@ const initialState = {
     isLongPressure: true,
     activatedLongPressure: false,
   },
+  doubleTap: {
+    tapCount: 0,
+    firstDot: null
+  },
   crossLine: {
     leftToRightDiagonal: false,
     rightToLeftDiagonal: false
@@ -78,6 +105,30 @@ export default function gestureReducer(state = initialState, action) {
           isLongPressure: action.isLongPressure
         }
       };
+    case INITIALIZE_TAP_COUNT:
+      return {
+        ...state,
+        doubleTap: {
+          tapCount: 0,
+          firstDot: null
+        }
+      }
+    case INCREMENT_TAP_COUNT:
+      return {
+        ...state,
+        doubleTap: {
+          ...state.doubleTap,
+          tapCount: state.doubleTap.tapCount+1
+        }
+      };
+    case SET_FIRST_TAP:
+      return {
+        ...state,
+        doubleTap: {
+          tapCount: 1,
+          firstDot: action.firstDot
+        }
+      }
     case INITIALIZE_DIAGONAL:
       return {
         ...state,
