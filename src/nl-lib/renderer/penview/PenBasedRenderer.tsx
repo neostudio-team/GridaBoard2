@@ -789,11 +789,6 @@ class PenBasedRenderer extends React.Component<Props, State> {
     // 기본적으로 up할 때, long pressure의 상태 초기화
     this.initLongPressure();
 
-    if (stroke.isCommand)
-    {
-      this.removeCommandStrokeOnActivePage(this.renderer.pageInfo);
-    }
-
     if (this.props.calibrationMode) {
       this.onCalibrationUp(event);
     }
@@ -1145,8 +1140,6 @@ class PenBasedRenderer extends React.Component<Props, State> {
 const mapStateToProps = (state) => ({
   calibrationData: state.calibrationDataReducer.calibrationData,
   calibrationMode: state.calibration.calibrationMode,
-  isLongPressure: state.gesture.longPressure.isLongPressure,
-  activatedLongPressure: state.gesture.longPressure.activatedLongPressure,
   tapCount: state.gesture.doubleTap.tapCount,
   firstDot: state.gesture.doubleTap.firstDot,
   leftToRightDiagonal: state.gesture.crossLine.leftToRightDiagonal,
@@ -1157,8 +1150,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   setCalibrationData: cali => setCalibrationData(cali),
-  setIsLongPressure: bool => setIsLongPressure(bool),
-  setActivatedLongPressure: bool => setActivatedLongPressure(bool),
   incrementTapCount: () => incrementTapCount(),
   initializeTapCount: () => initializeTapCount(),
   setFirstTap: (dot) => setFirstTap(dot),
