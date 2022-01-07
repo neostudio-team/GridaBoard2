@@ -19,7 +19,7 @@ import {isPlatePaper, isPUI} from "nl-lib/common/noteserver";
 import {setCalibrationData} from 'GridaBoard/store/reducers/calibrationDataReducer';
 import {store} from "GridaBoard/client/pages/GridaBoard";
 import GridaDoc from "GridaBoard/GridaDoc";
-import { setIsLongPressure, setActivatedLongPressure, initializeDiagonal, setLeftToRightDiagonal, setRightToLeftDiagonal, setHideCanvas, incrementTapCount, initializeTapCount, setFirstTap } from "../../../GridaBoard/store/reducers/gestureReducer";
+import { initializeDiagonal, setLeftToRightDiagonal, setRightToLeftDiagonal, setHideCanvas, incrementTapCount, initializeTapCount, setFirstTap } from "../../../GridaBoard/store/reducers/gestureReducer";
 import { setActivePageNo } from "../../../GridaBoard/store/reducers/activePageReducer";
 
 /**
@@ -72,12 +72,6 @@ interface Props { // extends MixedViewProps {
   calibrationMode: boolean,
 
   isBlankPage: boolean,
-
-
-  isLongPressure: boolean;
-  setIsLongPressure: any;
-  activatedLongPressure: boolean;
-  setActivatedLongPressure: any;
 
   tapCount: number;
   firstDot: NeoDot;
@@ -581,82 +575,15 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   onLivePenMove = (event: IPenToViewerEvent) => {
     const { stroke } = event;
-    
-    /** 해당 gesture가 long pressure 이고, 현재 activated 되어있는 상태가 아니며, checkLongPressure 로직을 만족하는가  
-     * 
-     * 1. isLongPressure - 기본값 true, 해당 gesture가 long pressure 아니면 false 값을 가지고 이후부터는 비교연산 수행 X. (꾹 누르면서 길이가 긴 경우는 long pressure가 아님.)
-     * 2. activatedLongPressure - 기본값 false, 한번 long pressure라고 판단되면 true 값을 가지게 되며, 계속 로직이 돌아가는 것을 막기위해 정의. (꾹 누르면 계속 로직이 돌아가므로)
-     * 3. checkLongPressure - long pressure를 판단하는 함수로써, long pressure 가 아닐시 isLongPressure의 상태를 false로 바꿔준다.
-     * 
-    */
-    if (this.props.isLongPressure && !this.props.activatedLongPressure && this.checkLongPressure(stroke)) {
-      stroke.isCommand = true;
-      this.longPressureProcess(stroke.dotArray[0]);
-    }
-
     if (this.renderer) {
       this.renderer.pushLiveDot(event, this.props.rotation);
     }
   }
 
-  /** long pressure 일 때, 돌아가는 process */
-  longPressureProcess = (dot: NeoDot) => {
-    this.props.setActivatedLongPressure(true);
-    
-    // plate 에서 dot 의 위치를 찾아 해당 영역에 맞는 기능을 수행
-    switch(this.findDotPositionOnPlate(dot)) {
-      case "top":
-        this.topControlZone();
-        break;
-      case "bottom":
-        this.bottomControlZone();
-        break;
-      case "left":
-        this.leftControlZone();
-        break;
-      case "right":
-        this.rightControlZone();
-        break;
-      case "top-left":
-        this.topLeftControlZone();
-        break;
-    }
-
-    // PenManager.getInstance().setPenRendererType(IBrushType.MARKER);
-  }
-
-  /** 해당 gesture 가 long pressure 인지 확인하기 위한 로직 */
-  checkLongPressure = (stroke: NeoStroke) => {
-    const [first, last] = this.getFirstLastItems(stroke.dotArray);
-    const timeDiff: number = this.getTimeDiff(first, last);
-    const distance: number = this.getDistance(first, last);
-
-    // stroke의 길이가 길어지면 long pressure가 아니라고 파악
-    if (distance >= 0.5) {
-      this.props.setIsLongPressure(false);
-      return false
-    }
-
-    // 1000ms 기준으로 체크 -> 1s 와 첫 시작점과 현재 포지션의 차이가 0.5 미만 
-    return timeDiff > 800 ? true : false
-  }
-
-  /** long pressure 의 state 를 초기화 시켜주는 로직 */
-  initLongPressure = () => {
-    this.props.setIsLongPressure(true);
-    this.props.setActivatedLongPressure(false);
-  }
-
-
   /** Touble tap process */
   doubleTapProcess = (isPlate: boolean, dot: NeoDot) => {
-    /** tap stroke 를 보이지 않게 하기 위한 로직 
-     *  끝에서 두개의 stroke의 타입을 지우개로 바꿔준다.
-    */
-    const strokesAll = this.renderer.storage.getPageStrokes(this.renderer.pageInfo);
-    strokesAll.splice(-2, 2);
-    this.renderer.redrawStrokes(this.renderer.pageInfo);
-
+    this.removeDoubleTapStrokeOnActivePage(this.renderer.pageInfo);
+    
     // plate에서 작업하는 중에 발생하는 double tap 처리를 영역별로 구분
     if (isPlate) {
       switch(this.findDotPositionOnPlate(dot)) {
@@ -785,9 +712,6 @@ class PenBasedRenderer extends React.Component<Props, State> {
         this.doubleTapProcess(stroke.isPlate, stroke.dotArray[0]);
       }
     }
-    
-    // 기본적으로 up할 때, long pressure의 상태 초기화
-    this.initLongPressure();
 
     if (this.props.calibrationMode) {
       this.onCalibrationUp(event);
@@ -955,12 +879,21 @@ class PenBasedRenderer extends React.Component<Props, State> {
     }
   }
 
-  removeCommandStrokeOnActivePage = (pageInfo: IPageSOBP) => {
+  removeDoubleTapStrokeOnActivePage = (pageInfo: IPageSOBP) => {
     const completed = this.renderer.storage.getPageStrokes(pageInfo);
-    completed.splice(-1);
+    completed.splice(-2, 2);
+    
     // hideCanvas가 되어있을시 redraw 로직을 실행하면 다시 stroke가 생성되므로 로직이 실행되지 않도록 함수를 종료시켜준다. 
     if (this.props.hideCanvas) return
     this.renderer.redrawStrokes(pageInfo);
+
+    // Thumbnail 영역 redraw 를 위한 dispath 추가
+    this.renderer.storage.dispatcher.dispatch(PenEventName.ON_ERASER_MOVE, {
+      section: this.renderer.pageInfo.section,
+      owner: this.renderer.pageInfo.owner,
+      book: this.renderer.pageInfo.book,
+      page: this.renderer.pageInfo.page,
+    });
   }
 
   onLiveHoverPageInfo = (event: IPenToViewerEvent) => {
