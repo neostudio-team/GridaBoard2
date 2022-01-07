@@ -21,6 +21,7 @@ import {store} from "GridaBoard/client/pages/GridaBoard";
 import GridaDoc from "GridaBoard/GridaDoc";
 import { initializeDiagonal, setLeftToRightDiagonal, setRightToLeftDiagonal, setHideCanvas, incrementTapCount, initializeTapCount, setFirstTap } from "../../../GridaBoard/store/reducers/gestureReducer";
 import { setActivePageNo } from "../../../GridaBoard/store/reducers/activePageReducer";
+import { onToggleRotate } from "../../../GridaBoard/components/buttons/RotateButton";
 
 /**
  * Properties
@@ -669,10 +670,9 @@ class PenBasedRenderer extends React.Component<Props, State> {
     this.nextChange();
   }
 
-  /** Left Control Zone - Tutorial */
+  /** Left Control Zone - Rotate */
   leftControlZone = () => {
-    // Tutorial
-    return
+    onToggleRotate();
   }
 
   /** Right Control Zone - Hide Canvas */
