@@ -712,7 +712,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
         this.doubleTapProcess(stroke.isPlate, stroke.dotArray[0]);
       }
     }
-
+  
     if (this.props.calibrationMode) {
       this.onCalibrationUp(event);
     }
@@ -1014,6 +1014,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
       top: this.props.position.offsetY / zoom,
       zIndex: 10,
       overflow: "hidden",
+      visibility: this.state.numDocPages <= 0 ? "hidden" : "visible",
     }
 
     const inkCanvas: CSSProperties = {
@@ -1033,9 +1034,15 @@ class PenBasedRenderer extends React.Component<Props, State> {
       <div id="pen-based-renderer" ref={this.setMainDivRef} style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}>
         {/* <Paper style={{ height: this.size.height, width: this.size.width }}> */}
 
-        < div id={`${this.props.parentName}-fabric_container`} style={inkContainerDiv} >
+        <div id={`${this.props.parentName}-fabric_container`} style={inkContainerDiv} >
           <canvas id={this.canvasId} style={inkCanvas} ref={this.setCanvasRef} />
         </div >
+
+        {this.state.numDocPages <= 0 ? 
+            <Typography variant="h3" style={{color: '#b7b7b7', textAlign: 'center', fontWeight: 600, marginTop: this.props.viewSize.height*(3/7)}}>
+              펜 연결 후, 종이 또는 플레이트를 터치해 주세요.
+            </Typography>
+          : ""}
 
         {!this.props.noInfo ?
           < div id={`${this.props.parentName}-info`} style={inkContainerDiv} >
