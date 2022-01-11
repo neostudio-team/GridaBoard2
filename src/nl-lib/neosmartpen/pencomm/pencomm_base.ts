@@ -25,21 +25,26 @@ export async function deviceSelectDlg(): Promise<BluetoothDevice> {
 
   let result = { device: null, type: "null" };
 
-  try {
-    // let mobileNavigatorObject: any = window.navigator;
-    const device = await navigator.bluetooth.requestDevice(options);
-    result = { type: 'success', device };
-  }
-  catch (error) {
-    if (error.code === 8) {
-      // User Cancelled or not found adapther
-      if(error.message.indexOf("adapter") !== -1){
-        //블루투스 어뎁터 없음
-        alert(getText("noBluetoothAdapter"));
-      }
-      result = { device: null, type: 'cancel' };
+  const isDevConnect = await devDeviceDlg();
+  if(isDevConnect){
+    result = { type: 'success', device:isDevConnect }
+  }else{
+    try {
+      // let mobileNavigatorObject: any = window.navigator;
+      const device = await navigator.bluetooth.requestDevice(options);
+      result = { type: 'success', device };
     }
-    throw error;
+    catch (error) {
+      if (error.code === 8) {
+        // User Cancelled or not found adapther
+        if(error.message.indexOf("adapter") !== -1){
+          //블루투스 어뎁터 없음
+          alert(getText("noBluetoothAdapter"));
+        }
+        result = { device: null, type: 'cancel' };
+      }
+      throw error;
+    }
   }
 
   if (result.type === 'cancel') {
@@ -47,6 +52,30 @@ export async function deviceSelectDlg(): Promise<BluetoothDevice> {
   }
 
   return result.device;
+}
+
+const devDeviceDlg = async ()=>{
+  const webBluetooth = navigator.bluetooth as any;
+  if(webBluetooth.getDevices === undefined) return false;
+
+  try{
+    const devices = await webBluetooth.getDevices();
+    console.log(devices);
+    
+    if(devices[0] !== undefined && devices[0].gatt.connected !== true){
+      try {
+        await devices[0].gatt.connect();
+        return devices[0];
+      }
+      catch(error) {
+        return false;
+      }
+    }else{
+      return false;
+    }
+  }catch(e){
+    return false;
+  }
 }
 
 enum DEVICE_STATE {
