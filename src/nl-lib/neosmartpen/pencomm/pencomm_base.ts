@@ -63,11 +63,22 @@ const devDeviceDlg = async ()=>{
     console.log(devices);
     
     if(devices[0] !== undefined && devices[0].gatt.connected !== true){
-      try {
-        await devices[0].gatt.connect();
-        return devices[0];
+      let isConnect = false;
+      let i  = 0;
+      for(i = 0; i < devices.length; i++){
+        try { 
+          await devices[i].gatt.connect();
+          isConnect = true;
+        }
+        catch(error) {
+          isConnect = false;
+        }
+
+        if(isConnect) break ;
       }
-      catch(error) {
+      if(isConnect){
+        return devices[i];
+      }else{
         return false;
       }
     }else{
