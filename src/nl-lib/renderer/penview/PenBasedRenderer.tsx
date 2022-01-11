@@ -945,21 +945,26 @@ class PenBasedRenderer extends React.Component<Props, State> {
   /** Plate 내에서의 dot position 파악 (상, 하, 좌, 우, 좌상단) */
   findDotPositionOnPlate = (dot: NeoDot) => {
     if (!dot) return
-    
-    /** Plate의 width, height */
-    const [width, height, gestureArea] = this.getPaperSize();
+    /** 회전값을 반영하기위한 Shift Array 
+     *  회전각에 따라 rotateDegree{0: 0, 90: 1, 180: 2, 270:3}를 plate gesture 영역에 반영하여 계산한다.
+     *  4를 더하는 이유는 음수를 처리하기 위함.
+    */
+    const shiftArray = ['top', 'left', 'bottom', 'right'];
+    const rotateDegree = this.props.rotation / 90;
 
+    /** Plate의 width, height */
+     const [width, height, gestureArea] = this.getPaperSize();
     if (this.onTopControlZone(dot.x, dot.y, width, height, gestureArea)) {
-      return 'top'
-    }
-    else if (this.onBottomControlZone(dot.x, dot.y, width, height, gestureArea)) {
-      return 'bottom'
+      return shiftArray[(0-rotateDegree+4)%4];
     }
     else if (this.onLeftControlZone(dot.x, dot.y, width, height, gestureArea)) {
-      return 'left'
+      return shiftArray[(1-rotateDegree+4)%4];
+    }
+    else if (this.onBottomControlZone(dot.x, dot.y, width, height, gestureArea)) {
+      return shiftArray[(2-rotateDegree+4)%4];
     }
     else if (this.onRightControlZone(dot.x, dot.y, width, height, gestureArea)) {
-      return 'right'
+      return shiftArray[(3-rotateDegree+4)%4];
     }
     else if (this.onTopLeftControlZone(dot.x, dot.y, width, height)) {
       return 'top-left'
