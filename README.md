@@ -21,6 +21,18 @@ https://github.com/Automattic/node-canvas/wiki/Installation:-Windows
 C:/GTK
 C:/libjpeg-turbo64
 
+###
+Dev ver. bluetooth.getDevices 사용법
+1. chrome://flags/#enable-web-bluetooth-new-permissions-backend Enabled로 변경
+2. chrome://flags/#enable-experimental-web-platform-features Enabled로 변경
+
+The new permissions backend is implemented behind the chrome://flags/#enable-web-bluetooth-new-permissions-backend. The new backend will persist device permissions granted through requestDevice() until the permission is reset in Site Settings or the Page Info dialog box.
+
+The getDevices() and watchAdvertisements() are implemented behind the chrome://flags/#enable-experimental-web-platform-features flag for Chrome 85.0.4165.0 or greater. The recommended use of these APIs is to use getDevices() to retrieve an array of permitted BluetoothDevices and then calling watchAdvertisements() on these devices to start a scan. When advertisement packets are detected from the devices, the advertisementreceived Event will be fired on the device that it corresponds to. At this point, the Bluetooth device is in range and can be connected to.
+
+Please give this new feature a try, and file any bugs at https://crbug.com using the Blink>Bluetooth component.
+(*https://stackoverflow.com/questions/60604388/web-bluetooth-get-paired-devices-list)
+
 
 
 
