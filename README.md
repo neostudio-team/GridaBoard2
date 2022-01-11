@@ -23,6 +23,8 @@ C:/libjpeg-turbo64
 
 ###
 Dev ver. bluetooth.getDevices 사용법
+1. chrome://flags/#enable-web-bluetooth-new-permissions-backend Enabled로 변경
+2. chrome://flags/#enable-experimental-web-platform-features Enabled로 변경
 
 The new permissions backend is implemented behind the chrome://flags/#enable-web-bluetooth-new-permissions-backend. The new backend will persist device permissions granted through requestDevice() until the permission is reset in Site Settings or the Page Info dialog box.
 
