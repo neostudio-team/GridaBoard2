@@ -1,5 +1,5 @@
 import GridaDoc from 'GridaBoard/GridaDoc';
-import { setActivePageNo } from '../GridaBoard/store/reducers/activePageReducer';
+import { setActivePageNo, setDocNumPages } from '../GridaBoard/store/reducers/activePageReducer';
 import { setDate, setDocName, setIsNewDoc } from '../GridaBoard/store/reducers/docConfigReducer';
 import firebase, { secondaryFirebase, auth } from 'GridaBoard/util/firebase_config';
 import { IBoardData } from './structures/BoardStructures';
@@ -37,6 +37,7 @@ export const startNewGridaPage = async () => {
   // setActivePageNo(pageNo);
   setDocName('undefined');
   setIsNewDoc(true);
+  setDocNumPages(0);
 }
 
 export const deleteAllFromTrash = async () => {

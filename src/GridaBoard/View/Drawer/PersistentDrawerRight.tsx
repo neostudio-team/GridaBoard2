@@ -16,7 +16,6 @@ const addBlankPage = async (event) => {
   const doc = GridaDoc.getInstance();
   const pageNo = await doc.addBlankPage();
   setActivePageNo(pageNo);
-  scrollToBottom("drawer_content");
 }
 
 const useStyles = props => makeStyles((theme: Theme) => ({
@@ -109,6 +108,20 @@ const useStyles = props => makeStyles((theme: Theme) => ({
     float: "left", 
     display: "flex",
     position: "relative"
+  },
+  newPage : {
+    padding: "70px",
+    margin: "10px",
+    background: "rgba(0,0,0,0.05)",
+    border: "2px",
+    borderStyle: "dashed",
+    textAlign: "center",
+    fontWeight: "bold",
+    fontSize: "30px",
+    cursor: "pointer",
+    "&:hover" : {
+      backgroundColor: "rgba(0, 0, 0, 0.1)"
+    }
   }
 }));
 
@@ -126,6 +139,7 @@ export default function PersistentDrawerRight(props: Props) {
   const classes = useStyles({brZoom:brZoom, drawerWidth:drawerWidth})();
   const theme = useTheme();
   const [open, setOpen] = React.useState(props.open);
+  const numDocPages = useSelector((state: RootState) => state.activePage.numDocPages)
   // const [handleDrawerClose, setHandleDrawerClose] = React.useState(props.handleDrawerClose);
 
   // const [drawerWidth, setDrawerWidth] = React.useState(defaultDrawerWidth);
@@ -145,6 +159,7 @@ export default function PersistentDrawerRight(props: Props) {
       >
       {/* <Toolbar className={classes.customizeToolbar} /> */}
         <div id="drawer_content" className={classes.drawerContainer}>
+          { (numDocPages === 0) ? <div className={classes.newPage} onClick={(e) => addBlankPage(e)}>+</div> : null }
           < DrawerPages noInfo={props.noInfo} />
           <div className={classes.liner}></div>
           
