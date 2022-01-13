@@ -89,6 +89,10 @@ const InformationButton = (props: Props) => {
         // openTutorial();
         setHelpMenu(true, tutorialMain, tutorialSub);
       }
+    },
+    {
+      type: "onClick",
+      title: "pen_gesture_guide"
     }
   ]
 
