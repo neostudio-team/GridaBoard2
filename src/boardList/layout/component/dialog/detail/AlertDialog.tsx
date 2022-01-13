@@ -14,6 +14,7 @@ import { changeGroup, showSnackbar } from "GridaBoard/store/reducers/listReducer
 import { showMessageToast } from "GridaBoard/store/reducers/ui";
 import { showCalibrationDialog } from "../../../../../GridaBoard/store/reducers/calibrationReducer";
 import { makePdfUrl } from "../../../../../nl-lib/common/util";
+import { store } from "GridaBoard/client/pages/GridaBoard";
 
 const confirmText = getText('print_popup_yes');
 const cancelText = getText('print_popup_no');
@@ -57,6 +58,15 @@ const dialogTypes = {
     cancel: cancelText,
     success : confirmText
   }
+}
+
+export const onClearPage = () => {
+  const doc = GridaDoc.getInstance();
+  const activePageNo = store.getState().activePage.activePageNo;
+  const pageInfo = doc.getPage(activePageNo).pageInfos[0];
+  const inkStorage = InkStorage.getInstance();
+  inkStorage.dispatcher.dispatch(PageEventName.PAGE_CLEAR, pageInfo);
+  inkStorage.removeStrokeFromPage(pageInfo);
 }
 
 interface Props extends  DialogProps {
@@ -147,12 +157,7 @@ const AlertDialog = (props : Props)=>{
         break;
       }
       case "clearPage" : {
-        const doc = GridaDoc.getInstance();
-        const pageInfo = doc.getPage(activePageNo).pageInfos[0];
-    
-        const inkStorage = InkStorage.getInstance();
-        inkStorage.dispatcher.dispatch(PageEventName.PAGE_CLEAR, pageInfo);
-        inkStorage.removeStrokeFromPage(pageInfo);
+        onClearPage();
         break;
       }
       case "deleteGroup" : {
