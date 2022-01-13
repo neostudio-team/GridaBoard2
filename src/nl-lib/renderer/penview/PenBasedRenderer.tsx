@@ -723,17 +723,15 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   /** Paper에 X를 그렸을 때, stroke를 지우게 하기 위한 로직 */ 
   crossLineEraser = (stroke: NeoStroke) => {
-    const width: number = this.props.pdfSize.width;
-    const height: number = this.props.pdfSize.height;
     const [first, last] = this.getFirstLastItems(stroke.dotArray);
 
     // 임시, 플레이트 윗 파티션은 stroke 에 dotArray 가 들어오지 않으므로 예외처리 해놓음.
     if (!first?.point || !last?.point) return
 
-    if (this.checkLeftToRightDiagonal(first, last, width, height)) {
+    if (this.checkLeftToRightDiagonal(first, last) && this.lineAccuracyTest(stroke)) {
       this.props.setLeftToRightDiagonal();
     }
-    if (this.checkRightToLeftDiagonal(first, last, width, height)) {
+    if (this.checkRightToLeftDiagonal(first, last) && this.lineAccuracyTest(stroke)) {
       this.props.setRightToLeftDiagonal();
     }
     
@@ -743,18 +741,35 @@ class PenBasedRenderer extends React.Component<Props, State> {
     }
   }
 
-  checkLeftToRightDiagonal = (first: NeoDot, last: NeoDot, width: number, height: number) => {
-    return  first.point.x < width*0.3 && 
-            first.point.y < height*0.3 && 
-            last.point.x > width*0.7 && 
-            last.point.y > height*0.7
+  lineAccuracyTest = (stroke: NeoStroke) => {
+    const [first, last] = this.getFirstLastItems(stroke.dotArray);
+    /**
+     * Ax + By + C = 0 과 dot 사이의 distance 계산
+     * ~ y-y1 = (y2-y1)/(x2-x1) / (x-x1)
+     * ~ d = | A*target.x + B*target.y + C | / square_root(A^2 + B^2)
+     * stroke 안의 모든 dot을 검사하여 distance가 threshold 보다 클 경우 False를 반환
+     */
+    const A = first.point.y - last.point.y;
+    const B = last.point.x - first.point.x;
+    const C = (first.point.x-last.point.x)*first.point.y + (last.point.y-first.point.y)*first.point.x;
+    const threshold = 50;
+    for (let dot of stroke.dotArray) {
+      const x = dot.point.x;
+      const y = dot.point.y;                       
+      const distance = Math.abs(A*x+B*y+C)/Math.sqrt(Math.pow(A, 2) + Math.pow(B, 2));
+      if (distance > threshold) return false
+    }
+    return true
   }
 
-  checkRightToLeftDiagonal = (first: NeoDot, last: NeoDot, width: number, height: number) => {
-    return  first.point.x > width*0.7 && 
-            first.point.y < height*0.3 && 
-            last.point.x < width*0.3 && 
-            last.point.y > height*0.7
+  checkLeftToRightDiagonal = (first: NeoDot, last: NeoDot) => {
+    return  this.findDotPositionOnPlate(first) === 'top-left' && 
+            this.findDotPositionOnPlate(last) === 'bottom-right'
+  }
+
+  checkRightToLeftDiagonal = (first: NeoDot, last: NeoDot) => {
+    return  this.findDotPositionOnPlate(first) === 'top-right' &&
+            this.findDotPositionOnPlate(last) === 'bottom-left'
   }
 
   onCalibrationUp = (event: IPenToViewerEvent) => {
@@ -950,6 +965,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
      *  4를 더하는 이유는 음수를 처리하기 위함.
     */
     const shiftArray = ['top', 'left', 'bottom', 'right'];
+    const shiftEdgeArray = ['top-left', 'bottom-left', 'bottom-right', 'top-right']
     const rotateDegree = this.props.rotation / 90;
 
     /** Plate의 width, height */
@@ -966,8 +982,17 @@ class PenBasedRenderer extends React.Component<Props, State> {
     else if (this.onRightControlZone(dot.x, dot.y, width, height, gestureArea)) {
       return shiftArray[(3-rotateDegree+4)%4];
     }
-    else if (this.onTopLeftControlZone(dot.x, dot.y, width, height)) {
-      return 'top-left'
+    else if (this.onTopLeftControlZone(dot.x, dot.y, width, height, gestureArea)) {
+      return shiftEdgeArray[(0-rotateDegree+4)%4];
+    }
+    else if (this.onBottomLeftControlZone(dot.x, dot.y, width, height, gestureArea)) {
+      return shiftEdgeArray[(1-rotateDegree+4)%4];
+    }
+    else if (this.onBottomRightControlZone(dot.x, dot.y, width, height, gestureArea)) {
+      return shiftEdgeArray[(2-rotateDegree+4)%4];
+    }
+    else if (this.onTopRightControlZone(dot.x, dot.y, width, height, gestureArea)) {
+      return shiftEdgeArray[(3-rotateDegree+4)%4];
     }
   }
   
@@ -991,8 +1016,21 @@ class PenBasedRenderer extends React.Component<Props, State> {
             y > (height-gestureArea)/2 && 
             y < height-(height-gestureArea)/2
   }
-  onTopLeftControlZone = (x: number, y: number, width: number, height: number) => {
-    return x < width * 0.2 && y < height * 0.2
+  /**
+   * 모서리 부분의 control 영역은 plate의 짧은면 기준 1/5
+   * 즉, gestureArea(plate 짧은면 width의 1/3) * 0.6
+   */
+  onTopLeftControlZone = (x: number, y: number, width: number, height: number, gestureArea: number) => {
+    return x < gestureArea*0.6 && y < gestureArea*0.6
+  }
+  onTopRightControlZone = (x: number, y: number, width: number, height: number, gestureArea: number) => {
+    return x > width-(gestureArea*0.6) && y < gestureArea * 0.6
+  }
+  onBottomLeftControlZone = (x: number, y: number, width: number, height: number, gestureArea: number) => {
+    return x < gestureArea*0.6 && y > height-(gestureArea*0.6)
+  }
+  onBottomRightControlZone = (x: number, y: number, width: number, height: number, gestureArea: number) => {
+    return x > width-(gestureArea*0.6) && y > height-(gestureArea*0.6)
   }
 
   getPaperSize = () => {
