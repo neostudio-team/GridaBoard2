@@ -589,7 +589,6 @@ class PenBasedRenderer extends React.Component<Props, State> {
   /** Touble tap process */
   doubleTapProcess = (isPlate: boolean, dot: NeoDot) => {
     this.removeStrokeOnActivePage(this.renderer.pageInfo, -2);
-    
     // plate에서 작업하는 중에 발생하는 double tap 처리를 영역별로 구분
     if (isPlate) {
       switch(this.findDotPositionOnPlate(dot)) {
@@ -605,8 +604,12 @@ class PenBasedRenderer extends React.Component<Props, State> {
         case "right":
           this.rightControlZone();
           break;
-        case "top-left":
-          this.topLeftControlZone();
+        case "top-left": 
+        case "top-right":
+        case "bottom-left":
+        case "bottom-right":
+          if (!this.onPlusControlZone(dot)) 
+            this.plusControlZone();
           break;
       }
     }
@@ -1039,6 +1042,12 @@ class PenBasedRenderer extends React.Component<Props, State> {
   }
   onBottomRightControlZone = (x: number, y: number, width: number, height: number, gestureArea: number) => {
     return x > width-(gestureArea*0.8) && y > height-(gestureArea*0.8)
+  }
+  onPlusControlZone = (dot: NeoDot) => {
+    const [npaperWidth, npaperHeight, gestureArea] = this.getPaperSize();
+    const x = dot.point.x;
+    const y = dot.point.y;
+    return x < gestureArea*(3/7) && y < gestureArea*(3/7)
   }
 
   getPaperSize = () => {
