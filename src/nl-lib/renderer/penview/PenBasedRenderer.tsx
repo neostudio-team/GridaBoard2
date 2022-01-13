@@ -19,12 +19,12 @@ import {isPlatePaper, isPUI, getNPaperInfo} from "nl-lib/common/noteserver";
 import {setCalibrationData} from 'GridaBoard/store/reducers/calibrationDataReducer';
 import {store} from "GridaBoard/client/pages/GridaBoard";
 import GridaDoc from "GridaBoard/GridaDoc";
-import { initializeDiagonal, setLeftToRightDiagonal, setRightToLeftDiagonal, setHideCanvas, incrementTapCount, initializeTapCount, setFirstTap } from "../../../GridaBoard/store/reducers/gestureReducer";
-import { setActivePageNo } from "../../../GridaBoard/store/reducers/activePageReducer";
-import { onToggleRotate } from "../../../GridaBoard/components/buttons/RotateButton";
-import { showMessageToast } from "../../../GridaBoard/store/reducers/ui";
+import { initializeDiagonal, setLeftToRightDiagonal, setRightToLeftDiagonal, setHideCanvas, incrementTapCount, initializeTapCount, setFirstTap } from "GridaBoard/store/reducers/gestureReducer";
+import { setActivePageNo } from "GridaBoard/store/reducers/activePageReducer";
+import { onToggleRotate } from "GridaBoard/components/buttons/RotateButton";
+import { showMessageToast } from "GridaBoard/store/reducers/ui";
 import getText from "GridaBoard/language/language";
-import { onClearPage } from "../../../boardList/layout/component/dialog/detail/AlertDialog";
+import { onClearPage } from "boardList/layout/component/dialog/detail/AlertDialog";
 
 /**
  * Properties
