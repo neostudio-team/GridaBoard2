@@ -608,7 +608,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
         case "top-right":
         case "bottom-left":
         case "bottom-right":
-          if (!this.onPlusControlZone(dot)) 
+          if (this.onPlusControlZone(dot))
             this.plusControlZone();
           break;
       }
@@ -1045,8 +1045,8 @@ class PenBasedRenderer extends React.Component<Props, State> {
   }
   onPlusControlZone = (dot: NeoDot) => {
     const {gestureArea} = this.getPaperSize();
-    const x = dot.point.x;
-    const y = dot.point.y;
+    const x = dot.x;
+    const y = dot.y;
     return x < gestureArea*(3/7) && y < gestureArea*(3/7)
   }
 
