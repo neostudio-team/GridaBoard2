@@ -24,7 +24,7 @@ import { setActivePageNo } from "../../../GridaBoard/store/reducers/activePageRe
 import { onToggleRotate } from "../../../GridaBoard/components/buttons/RotateButton";
 import { showMessageToast } from "../../../GridaBoard/store/reducers/ui";
 import getText from "GridaBoard/language/language";
-
+import { onClearPage } from "../../../boardList/layout/component/dialog/detail/AlertDialog";
 
 /**
  * Properties
@@ -740,7 +740,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     }
     
     if (this.props.leftToRightDiagonal && this.props.rightToLeftDiagonal) {
-      this.removeStrokeOnActivePage(this.renderer.pageInfo, 0);
+      onClearPage();
       this.props.initializeDiagonal();
     }
   }
