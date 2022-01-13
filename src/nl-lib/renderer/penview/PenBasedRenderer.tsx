@@ -22,6 +22,7 @@ import GridaDoc from "GridaBoard/GridaDoc";
 import { initializeDiagonal, setLeftToRightDiagonal, setRightToLeftDiagonal, setHideCanvas, incrementTapCount, initializeTapCount, setFirstTap } from "../../../GridaBoard/store/reducers/gestureReducer";
 import { setActivePageNo } from "../../../GridaBoard/store/reducers/activePageReducer";
 import { onToggleRotate } from "../../../GridaBoard/components/buttons/RotateButton";
+import { showMessageToast } from "../../../GridaBoard/store/reducers/ui";
 
 /**
  * Properties
@@ -523,6 +524,10 @@ class PenBasedRenderer extends React.Component<Props, State> {
    * @param {{strokeKey:string, mac:string, time:number, stroke:NeoStroke}} event
    */
   onLivePenDown = (event: IPenToViewerEvent) => {
+    if (this.props.hideCanvas) {
+      showMessageToast('필기 숨김 상태입니다. 해제 후 필기 하세요.');
+      return
+    }
     if (this.renderer) {
       // const { section, owner, book, page } = event;
       // if (isSamePage(this.props.pageInfo, { section, owner, book, page }))
@@ -672,7 +677,8 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   /** Left Control Zone - Rotate */
   leftControlZone = () => {
-    // onToggleRotate();
+    showMessageToast('+ 심볼 위치를 확인 후 필기 하세요.');
+    onToggleRotate();
   }
 
   /** Right Control Zone - Hide Canvas */
@@ -688,9 +694,9 @@ class PenBasedRenderer extends React.Component<Props, State> {
   }
 
   /** Top Left Control Zone */
-  topLeftControlZone = () => {
+  plusControlZone = () => {
     // Add Blank Page
-    // this.addBlankPage();
+    this.addBlankPage();
   }
 
   onLivePenMove_byStorage = (event: IPenToViewerEvent) => {
@@ -729,11 +735,9 @@ class PenBasedRenderer extends React.Component<Props, State> {
     if (!first?.point || !last?.point) return
 
     if (this.checkLeftToRightDiagonal(first, last) && this.lineAccuracyTest(stroke)) {
-      console.log('left to right diagonal');
       this.props.setLeftToRightDiagonal();
     }
     if (this.checkRightToLeftDiagonal(first, last) && this.lineAccuracyTest(stroke)) {
-      console.log('right to left diagonal');
       this.props.setRightToLeftDiagonal();
     }
     
@@ -943,11 +947,13 @@ class PenBasedRenderer extends React.Component<Props, State> {
    * activePageNo - 0부터 시작, numDocPages - 1부터 시작
   */
   prevChange = () => {  // Page Up
-    if (this.props.activePageNo <= 0) return
+    if (this.props.activePageNo <= 0) 
+      return showMessageToast('더이상 이동할 페이지가 없습니다.');
     setActivePageNo(this.props.activePageNo-1);    
   }
   nextChange = () => { // PageDown
-    if (this.props.activePageNo === this.state.numDocPages-1) return
+    if (this.props.activePageNo === this.state.numDocPages-1) 
+      return showMessageToast('더이상 이동할 페이지가 없습니다.');
     setActivePageNo(this.props.activePageNo+1);
   }
 
@@ -1026,7 +1032,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     return x < gestureArea*0.8 && y < gestureArea*0.8
   }
   onTopRightControlZone = (x: number, y: number, width: number, height: number, gestureArea: number) => {
-    return x > width-(gestureArea*0.8) && y < gestureArea * 0.8
+    return x > width-(gestureArea*0.8) && y < gestureArea*0.8
   }
   onBottomLeftControlZone = (x: number, y: number, width: number, height: number, gestureArea: number) => {
     return x < gestureArea*0.8 && y > height-(gestureArea*0.8)
