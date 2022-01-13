@@ -1054,11 +1054,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     // 짧은면을 기준으로 1/3 만큼을 gesture 가능범위로 설정
     const gestureArea = npaperWidth > npaperHeight ? npaperHeight/3 : npaperWidth/3
 
-    return {
-      npaperWidth: npaperWidth, 
-      npaperHeight: npaperHeight, 
-      gestureArea: gestureArea
-    }
+    return {npaperWidth, npaperHeight, gestureArea}
   }
 
   render() {
