@@ -9,6 +9,8 @@ export const g_paperType_default: IPaperTypeSet = {
     "margin": {
       "Xmin": 0,
       "Ymin": 0,
+      // "Xmax": 125.24,
+      // "Ymax": 88.56
       "Xmax": 88.56,
       "Ymax": 125.24
     },

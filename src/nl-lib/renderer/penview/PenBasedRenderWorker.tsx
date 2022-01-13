@@ -13,12 +13,11 @@ import { adjustNoteItemMarginForFilm, getNPaperInfo, isPUI } from "nl-lib/common
 import { MappingStorage } from 'nl-lib/common/mapper/MappingStorage';
 import { calcRevH } from 'nl-lib/common/mapper/CoordinateTanslater';
 import { applyTransform } from 'nl-lib/common/math/echelon/SolveTransform';
-import { nullNcode, PlateNcode_1, PlateNcode_2, PU_TO_NU } from 'nl-lib/common/constants';
+import { nullNcode, PlateNcode_1, PlateNcode_2, PlateNcode_3, PU_TO_NU } from 'nl-lib/common/constants';
 
 import GridaDoc from 'GridaBoard/GridaDoc';
 import { setActivePageNo } from 'GridaBoard/store/reducers/activePageReducer';
 import { store } from "GridaBoard/client/pages/GridaBoard";
-
 const NUM_HOVER_POINTERS = 6;
 const DFAULT_BRUSH_SIZE = 10;
 const REMOVE_HOVER_POINTS_INTERVAL = 50; // 50ms
@@ -41,6 +40,15 @@ type IExtendedPathType = fabric.Path & {
   key?: string;
   color?;
 };
+
+const isPlatePage = (pageInfo:IPageSOBP)=>{
+  if (isSamePage(PlateNcode_1, pageInfo) || isSamePage(PlateNcode_2, pageInfo) || isSamePage(PlateNcode_3, pageInfo)) {
+    return true;
+  }else{
+    return false;
+  }
+
+}
 
 export default class PenBasedRenderWorker extends RenderWorkerBase {
   localPathArray: IExtendedPathType[] = [];
@@ -221,7 +229,8 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     }
 
     let isPlate = false;
-    if (isSamePage(PlateNcode_1, pageInfo) || isSamePage(PlateNcode_2, pageInfo)) {
+    console.log(pageInfo);
+    if (isPlatePage(pageInfo)) {
       isPlate = true;
     }
 
@@ -473,23 +482,69 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     const noteItem = getNPaperInfo(pageInfo); //plate의 item
     adjustNoteItemMarginForFilm(noteItem, pageInfo);
 
-    const { x, y } = dot;
+    let npaperWidth = noteItem.margin.Xmax - noteItem.margin.Xmin;
+    let npaperHeight = noteItem.margin.Ymax - noteItem.margin.Ymin;
+    let plateMode = ""; //landscape(가로 모드), portrait(세로 모드)
+    
+    if(npaperWidth > npaperHeight){
+      plateMode = "landscape";
+    }else{
+      plateMode = "portrait";
+    }
 
     const currentPage = GridaDoc.getInstance().getPage(store.getState().activePage.activePageNo);
+    const pageItem = getNPaperInfo(currentPage.basePageInfo); //plate의 item
 
-    const npaperWidth = noteItem.margin.Xmax - noteItem.margin.Xmin;
-    const npaperHeight = noteItem.margin.Ymax - noteItem.margin.Ymin;
+    const nPageWidth = pageItem.margin.Xmax - pageItem.margin.Xmin;
+    const nPageHegiht = pageItem.margin.Ymax - pageItem.margin.Ymin;
+    let pageMode = ""; //page 기본값의 모드
+
+    if(nPageWidth > nPageHegiht){
+      pageMode = "landscape";
+    }else{
+      pageMode = "portrait";
+    }
+
+    let addedRotation = 0; // = currentPage._rotation;
+    if(plateMode === pageMode){
+      //둘다 같은 모드면 각도 조절이 필요 없음
+      addedRotation = 0;
+    }else{
+      // if(pageMode === "portrait"){
+        addedRotation = 90;
+      // }
+    }
+    const finalRotation = (addedRotation + currentPage._rotation) % 360;
+     
+    const { x, y } = dot;
+    //좌표 변환 먼저
+    let newX = Math.cos(Math.PI/180 * finalRotation) * x - Math.sin(Math.PI/180 * finalRotation) * y;
+    let newY = Math.sin(Math.PI/180 * finalRotation) * x + Math.cos(Math.PI/180 * finalRotation) * y;
+    if(finalRotation === 90){
+      newX += noteItem.margin.Ymax;
+    }else if(finalRotation === 180){
+      newX += noteItem.margin.Xmax;
+      newY += noteItem.margin.Ymax;      
+    }else if(finalRotation === 270){
+      newY += noteItem.margin.Xmax;
+    }
+
 
     const pageWidth = currentPage.pageOverview.sizePu.width;
     const pageHeight =currentPage.pageOverview.sizePu.height;
+    
+    if(finalRotation === 90 || finalRotation === 270){
+      npaperHeight = noteItem.margin.Xmax - noteItem.margin.Xmin;
+      npaperWidth = noteItem.margin.Ymax - noteItem.margin.Ymin;
+    }
 
     const wRatio = pageWidth / npaperWidth;
     const hRatio = pageHeight / npaperHeight;
     let platePdfRatio = wRatio
     if (hRatio > wRatio) platePdfRatio = hRatio
 
-    const pdf_x = x * platePdfRatio;
-    const pdf_y = y * platePdfRatio;
+    const pdf_x = newX * platePdfRatio;
+    const pdf_y = newY * platePdfRatio;
 
     return {x: pdf_x, y: pdf_y, f: dot.f};
   }
@@ -502,7 +557,7 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     }
 
     let isPlate = false;
-    if (isSamePage(PlateNcode_1, pageInfo) || isSamePage(PlateNcode_2, pageInfo)) {
+    if (isPlatePage(pageInfo)) {
       isPlate = true;
     }
 
@@ -557,7 +612,7 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     const dot = { x: e.event.x, y: e.event.y };
 
     let isPlate = false;
-    if (isSamePage(PlateNcode_1, this.currentPageInfo) || isSamePage(PlateNcode_2, this.currentPageInfo)) {
+    if (isPlatePage(this.currentPageInfo)) {
       isPlate = true;
     }
 
@@ -835,7 +890,7 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     const pointArray = [];
     
     let isPlate = false;
-    if (isSamePage(PlateNcode_1, pageInfo) || isSamePage(PlateNcode_2, pageInfo)) {
+    if (isPlatePage(pageInfo)) {
       isPlate = true;
     }
 
