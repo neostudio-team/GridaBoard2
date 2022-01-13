@@ -590,7 +590,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   /** Touble tap process */
   doubleTapProcess = (isPlate: boolean, dot: NeoDot) => {
-    this.removeDoubleTapStrokeOnActivePage(this.renderer.pageInfo, -2);
+    this.removeDoubleTapStrokeOnActivePage(this.renderer.pageInfo);
     // plate에서 작업하는 중에 발생하는 double tap 처리를 영역별로 구분
     if (isPlate) {
       switch(this.findDotPositionOnPlate(dot)) {
@@ -888,7 +888,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
 
   /** 특정 위치부터의 stroke를 지우기 위한 로직 */
-  removeDoubleTapStrokeOnActivePage = (pageInfo: IPageSOBP, startPos: number) => {
+  removeDoubleTapStrokeOnActivePage = (pageInfo: IPageSOBP) => {
     const completed = this.renderer.storage.getPageStrokes(pageInfo);
     completed.splice(-2);
 
