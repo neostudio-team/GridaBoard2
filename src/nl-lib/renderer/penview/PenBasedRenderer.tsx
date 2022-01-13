@@ -980,29 +980,29 @@ class PenBasedRenderer extends React.Component<Props, State> {
     const rotateDegree = this.props.rotation / 90;
 
     /** Plate의 width, height, gestureArea(짧은면 기준 1/3) */
-     const [width, height, gestureArea] = this.getPaperSize();
-    if (this.onTopControlZone(dot.x, dot.y, width, height, gestureArea)) {
+     const {npaperWidth, npaperHeight, gestureArea} = this.getPaperSize();
+    if (this.onTopControlZone(dot.x, dot.y, npaperWidth, npaperHeight, gestureArea)) {
       return shiftArray[(0-rotateDegree+4)%4];
     }
-    else if (this.onLeftControlZone(dot.x, dot.y, width, height, gestureArea)) {
+    else if (this.onLeftControlZone(dot.x, dot.y, npaperWidth, npaperHeight, gestureArea)) {
       return shiftArray[(1-rotateDegree+4)%4];
     }
-    else if (this.onBottomControlZone(dot.x, dot.y, width, height, gestureArea)) {
+    else if (this.onBottomControlZone(dot.x, dot.y, npaperWidth, npaperHeight, gestureArea)) {
       return shiftArray[(2-rotateDegree+4)%4];
     }
-    else if (this.onRightControlZone(dot.x, dot.y, width, height, gestureArea)) {
+    else if (this.onRightControlZone(dot.x, dot.y, npaperWidth, npaperHeight, gestureArea)) {
       return shiftArray[(3-rotateDegree+4)%4];
     }
-    else if (this.onTopLeftControlZone(dot.x, dot.y, width, height, gestureArea)) {
+    else if (this.onTopLeftControlZone(dot.x, dot.y, npaperWidth, npaperHeight, gestureArea)) {
       return shiftEdgeArray[(0-rotateDegree+4)%4];
     }
-    else if (this.onBottomLeftControlZone(dot.x, dot.y, width, height, gestureArea)) {
+    else if (this.onBottomLeftControlZone(dot.x, dot.y, npaperWidth, npaperHeight, gestureArea)) {
       return shiftEdgeArray[(1-rotateDegree+4)%4];
     }
-    else if (this.onBottomRightControlZone(dot.x, dot.y, width, height, gestureArea)) {
+    else if (this.onBottomRightControlZone(dot.x, dot.y, npaperWidth, npaperHeight, gestureArea)) {
       return shiftEdgeArray[(2-rotateDegree+4)%4];
     }
-    else if (this.onTopRightControlZone(dot.x, dot.y, width, height, gestureArea)) {
+    else if (this.onTopRightControlZone(dot.x, dot.y, npaperWidth, npaperHeight, gestureArea)) {
       return shiftEdgeArray[(3-rotateDegree+4)%4];
     }
   }
@@ -1044,7 +1044,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     return x > width-(gestureArea*0.8) && y > height-(gestureArea*0.8)
   }
   onPlusControlZone = (dot: NeoDot) => {
-    const [npaperWidth, npaperHeight, gestureArea] = this.getPaperSize();
+    const {gestureArea} = this.getPaperSize();
     const x = dot.point.x;
     const y = dot.point.y;
     return x < gestureArea*(3/7) && y < gestureArea*(3/7)
@@ -1059,7 +1059,11 @@ class PenBasedRenderer extends React.Component<Props, State> {
     // 짧은면을 기준으로 1/3 만큼을 gesture 가능범위로 설정
     const gestureArea = npaperWidth > npaperHeight ? npaperHeight/3 : npaperWidth/3
 
-    return [npaperWidth, npaperHeight, gestureArea]
+    return {
+      npaperWidth: npaperWidth, 
+      npaperHeight: npaperHeight, 
+      gestureArea: gestureArea
+    }
   }
 
   render() {
