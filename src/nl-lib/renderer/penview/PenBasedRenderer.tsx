@@ -672,7 +672,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   /** Left Control Zone - Rotate */
   leftControlZone = () => {
-    onToggleRotate();
+    // onToggleRotate();
   }
 
   /** Right Control Zone - Hide Canvas */
@@ -690,7 +690,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
   /** Top Left Control Zone */
   topLeftControlZone = () => {
     // Add Blank Page
-    this.addBlankPage();
+    // this.addBlankPage();
   }
 
   onLivePenMove_byStorage = (event: IPenToViewerEvent) => {
@@ -729,9 +729,11 @@ class PenBasedRenderer extends React.Component<Props, State> {
     if (!first?.point || !last?.point) return
 
     if (this.checkLeftToRightDiagonal(first, last) && this.lineAccuracyTest(stroke)) {
+      console.log('left to right diagonal');
       this.props.setLeftToRightDiagonal();
     }
     if (this.checkRightToLeftDiagonal(first, last) && this.lineAccuracyTest(stroke)) {
+      console.log('right to left diagonal');
       this.props.setRightToLeftDiagonal();
     }
     
@@ -965,10 +967,10 @@ class PenBasedRenderer extends React.Component<Props, State> {
      *  4를 더하는 이유는 음수를 처리하기 위함.
     */
     const shiftArray = ['top', 'left', 'bottom', 'right'];
-    const shiftEdgeArray = ['top-left', 'bottom-left', 'bottom-right', 'top-right']
+    const shiftEdgeArray = ['top-left', 'bottom-left', 'bottom-right', 'top-right'];
     const rotateDegree = this.props.rotation / 90;
 
-    /** Plate의 width, height */
+    /** Plate의 width, height, gestureArea(짧은면 기준 1/3) */
      const [width, height, gestureArea] = this.getPaperSize();
     if (this.onTopControlZone(dot.x, dot.y, width, height, gestureArea)) {
       return shiftArray[(0-rotateDegree+4)%4];
@@ -1004,7 +1006,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
   onBottomControlZone = (x: number, y: number, width: number, height: number, gestureArea: number) => {
     return  x > (width-gestureArea)/2 && 
             x < width-(width-gestureArea)/2 && 
-            y > height-(height-gestureArea)/2
+            y > height-gestureArea
   }
   onLeftControlZone = (x: number, y: number, width: number, height: number, gestureArea: number) => {
     return  x < gestureArea && 
@@ -1012,25 +1014,25 @@ class PenBasedRenderer extends React.Component<Props, State> {
             y < height-(height-gestureArea)/2
   }
   onRightControlZone = (x: number, y: number, width: number, height: number, gestureArea: number) => {
-    return  x > width-(width-gestureArea)/2 && 
+    return  x > width-gestureArea && 
             y > (height-gestureArea)/2 && 
             y < height-(height-gestureArea)/2
   }
   /**
-   * 모서리 부분의 control 영역은 plate의 짧은면 기준 1/5
-   * 즉, gestureArea(plate 짧은면 width의 1/3) * 0.6
+   * 모서리 부분의 control 영역은 plate의 짧은면 기준 26% ~ 흠 영역을 어떻게 하지
+   * 즉, gestureArea(plate 짧은면 width의 1/3) * 0.8 -> (+) 영역을 쓸 경우 너무 작아 인식이 잘 되지 않음.
    */
   onTopLeftControlZone = (x: number, y: number, width: number, height: number, gestureArea: number) => {
-    return x < gestureArea*0.6 && y < gestureArea*0.6
+    return x < gestureArea*0.8 && y < gestureArea*0.8
   }
   onTopRightControlZone = (x: number, y: number, width: number, height: number, gestureArea: number) => {
-    return x > width-(gestureArea*0.6) && y < gestureArea * 0.6
+    return x > width-(gestureArea*0.8) && y < gestureArea * 0.8
   }
   onBottomLeftControlZone = (x: number, y: number, width: number, height: number, gestureArea: number) => {
-    return x < gestureArea*0.6 && y > height-(gestureArea*0.6)
+    return x < gestureArea*0.8 && y > height-(gestureArea*0.8)
   }
   onBottomRightControlZone = (x: number, y: number, width: number, height: number, gestureArea: number) => {
-    return x > width-(gestureArea*0.6) && y > height-(gestureArea*0.6)
+    return x > width-(gestureArea*0.8) && y > height-(gestureArea*0.8)
   }
 
   getPaperSize = () => {
