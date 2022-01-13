@@ -378,6 +378,7 @@ export default class GridaDoc {
 
         case "note":
         case "default":
+        case "plate":
         default: {
           //
           const activePageNo = this.addNcodePage(pageInfo);
