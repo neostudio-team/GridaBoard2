@@ -23,6 +23,8 @@ import { initializeDiagonal, setLeftToRightDiagonal, setRightToLeftDiagonal, set
 import { setActivePageNo } from "../../../GridaBoard/store/reducers/activePageReducer";
 import { onToggleRotate } from "../../../GridaBoard/components/buttons/RotateButton";
 import { showMessageToast } from "../../../GridaBoard/store/reducers/ui";
+import getText from "GridaBoard/language/language";
+
 
 /**
  * Properties
@@ -525,7 +527,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
    */
   onLivePenDown = (event: IPenToViewerEvent) => {
     if (this.props.hideCanvas) {
-      showMessageToast('필기 숨김 상태입니다. 해제 후 필기 하세요.');
+      showMessageToast(getText('hide_canvas'));
       return
     }
     if (this.renderer) {
@@ -677,7 +679,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   /** Left Control Zone - Rotate */
   leftControlZone = () => {
-    showMessageToast('+ 심볼 위치를 확인 후 필기 하세요.');
+    showMessageToast(getText('check_symbol_position'));
     onToggleRotate();
   }
 
@@ -944,13 +946,13 @@ class PenBasedRenderer extends React.Component<Props, State> {
   */
   prevChange = () => {  // Page Up
     if (this.props.activePageNo <= 0) {
-      return showMessageToast('더이상 이동할 페이지가 없습니다.');
+      return showMessageToast(getText('no_more_page'));
     }
     setActivePageNo(this.props.activePageNo-1);    
   }
   nextChange = () => { // PageDown
     if (this.props.activePageNo === this.state.numDocPages-1) {
-      return showMessageToast('더이상 이동할 페이지가 없습니다.');
+      return showMessageToast(getText('no_more_page'));
     }
     setActivePageNo(this.props.activePageNo+1);
   }
@@ -1095,7 +1097,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
         {this.state.numDocPages <= 0 ? 
             <Typography variant="h3" style={{color: '#b7b7b7', textAlign: 'center', fontWeight: 600, marginTop: this.props.viewSize.height*(3/7)}}>
-              펜 연결 후, 종이 또는 플레이트를 터치해 주세요.
+              {getText('initial_page_guide')}
             </Typography>
           : ""}
 
