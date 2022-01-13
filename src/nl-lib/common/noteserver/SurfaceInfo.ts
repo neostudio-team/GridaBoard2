@@ -1,6 +1,6 @@
 import { g_paperType } from "./NcodeSurfaceDataJson";
 import { INcodeSOBPxy, INoteServerItem_forPOD, IPageSOBP, IPaperSize, ISize } from "../structures";
-import { FilmNcode_Landscape, FilmNcode_Portrait, INCH_TO_MM_SCALE, NCODE_TO_INCH_SCALE, PDF_DEFAULT_DPI, UNIT_TO_DPI } from "../constants";
+import { FilmNcode_Landscape, FilmNcode_Portrait, INCH_TO_MM_SCALE, NCODE_TO_INCH_SCALE, PDF_DEFAULT_DPI, PlateNcode_3, UNIT_TO_DPI } from "../constants";
 import { isSamePage } from "../util";
 
 
@@ -142,6 +142,13 @@ export function adjustNoteItemMarginForFilm(noteItem: INoteServerItem_forPOD, pa
     noteItem.margin.Ymin = 9;
     noteItem.margin.Xmax = 128;
     noteItem.margin.Ymax = 91;
+  }
+  else if(isSamePage(pageInfo, PlateNcode_3)){
+    // 일단 임시로 이 위치
+    noteItem.margin.Xmin = 0; 
+    noteItem.margin.Ymin = 0;
+    noteItem.margin.Xmax = 55;
+    noteItem.margin.Ymax = 77;
   }
 }
 
