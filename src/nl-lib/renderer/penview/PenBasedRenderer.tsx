@@ -608,8 +608,9 @@ class PenBasedRenderer extends React.Component<Props, State> {
         case "top-right":
         case "bottom-left":
         case "bottom-right":
-          if (this.onPlusControlZone(dot))
+          if (this.onPlusControlZone(dot)) {
             this.plusControlZone();
+          }
           break;
       }
     }
@@ -635,14 +636,10 @@ class PenBasedRenderer extends React.Component<Props, State> {
         this.props.setFirstTap(first);
         return true
       }
-      else {
-        return this.isNotFirstTap(first);
-      }
+      return this.isNotFirstTap(first);
     }
-    else {
-      this.props.initializeTapCount();
-      return false
-    }
+    this.props.initializeTapCount();
+    return false
   }
 
   /**
@@ -662,10 +659,10 @@ class PenBasedRenderer extends React.Component<Props, State> {
     if (this.getDistance(this.props.firstDot, first) < 3) {
       this.props.incrementTapCount();
       return true
-    } else {
-      this.props.setFirstTap(first);
-      return false
     }
+
+    this.props.setFirstTap(first);
+    return false
   }
 
   /** Top Control Zone - Page Up */
@@ -689,11 +686,9 @@ class PenBasedRenderer extends React.Component<Props, State> {
     this.props.setHideCanvas(!this.props.hideCanvas);
     
     if(this.props.hideCanvas) {
-      this.renderer.removeAllCanvasObject();
+      return this.renderer.removeAllCanvasObject();
     }
-    else {
-      this.renderer.redrawStrokes(this.renderer.pageInfo);
-    }
+    this.renderer.redrawStrokes(this.renderer.pageInfo);
   }
 
   /** Top Left Control Zone */
@@ -716,12 +711,10 @@ class PenBasedRenderer extends React.Component<Props, State> {
     const { stroke } = event;
     this.crossLineEraser(stroke);
 
-    if (this.checkTap(stroke)) {
-      if (this.props.tapCount === 2) {
-        this.doubleTapProcess(stroke.isPlate, stroke.dotArray[0]);
-      }
+    if (this.checkTap(stroke) && this.props.tapCount === 2) {
+      this.doubleTapProcess(stroke.isPlate, stroke.dotArray[0]);
     }
-  
+      
     if (this.props.calibrationMode) {
       this.onCalibrationUp(event);
     }
@@ -950,13 +943,15 @@ class PenBasedRenderer extends React.Component<Props, State> {
    * activePageNo - 0부터 시작, numDocPages - 1부터 시작
   */
   prevChange = () => {  // Page Up
-    if (this.props.activePageNo <= 0) 
+    if (this.props.activePageNo <= 0) {
       return showMessageToast('더이상 이동할 페이지가 없습니다.');
+    }
     setActivePageNo(this.props.activePageNo-1);    
   }
   nextChange = () => { // PageDown
-    if (this.props.activePageNo === this.state.numDocPages-1) 
+    if (this.props.activePageNo === this.state.numDocPages-1) {
       return showMessageToast('더이상 이동할 페이지가 없습니다.');
+    }
     setActivePageNo(this.props.activePageNo+1);
   }
 
