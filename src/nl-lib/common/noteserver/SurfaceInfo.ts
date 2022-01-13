@@ -118,6 +118,7 @@ export function getNPaperInfo(pageInfo: IPageSOBP) {
     isDefault = true;
   }
 
+  found = JSON.parse(JSON.stringify(found));
   const desc: INoteServerItem_forPOD = {
     ...found,
     id: key,

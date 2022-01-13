@@ -485,7 +485,7 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     let npaperWidth = noteItem.margin.Xmax - noteItem.margin.Xmin;
     let npaperHeight = noteItem.margin.Ymax - noteItem.margin.Ymin;
     let plateMode = ""; //landscape(가로 모드), portrait(세로 모드)
-    
+
     if(npaperWidth > npaperHeight){
       plateMode = "landscape";
     }else{
@@ -499,7 +499,9 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     const nPageHegiht = pageItem.margin.Ymax - pageItem.margin.Ymin;
     let pageMode = ""; //page 기본값의 모드
 
-    if(nPageWidth > nPageHegiht){
+    if(currentPage._pdf !== undefined){
+      pageMode = currentPage._pdf.direction;
+    }else if(nPageWidth > nPageHegiht){
       pageMode = "landscape";
     }else{
       pageMode = "portrait";
