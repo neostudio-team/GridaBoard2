@@ -590,7 +590,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   /** Touble tap process */
   doubleTapProcess = (isPlate: boolean, dot: NeoDot) => {
-    this.removeStrokeOnActivePage(this.renderer.pageInfo, -2);
+    this.removeDoubleTapStrokeOnActivePage(this.renderer.pageInfo, -2);
     // plate에서 작업하는 중에 발생하는 double tap 처리를 영역별로 구분
     if (isPlate) {
       switch(this.findDotPositionOnPlate(dot)) {
@@ -888,9 +888,9 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
 
   /** 특정 위치부터의 stroke를 지우기 위한 로직 */
-  removeStrokeOnActivePage = (pageInfo: IPageSOBP, startPos: number) => {
+  removeDoubleTapStrokeOnActivePage = (pageInfo: IPageSOBP, startPos: number) => {
     const completed = this.renderer.storage.getPageStrokes(pageInfo);
-    completed.splice(startPos);
+    completed.splice(-2);
 
     // hideCanvas가 되어있을시 redraw 로직을 실행하면 다시 stroke가 생성되므로 로직이 실행되지 않도록 함수를 종료시켜준다. 
     if (this.props.hideCanvas) return
