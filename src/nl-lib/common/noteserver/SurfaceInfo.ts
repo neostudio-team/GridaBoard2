@@ -59,13 +59,22 @@ export function isPUI(pageInfo: IPageSOBP): boolean {
 function getNPaperSize_nu(item: IPageSOBP | INoteServerItem_forPOD): ISize {
   let desc = item as INoteServerItem_forPOD;
 
+  const pageInfo = item as IPageSOBP;
   // IPageSOBP 이면 noteserver item을 가져 온다.
   if (!Object.prototype.hasOwnProperty.call(item, "margin")) {
-    const pageInfo = item as IPageSOBP;
     desc = getNPaperInfo(pageInfo);
   }
 
   const margin = desc.margin;
+
+  // 플레이트 시 가로형 A4 생성
+  if(isPlatePaper(pageInfo)){
+    margin.Xmax = 125.24;
+    margin.Xmin = 0;
+    margin.Ymax = 88.56;
+    margin.Ymin = 0;
+  }
+
   return {
     width: margin.Xmax - margin.Xmin,
     height: margin.Ymax - margin.Ymin
@@ -204,5 +213,3 @@ export function isPortrait(size: ISize) {
 export function getCssDpi() {
   return UNIT_TO_DPI["css"];
 }
-
-
