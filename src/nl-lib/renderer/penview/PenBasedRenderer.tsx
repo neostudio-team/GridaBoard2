@@ -25,6 +25,7 @@ import { onToggleRotate } from "GridaBoard/components/buttons/RotateButton";
 import { showMessageToast } from "GridaBoard/store/reducers/ui";
 import getText from "GridaBoard/language/language";
 import { onClearPage } from "boardList/layout/component/dialog/detail/AlertDialog";
+import Add from "@material-ui/icons/Add";
 
 /**
  * Properties
@@ -727,8 +728,10 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   /** Paper에 X를 그렸을 때, stroke를 지우게 하기 위한 로직 */ 
   crossLineEraser = (stroke: NeoStroke) => {
-    const [first, last] = this.getFirstLastItems(stroke.dotArray);
+    // 플레이트가 아니라면 종료
+    if (!stroke.isPlate) return
 
+    const [first, last] = this.getFirstLastItems(stroke.dotArray);
     // 임시, 플레이트 윗 파티션은 stroke 에 dotArray 가 들어오지 않으므로 예외처리 해놓음.
     if (!first?.point || !last?.point) return
 
@@ -977,7 +980,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     const rotateDegree = this.props.rotation / 90;
 
     /** Plate의 width, height, gestureArea(짧은면 기준 1/3) */
-     const {npaperWidth, npaperHeight, gestureArea} = this.getPaperSize();
+    const {npaperWidth, npaperHeight, gestureArea} = this.getPaperSize();
     if (this.onTopControlZone(dot.x, dot.y, npaperWidth, npaperHeight, gestureArea)) {
       return shiftArray[(0-rotateDegree+4)%4];
     }
@@ -1082,6 +1085,21 @@ class PenBasedRenderer extends React.Component<Props, State> {
       zIndex: 10,
     }
 
+    const symbolDiv: CSSProperties = {
+      position: "absolute",
+      left: ([0, 270]).includes(this.props.rotation) ? 5 : "",
+      right: ([90, 180]).includes(this.props.rotation) ? 5 : "",
+      top: ([0, 90]).includes(this.props.rotation) ? 5 : "",
+      bottom: ([180, 270]).includes(this.props.rotation) ? 5 : "",
+      zIndex: 11,
+    }
+
+    const symbolSize: CSSProperties = {
+      fontSize: 50,
+      color: '#ff2222',
+      visibility: this.state.numDocPages > 0 && this.props.isMainView ? 'visible' : 'hidden'
+    }
+
     const shadowStyle: CSSProperties = {
       color: "#a20",
       textShadow: "-1px 0 2px #fff, 0 1px 2px #fff, 1px 0 2px #fff, 0 -1px 2px #fff",
@@ -1093,6 +1111,9 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
         <div id={`${this.props.parentName}-fabric_container`} style={inkContainerDiv} >
           <canvas id={this.canvasId} style={inkCanvas} ref={this.setCanvasRef} />
+          <div style={symbolDiv}>
+            <Add style={symbolSize} />
+          </div>
         </div >
 
         {this.state.numDocPages <= 0 ? 

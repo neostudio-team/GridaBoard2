@@ -52,7 +52,7 @@ const useStyle = makeStyles(theme => ({
         background: theme.custom.icon.blue[3]
       },
       "&>span" : {
-        height: "16px",
+        height: "40px",
         "&:hover": {
           color : theme.palette.action.hover,
         }
@@ -89,6 +89,10 @@ const InformationButton = (props: Props) => {
         // openTutorial();
         setHelpMenu(true, tutorialMain, tutorialSub);
       }
+    },
+    {
+      type: "onClick",
+      title: "pen_gesture_guide"
     }
   ]
 
