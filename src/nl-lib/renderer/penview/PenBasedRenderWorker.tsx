@@ -493,21 +493,16 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     }
 
     const currentPage = GridaDoc.getInstance().getPage(store.getState().activePage.activePageNo);
-    const pageItem = getNPaperInfo(currentPage.basePageInfo); //plate의 item
 
-    const nPageWidth = pageItem.margin.Xmax - pageItem.margin.Xmin;
-    const nPageHegiht = pageItem.margin.Ymax - pageItem.margin.Ymin;
     let pageMode = ""; //page 기본값의 모드
 
-    if(currentPage._pdf !== undefined){
-      pageMode = currentPage._pdf.direction;
-    }else if(nPageWidth > nPageHegiht){
+    if(currentPage.pageOverview.landscape){
       pageMode = "landscape";
     }else{
       pageMode = "portrait";
     }
 
-    let addedRotation = 0; // = currentPage._rotation;
+    let addedRotation = 0;
     if(plateMode === pageMode){
       //둘다 같은 모드면 각도 조절이 필요 없음
       addedRotation = 0;
