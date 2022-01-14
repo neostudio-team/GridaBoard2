@@ -1095,8 +1095,9 @@ class PenBasedRenderer extends React.Component<Props, State> {
     }
 
     const symbolSize: CSSProperties = {
-      fontSize: 40,
-      color: 'red'
+      fontSize: 50,
+      color: '#ff2222',
+      visibility: this.state.numDocPages > 0 && this.props.isMainView ? 'visible' : 'hidden'
     }
 
     const shadowStyle: CSSProperties = {
