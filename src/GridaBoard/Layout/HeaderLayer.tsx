@@ -26,6 +26,9 @@ import { auth, firebaseAnalytics } from 'GridaBoard/util/firebase_config';
 import ProfileButton from '../components/buttons/ProfileButton';
 import { showAlert } from '../store/reducers/listReducer';
 import { setSaveOpen } from '../store/reducers/ui';
+import { store } from '../client/pages/GridaBoard';
+import { resetGridaBoard, saveThumbnail } from '../../boardList/BoardListPageFunc';
+import { setIsNewDoc } from '../store/reducers/docConfigReducer';
 
 const useStyles = props =>
   makeStyles(theme => ({
@@ -179,12 +182,29 @@ interface Props {
 
 export function fileOpenHandler(dndData: any) {
   const input = document.querySelector('#fileForconvert') as HTMLInputElement;
+
+  const isNewDoc = store.getState().docConfig.isNewDoc;
+  const numDocPages = store.getState().activePage.numDocPages;
+  const autoSaveTitle = "undefined"
+  
   if(dndData === ""){
     input.value = '';
     input.click();
   }else{
     input.files = dndData;
-    input.dispatchEvent(new Event("change", {bubbles: true}));
+    if(isNewDoc && numDocPages !== 0){
+      setIsNewDoc(false);
+      saveThumbnail(autoSaveTitle)
+      const timer = setInterval(() => 
+      {
+        resetGridaBoard()
+        input.dispatchEvent(new Event("change", {bubbles: true}))
+        clearInterval(timer);
+      }
+      , 3000);
+    }else{
+      input.dispatchEvent(new Event("change", {bubbles: true}));
+    }
   }
 }
 
@@ -387,7 +407,7 @@ const HeaderLayer = (props: Props) => {
                     className={`loadDropDown ${classes.buttonStyle} ${classes.buttonFontStyle}`}
                     onClick={e =>  fileOpenHandler("")}>
                     {getText('load_file')}
-                    <ConvertFileLoad handlePdfOpen={handlePdfOpen} />
+                    <ConvertFileLoad handlePdfOpen={handlePdfOpen} isNewLoad={true}/>
                   </Button>
                 </CustomBadge>
               </div>

@@ -111,7 +111,6 @@ const LeftSideLayer = (props: Props) => {
   const handleDrop = useCallback((e) => {
     console.log("Drop to Layer")
     dragRef.current.style.background = "rgba(0,0,0,0)"
-    // resetGridaBoard();
     fileOpenHandler(e.dataTransfer.files)
     e.preventDefault();
     e.stopPropagation();
