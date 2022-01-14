@@ -25,6 +25,7 @@ import { onToggleRotate } from "GridaBoard/components/buttons/RotateButton";
 import { showMessageToast } from "GridaBoard/store/reducers/ui";
 import getText from "GridaBoard/language/language";
 import { onClearPage } from "boardList/layout/component/dialog/detail/AlertDialog";
+import Add from "@material-ui/icons/Add";
 
 /**
  * Properties
@@ -979,7 +980,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     const rotateDegree = this.props.rotation / 90;
 
     /** Plate의 width, height, gestureArea(짧은면 기준 1/3) */
-     const {npaperWidth, npaperHeight, gestureArea} = this.getPaperSize();
+    const {npaperWidth, npaperHeight, gestureArea} = this.getPaperSize();
     if (this.onTopControlZone(dot.x, dot.y, npaperWidth, npaperHeight, gestureArea)) {
       return shiftArray[(0-rotateDegree+4)%4];
     }
@@ -1084,6 +1085,20 @@ class PenBasedRenderer extends React.Component<Props, State> {
       zIndex: 10,
     }
 
+    const symbolDiv: CSSProperties = {
+      position: "absolute",
+      left: ([0, 270]).includes(this.props.rotation) ? 5 : "",
+      right: ([90, 180]).includes(this.props.rotation) ? 5 : "",
+      top: ([0, 90]).includes(this.props.rotation) ? 5 : "",
+      bottom: ([180, 270]).includes(this.props.rotation) ? 5 : "",
+      zIndex: 11,
+    }
+
+    const symbolSize: CSSProperties = {
+      fontSize: 40,
+      color: 'red'
+    }
+
     const shadowStyle: CSSProperties = {
       color: "#a20",
       textShadow: "-1px 0 2px #fff, 0 1px 2px #fff, 1px 0 2px #fff, 0 -1px 2px #fff",
@@ -1095,6 +1110,9 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
         <div id={`${this.props.parentName}-fabric_container`} style={inkContainerDiv} >
           <canvas id={this.canvasId} style={inkCanvas} ref={this.setCanvasRef} />
+          <div style={symbolDiv}>
+            <Add style={symbolSize} />
+          </div>
         </div >
 
         {this.state.numDocPages <= 0 ? 
