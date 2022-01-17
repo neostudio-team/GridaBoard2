@@ -3,7 +3,7 @@ import { fabric } from 'fabric';
 
 import RenderWorkerBase, { IRenderWorkerOption } from './RenderWorkerBase';
 
-import { callstackDepth, drawPath, drawPath_arr, makeNPageIdStr, isSamePage, uuidv4, drawPath_chiselNip, isSameNcode } from 'nl-lib/common/util';
+import { callstackDepth, drawPath, drawPath_arr, makeNPageIdStr, isSamePage,isPlatePage, uuidv4, drawPath_chiselNip, isSameNcode } from 'nl-lib/common/util';
 import { IBrushType, PenEventName } from 'nl-lib/common/enums';
 import { IPoint, NeoStroke, NeoDot, IPageSOBP, INeoStrokeProps, StrokeStatus, ISize, TransformParameters } from 'nl-lib/common/structures';
 import { INeoSmartpen, IPenToViewerEvent } from 'nl-lib/common/neopen';
@@ -13,7 +13,7 @@ import { adjustNoteItemMarginForFilm, getNPaperInfo, isPUI } from "nl-lib/common
 import { MappingStorage } from 'nl-lib/common/mapper/MappingStorage';
 import { calcRevH } from 'nl-lib/common/mapper/CoordinateTanslater';
 import { applyTransform } from 'nl-lib/common/math/echelon/SolveTransform';
-import { nullNcode, PlateNcode_1, PlateNcode_2, PlateNcode_3, PU_TO_NU } from 'nl-lib/common/constants';
+import { nullNcode, PU_TO_NU } from 'nl-lib/common/constants';
 
 import GridaDoc from 'GridaBoard/GridaDoc';
 import { setActivePageNo } from 'GridaBoard/store/reducers/activePageReducer';
@@ -40,15 +40,6 @@ type IExtendedPathType = fabric.Path & {
   key?: string;
   color?;
 };
-
-const isPlatePage = (pageInfo:IPageSOBP)=>{
-  if (isSamePage(PlateNcode_1, pageInfo) || isSamePage(PlateNcode_2, pageInfo) || isSamePage(PlateNcode_3, pageInfo)) {
-    return true;
-  }else{
-    return false;
-  }
-
-}
 
 export default class PenBasedRenderWorker extends RenderWorkerBase {
   localPathArray: IExtendedPathType[] = [];

@@ -8,7 +8,6 @@ import { InkStorage } from 'nl-lib/common/penstorage';
 import Cookies from 'universal-cookie';
 import { degrees, PDFDocument, rgb } from 'pdf-lib';
 import { isSamePage, drawPath } from 'nl-lib/common/util';
-import { PlateNcode_1, PlateNcode_2 } from 'nl-lib/common/constants';
 import { adjustNoteItemMarginForFilm, getNPaperInfo } from 'nl-lib/common/noteserver';
 import { store } from 'GridaBoard/client/pages/GridaBoard';
 import * as PdfJs from 'pdfjs-dist';
