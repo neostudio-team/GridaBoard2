@@ -591,7 +591,6 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   /** Touble tap process */
   doubleTapProcess = (isPlate: boolean, dot: NeoDot) => {
-    this.removeDoubleTapStrokeOnActivePage(this.renderer.pageInfo);
     // plate에서 작업하는 중에 발생하는 double tap 처리를 영역별로 구분
     if (isPlate) {
       switch(this.findDotPositionOnPlate(dot)) {
@@ -615,8 +614,11 @@ class PenBasedRenderer extends React.Component<Props, State> {
             this.plusControlZone();
           }
           break;
+        default:
+          return
       }
     }
+    this.removeDoubleTapStrokeOnActivePage(this.renderer.pageInfo);
     this.props.initializeTapCount();
   }
 
