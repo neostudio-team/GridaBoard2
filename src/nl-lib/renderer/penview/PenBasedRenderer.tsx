@@ -627,8 +627,8 @@ class PenBasedRenderer extends React.Component<Props, State> {
         default:
           return
       }
+      this.removeDoubleTapStrokeOnActivePage(this.renderer.pageInfo);
     }
-    this.removeDoubleTapStrokeOnActivePage(this.renderer.pageInfo);
     this.props.initializeTap();
   }
 
