@@ -19,7 +19,7 @@ import {isPlatePaper, isPUI, getNPaperInfo, adjustNoteItemMarginForFilm} from "n
 import {setCalibrationData} from 'GridaBoard/store/reducers/calibrationDataReducer';
 import {store} from "GridaBoard/client/pages/GridaBoard";
 import GridaDoc from "GridaBoard/GridaDoc";
-import { initializeCrossLine, setLeftToRightDiagonal, setRightToLeftDiagonal, setHideCanvas, incrementTapCount, initializeTap, setFirstDot } from "GridaBoard/store/reducers/gestureReducer";
+import { initializeCrossLine, setLeftToRightDiagonal, setRightToLeftDiagonal, setHideCanvas, incrementTapCount, initializeTap, setFirstDot, setNotFirstPenDown, showSymbol, hideSymbol } from "GridaBoard/store/reducers/gestureReducer";
 import { setActivePageNo } from "GridaBoard/store/reducers/activePageReducer";
 import { onToggleRotate } from "GridaBoard/components/buttons/RotateButton";
 import { showMessageToast } from "GridaBoard/store/reducers/ui";
@@ -96,6 +96,12 @@ interface Props { // extends MixedViewProps {
 
   hideCanvas: boolean;
   setHideCanvas: any;
+
+  notFirstPenDown: boolean;
+  show: boolean;
+  setNotFirstPenDown: any;
+  showSymbol: any;
+  hideSymbol: any;
 }
 
 /**
@@ -531,6 +537,10 @@ class PenBasedRenderer extends React.Component<Props, State> {
     if (this.props.hideCanvas) {
       showMessageToast(getText('hide_canvas'));
     }
+    if (!this.props.notFirstPenDown) {
+      this.onSymbolUp();
+      this.props.setNotFirstPenDown();
+    }
     if (this.renderer) {
       // const { section, owner, book, page } = event;
       // if (isSamePage(this.props.pageInfo, { section, owner, book, page }))
@@ -682,7 +692,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   /** Left Control Zone - Rotate */
   leftControlZone = () => {
-    showMessageToast(getText('check_symbol_position'));
+    this.onSymbolUp();
     onToggleRotate();
   }
 
@@ -1077,6 +1087,14 @@ class PenBasedRenderer extends React.Component<Props, State> {
     return pageMode === "portrait" ? (this.props.rotation+90)%360 : this.props.rotation 
   }
 
+  onSymbolUp = () => {
+    showMessageToast(getText('check_symbol_position'));
+    this.props.showSymbol();
+    setTimeout(function() {
+      hideSymbol();
+    }, 3000);
+  }
+
   render() {
     let { zoom } = this.props.position;
 
@@ -1112,7 +1130,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     const symbolSize: CSSProperties = {
       fontSize: 50,
       color: '#ff2222',
-      visibility: this.state.numDocPages > 0 && this.props.isMainView ? 'visible' : 'hidden'
+      visibility: this.props.show && this.props.isMainView ? 'visible' : 'hidden'
     }
 
     const shadowStyle: CSSProperties = {
@@ -1172,6 +1190,8 @@ const mapStateToProps = (state) => ({
   firstDot: state.gesture.doubleTap.firstDot,
   leftToRightDiagonal: state.gesture.crossLine.leftToRightDiagonal,
   rightToLeftDiagonal: state.gesture.crossLine.rightToLeftDiagonal,
+  notFirstPenDown: state.gesture.symbol.notFirstPenDown,
+  show: state.gesture.symbol.show,
   hideCanvas: state.gesture.hideCanvas,
   activePageNo: state.activePage.activePageNo
 });
@@ -1184,6 +1204,9 @@ const mapDispatchToProps = (dispatch) => ({
   setLeftToRightDiagonal: () => setLeftToRightDiagonal(),
   setRightToLeftDiagonal: () => setRightToLeftDiagonal(),
   initializeCrossLine: () => initializeCrossLine(),
+  setNotFirstPenDown: () => setNotFirstPenDown(),
+  showSymbol: () => showSymbol(),
+  hideSymbol: () => hideSymbol(),
   setHideCanvas: (bool) => setHideCanvas(bool),
   setActivePageNo: no => setActivePageNo(no)
 });
