@@ -530,7 +530,6 @@ class PenBasedRenderer extends React.Component<Props, State> {
   onLivePenDown = (event: IPenToViewerEvent) => {
     if (this.props.hideCanvas) {
       showMessageToast(getText('hide_canvas'));
-      return
     }
     if (this.renderer) {
       // const { section, owner, book, page } = event;
