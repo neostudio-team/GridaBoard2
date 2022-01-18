@@ -6,7 +6,7 @@ import {Typography} from "@material-ui/core";
 import {IRenderWorkerOption} from "./RenderWorkerBase";
 import PenBasedRenderWorker from "./PenBasedRenderWorker";
 
-import {IBrushType, PageEventName, PenEventName, PLAYSTATE, ZoomFitEnum} from "nl-lib/common/enums";
+import {PageEventName, PenEventName, PLAYSTATE, ZoomFitEnum} from "nl-lib/common/enums";
 import {IPageSOBP, ISize, NeoDot, NeoStroke} from "nl-lib/common/structures";
 import {callstackDepth, isSameNcode, isSamePage, makeNPageIdStr, uuidv4} from "nl-lib/common/util";
 
@@ -19,7 +19,7 @@ import {isPlatePaper, isPUI, getNPaperInfo, adjustNoteItemMarginForFilm} from "n
 import {setCalibrationData} from 'GridaBoard/store/reducers/calibrationDataReducer';
 import {store} from "GridaBoard/client/pages/GridaBoard";
 import GridaDoc from "GridaBoard/GridaDoc";
-import { initializeDiagonal, setLeftToRightDiagonal, setRightToLeftDiagonal, setHideCanvas, incrementTapCount, initializeTapCount, setFirstTap } from "GridaBoard/store/reducers/gestureReducer";
+import { initializeCrossLine, setLeftToRightDiagonal, setRightToLeftDiagonal, setHideCanvas, incrementTapCount, initializeTap, setFirstDot } from "GridaBoard/store/reducers/gestureReducer";
 import { setActivePageNo } from "GridaBoard/store/reducers/activePageReducer";
 import { onToggleRotate } from "GridaBoard/components/buttons/RotateButton";
 import { showMessageToast } from "GridaBoard/store/reducers/ui";
@@ -82,10 +82,10 @@ interface Props { // extends MixedViewProps {
   tapCount: number;
   firstDot: NeoDot;
   incrementTapCount: any;
-  initializeTapCount: any;
-  setFirstTap: any;
+  initializeTap: any;
+  setFirstDot: any;
 
-  initializeDiagonal: any;
+  initializeCrossLine: any;
   leftToRightDiagonal: boolean;
   rightToLeftDiagonal: boolean;
   setLeftToRightDiagonal: any;
@@ -619,7 +619,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
       }
     }
     this.removeDoubleTapStrokeOnActivePage(this.renderer.pageInfo);
-    this.props.initializeTapCount();
+    this.props.initializeTap();
   }
 
   /**
@@ -638,12 +638,12 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
     if (this.isTap(timeDiff, distance)) {
       if (!this.props.firstDot) {
-        this.props.setFirstTap(first);
+        this.props.setFirstDot(first);
         return true
       }
       return this.isNotFirstTap(first);
     }
-    this.props.initializeTapCount();
+    this.props.initializeTap();
     return false
   }
 
@@ -666,7 +666,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
       return true
     }
 
-    this.props.setFirstTap(first);
+    this.props.setFirstDot(first);
     return false
   }
 
@@ -746,7 +746,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     
     if (this.props.leftToRightDiagonal && this.props.rightToLeftDiagonal) {
       onClearPage();
-      this.props.initializeDiagonal();
+      this.props.initializeCrossLine();
     }
   }
 
@@ -1179,11 +1179,11 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   setCalibrationData: cali => setCalibrationData(cali),
   incrementTapCount: () => incrementTapCount(),
-  initializeTapCount: () => initializeTapCount(),
-  setFirstTap: (dot) => setFirstTap(dot),
+  initializeTap: () => initializeTap(),
+  setFirstDot: (dot) => setFirstDot(dot),
   setLeftToRightDiagonal: () => setLeftToRightDiagonal(),
   setRightToLeftDiagonal: () => setRightToLeftDiagonal(),
-  initializeDiagonal: () => initializeDiagonal(),
+  initializeCrossLine: () => initializeCrossLine(),
   setHideCanvas: (bool) => setHideCanvas(bool),
   setActivePageNo: no => setActivePageNo(no)
 });
