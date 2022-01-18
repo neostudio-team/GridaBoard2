@@ -14,7 +14,7 @@ import {INeoSmartpen, IPenToViewerEvent} from "nl-lib/common/neopen";
 import {MappingStorage} from "nl-lib/common/mapper";
 import {DefaultPlateNcode, DefaultPUINcode} from "nl-lib/common/constants";
 import {InkStorage} from "nl-lib/common/penstorage";
-import {isPlatePaper, isPUI, getNPaperInfo} from "nl-lib/common/noteserver";
+import {isPlatePaper, isPUI, getNPaperInfo, adjustNoteItemMarginForFilm} from "nl-lib/common/noteserver";
 
 import {setCalibrationData} from 'GridaBoard/store/reducers/calibrationDataReducer';
 import {store} from "GridaBoard/client/pages/GridaBoard";
@@ -26,6 +26,7 @@ import { showMessageToast } from "GridaBoard/store/reducers/ui";
 import getText from "GridaBoard/language/language";
 import { onClearPage } from "boardList/layout/component/dialog/detail/AlertDialog";
 import Add from "@material-ui/icons/Add";
+
 
 /**
  * Properties
@@ -1055,6 +1056,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
   getPaperSize = () => {
     // plate일 때, 해당 plate의 info를 가져옴.
     const noteItem = getNPaperInfo(this.props.pageInfo);
+    adjustNoteItemMarginForFilm(noteItem, this.props.pageInfo);
     const npaperWidth = noteItem.margin.Xmax - noteItem.margin.Xmin;
     const npaperHeight = noteItem.margin.Ymax - noteItem.margin.Ymin;
 
