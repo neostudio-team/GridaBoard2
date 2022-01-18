@@ -220,7 +220,6 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     }
 
     let isPlate = false;
-    console.log(pageInfo);
     if (isPlatePage(pageInfo)) {
       isPlate = true;
     }
