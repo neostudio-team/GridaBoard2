@@ -1066,6 +1066,18 @@ class PenBasedRenderer extends React.Component<Props, State> {
     return {npaperWidth, npaperHeight, gestureArea}
   }
 
+  getRotationOnPageMode = () => {
+    const currentPage = GridaDoc.getInstance().getPage(store.getState().activePage.activePageNo);
+    if (!currentPage) return
+    
+    let pageMode = "portrait";
+    if (currentPage.pageOverview.landscape) {
+      pageMode = "landscape";
+    }
+    
+    return pageMode === "portrait" ? (this.props.rotation+90)%360 : this.props.rotation 
+  }
+
   render() {
     let { zoom } = this.props.position;
 
@@ -1091,10 +1103,10 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
     const symbolDiv: CSSProperties = {
       position: "absolute",
-      left: ([0, 270]).includes(this.props.rotation) ? 5 : "",
-      right: ([90, 180]).includes(this.props.rotation) ? 5 : "",
-      top: ([0, 90]).includes(this.props.rotation) ? 5 : "",
-      bottom: ([180, 270]).includes(this.props.rotation) ? 5 : "",
+      left: ([0, 270]).includes(this.getRotationOnPageMode()) ? 5 : "",
+      right: ([90, 180]).includes(this.getRotationOnPageMode()) ? 5 : "",
+      top: ([0, 90]).includes(this.getRotationOnPageMode()) ? 5 : "",
+      bottom: ([180, 270]).includes(this.getRotationOnPageMode()) ? 5 : "",
       zIndex: 11,
     }
 
