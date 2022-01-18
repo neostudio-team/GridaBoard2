@@ -1,9 +1,11 @@
 import { NeoDot } from "../../../nl-lib/common/structures";
 import { store } from "../../client/pages/GridaBoard";
 
+
 const DoubleTapActionGroup = "DOUBLE_TAP";
 const CrossLineActionGroup = "CROSS_LINE";
 const SymbolActionGroup = "SYMBOL";
+
 
 const DoubleTapActionType = Object.freeze({
   INITIALIZE_TAP: `${DoubleTapActionGroup}.INITIALIZE_TAP`,
@@ -24,6 +26,7 @@ const SymbolActionType = Object.freeze({
 });
 
 const SET_HIDE_CANVAS = 'SET_HIDE_CANVAS';
+
 
 // Double Tap Action Function
 export const initializeTap = () => {
@@ -156,7 +159,7 @@ export default function gestureReducer(state = initialState, action) {
         ...state,
         symbol: {
           ...state.symbol,
-          notFirstSymbol: true
+          notFirstPenDown: true
         }
       }
     case SymbolActionType.SHOW:
