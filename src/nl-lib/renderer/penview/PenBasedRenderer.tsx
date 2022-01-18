@@ -980,7 +980,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     */
     const shiftArray = ['top', 'left', 'bottom', 'right'];
     const shiftEdgeArray = ['top-left', 'bottom-left', 'bottom-right', 'top-right'];
-    const rotateDegree = this.props.rotation / 90;
+    const rotateDegree = this.getRotationOnPageMode() / 90;
 
     /** Plate의 width, height, gestureArea(짧은면 기준 1/3) */
     const {npaperWidth, npaperHeight, gestureArea} = this.getPaperSize();
