@@ -148,8 +148,8 @@ export function adjustNoteItemMarginForFilm(noteItem: INoteServerItem_forPOD, pa
     // 일단 임시로 이 위치
     noteItem.margin.Xmin = 0; 
     noteItem.margin.Ymin = 0;
-    noteItem.margin.Xmax = 55;
-    noteItem.margin.Ymax = 77;
+    noteItem.margin.Xmax = 77;
+    noteItem.margin.Ymax = 55;
   }
 }
 
