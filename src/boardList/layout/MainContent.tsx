@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../GridaBoard/store/rootReducer';
 import { showSnackbar } from '../../GridaBoard/store/reducers/listReducer';
 import { store } from "GridaBoard/client/pages/GridaBoard";
+import { setActivePageNo } from '../../GridaBoard/store/reducers/activePageReducer';
 
 const useStyle = makeStyles(theme => ({
   wrap: {
@@ -316,6 +317,10 @@ const MainContent = (props: Props) => {
     setSelectedItems([]);
     setAllItemsChecked(false);
   }, [docs, selected]);
+
+  useEffect(() => {
+    setActivePageNo(0);
+  }, [])
 
   const getNowDocs = () => {
     let tmpDocs = [];
