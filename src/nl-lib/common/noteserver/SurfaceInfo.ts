@@ -1,6 +1,6 @@
 import { g_paperType } from "./NcodeSurfaceDataJson";
 import { INcodeSOBPxy, INoteServerItem_forPOD, IPageSOBP, IPaperSize, ISize } from "../structures";
-import { FilmNcode_Landscape, FilmNcode_Portrait, INCH_TO_MM_SCALE, NCODE_TO_INCH_SCALE, PDF_DEFAULT_DPI, PlateNcode_3, UNIT_TO_DPI } from "../constants";
+import { FilmNcode_Landscape, FilmNcode_Portrait, INCH_TO_MM_SCALE, NCODE_TO_INCH_SCALE, PDF_DEFAULT_DPI, PlateNcode_3, PlateNcode_2, PlateNcode_1, UNIT_TO_DPI } from "../constants";
 import { isSamePage } from "../util";
 
 
@@ -59,21 +59,14 @@ export function isPUI(pageInfo: IPageSOBP): boolean {
 function getNPaperSize_nu(item: IPageSOBP | INoteServerItem_forPOD): ISize {
   let desc = item as INoteServerItem_forPOD;
 
-  const pageInfo = item as IPageSOBP;
   // IPageSOBP 이면 noteserver item을 가져 온다.
   if (!Object.prototype.hasOwnProperty.call(item, "margin")) {
+    const pageInfo = item as IPageSOBP;
     desc = getNPaperInfo(pageInfo);
   }
 
   const margin = desc.margin;
 
-  // 플레이트 시 가로형 A4 생성
-  if(isPlatePaper(pageInfo)){
-    margin.Xmax = 125.24;
-    margin.Xmin = 0;
-    margin.Ymax = 88.56;
-    margin.Ymin = 0;
-  }
 
   return {
     width: margin.Xmax - margin.Xmin,
@@ -158,6 +151,12 @@ export function adjustNoteItemMarginForFilm(noteItem: INoteServerItem_forPOD, pa
     noteItem.margin.Ymin = 0;
     noteItem.margin.Xmax = 55;
     noteItem.margin.Ymax = 77;
+  }
+  else if(isSamePage(pageInfo, PlateNcode_2) || isSamePage(pageInfo, PlateNcode_1)){
+    noteItem.margin.Xmax = 125.24;
+    noteItem.margin.Ymax = 88.56;
+    noteItem.margin.Xmin = 0;
+    noteItem.margin.Ymin = 0;
   }
 }
 
