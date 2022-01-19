@@ -63,9 +63,9 @@ export const setRightToLeftDiagonal = () => {
 };
 
 // Symbol Action Function
-export const setNotFirstPenDown = () => {
+export const setNotFirstPenDown = (notFirstPenDown: boolean) => {
   store.dispatch({
-    type: SymbolActionType.SET_NOT_FIRST_PEN_DOWN
+    type: SymbolActionType.SET_NOT_FIRST_PEN_DOWN, notFirstPenDown
   });
 };
 export const showSymbol = () => {
@@ -159,7 +159,7 @@ export default function gestureReducer(state = initialState, action) {
         ...state,
         symbol: {
           ...state.symbol,
-          notFirstPenDown: true
+          notFirstPenDown: action.notFirstPenDown
         }
       }
     case SymbolActionType.SHOW:
