@@ -363,7 +363,6 @@ class PenBasedRenderer extends React.Component<Props, State> {
     if ((this.props.rotation !== nextProps.rotation) && isSamePage(this.props.basePageInfo, nextProps.basePageInfo)) {
       //회전 버튼을 누를 경우만 들어와야 하는 로직, 회전된 pdf를 로드할 때는 들어오면 안됨
       //로드할 경우에는 this.props의 basePageInfo가 nullNCode로 세팅돼있기 때문에 들어오지 않음
-      this.props.setNotFirstPenDown(false);
       this.renderer.setRotation(nextProps.rotation, this.pdfSize);
 
       // const ctx = this.canvas.getContext('2d');
