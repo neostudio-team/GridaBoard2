@@ -6,26 +6,28 @@ import {Typography} from "@material-ui/core";
 import {IRenderWorkerOption} from "./RenderWorkerBase";
 import PenBasedRenderWorker from "./PenBasedRenderWorker";
 
-import {IBrushType, PageEventName, PenEventName, PLAYSTATE, ZoomFitEnum} from "nl-lib/common/enums";
+import {PageEventName, PenEventName, PLAYSTATE, ZoomFitEnum} from "nl-lib/common/enums";
 import {IPageSOBP, ISize, NeoDot, NeoStroke} from "nl-lib/common/structures";
 import {callstackDepth, isSameNcode, isSamePage, makeNPageIdStr, uuidv4} from "nl-lib/common/util";
 
 import {INeoSmartpen, IPenToViewerEvent} from "nl-lib/common/neopen";
 import {MappingStorage} from "nl-lib/common/mapper";
 import {DefaultPlateNcode, DefaultPUINcode} from "nl-lib/common/constants";
+import {PlateNcode_3} from "nl-lib/common/constants/MapperConstants";
 import {InkStorage} from "nl-lib/common/penstorage";
-import {isPlatePaper, isPUI, getNPaperInfo} from "nl-lib/common/noteserver";
+import {isPlatePaper, isPUI, getNPaperInfo, adjustNoteItemMarginForFilm} from "nl-lib/common/noteserver";
 
 import {setCalibrationData} from 'GridaBoard/store/reducers/calibrationDataReducer';
 import {store} from "GridaBoard/client/pages/GridaBoard";
 import GridaDoc from "GridaBoard/GridaDoc";
-import { initializeDiagonal, setLeftToRightDiagonal, setRightToLeftDiagonal, setHideCanvas, incrementTapCount, initializeTapCount, setFirstTap } from "GridaBoard/store/reducers/gestureReducer";
+import { initializeCrossLine, setLeftToRightDiagonal, setRightToLeftDiagonal, setHideCanvas, incrementTapCount, initializeTap, setFirstDot, setNotFirstPenDown, showSymbol, hideSymbol } from "GridaBoard/store/reducers/gestureReducer";
 import { setActivePageNo } from "GridaBoard/store/reducers/activePageReducer";
 import { onToggleRotate } from "GridaBoard/components/buttons/RotateButton";
 import { showMessageToast } from "GridaBoard/store/reducers/ui";
 import getText from "GridaBoard/language/language";
 import { onClearPage } from "boardList/layout/component/dialog/detail/AlertDialog";
 import Add from "@material-ui/icons/Add";
+
 
 /**
  * Properties
@@ -81,10 +83,10 @@ interface Props { // extends MixedViewProps {
   tapCount: number;
   firstDot: NeoDot;
   incrementTapCount: any;
-  initializeTapCount: any;
-  setFirstTap: any;
+  initializeTap: any;
+  setFirstDot: any;
 
-  initializeDiagonal: any;
+  initializeCrossLine: any;
   leftToRightDiagonal: boolean;
   rightToLeftDiagonal: boolean;
   setLeftToRightDiagonal: any;
@@ -95,6 +97,12 @@ interface Props { // extends MixedViewProps {
 
   hideCanvas: boolean;
   setHideCanvas: any;
+
+  notFirstPenDown: boolean;
+  show: boolean;
+  setNotFirstPenDown: any;
+  showSymbol: any;
+  hideSymbol: any;
 }
 
 /**
@@ -355,7 +363,6 @@ class PenBasedRenderer extends React.Component<Props, State> {
     if ((this.props.rotation !== nextProps.rotation) && isSamePage(this.props.basePageInfo, nextProps.basePageInfo)) {
       //회전 버튼을 누를 경우만 들어와야 하는 로직, 회전된 pdf를 로드할 때는 들어오면 안됨
       //로드할 경우에는 this.props의 basePageInfo가 nullNCode로 세팅돼있기 때문에 들어오지 않음
-
       this.renderer.setRotation(nextProps.rotation, this.pdfSize);
 
       // const ctx = this.canvas.getContext('2d');
@@ -433,6 +440,8 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
         ret_val = true;
 
+        // 페이지 이동했을 때, notFirstPenDown state를 바꿔준다.
+        this.props.setNotFirstPenDown(false);
       }
 
       if (this.props.calibrationMode) {
@@ -534,7 +543,6 @@ class PenBasedRenderer extends React.Component<Props, State> {
   onLivePenDown = (event: IPenToViewerEvent) => {
     if (this.props.hideCanvas) {
       showMessageToast(getText('hide_canvas'));
-      return
     }
     if (this.renderer) {
       // const { section, owner, book, page } = event;
@@ -570,6 +578,10 @@ class PenBasedRenderer extends React.Component<Props, State> {
     if (this.props.onNcodePageChanged) {
       this.renderer.registerPageInfoForPlate(event);//hover page info를 거치지 않고 바로 page info로 들어오는 경우(빨리 찍으면 hover 안들어옴)
       this.props.onNcodePageChanged({ section, owner, book, page });
+      // (페이지가 refresh 되고) 부기보드를 첫 터치했을때 심볼이 보여지도록 한다. 
+      if (isSamePage(this.props.pageInfo, PlateNcode_3) && !this.props.notFirstPenDown) {
+        this.onSymbolUp();
+      }
     }
   }
 
@@ -596,7 +608,6 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   /** Touble tap process */
   doubleTapProcess = (isPlate: boolean, dot: NeoDot) => {
-    this.removeDoubleTapStrokeOnActivePage(this.renderer.pageInfo);
     // plate에서 작업하는 중에 발생하는 double tap 처리를 영역별로 구분
     if (isPlate) {
       switch(this.findDotPositionOnPlate(dot)) {
@@ -620,9 +631,12 @@ class PenBasedRenderer extends React.Component<Props, State> {
             this.plusControlZone();
           }
           break;
+        default:
+          return
       }
+      this.removeDoubleTapStrokeOnActivePage(this.renderer.pageInfo);
     }
-    this.props.initializeTapCount();
+    this.props.initializeTap();
   }
 
   /**
@@ -641,12 +655,12 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
     if (this.isTap(timeDiff, distance)) {
       if (!this.props.firstDot) {
-        this.props.setFirstTap(first);
+        this.props.setFirstDot(first);
         return true
       }
       return this.isNotFirstTap(first);
     }
-    this.props.initializeTapCount();
+    this.props.initializeTap();
     return false
   }
 
@@ -669,7 +683,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
       return true
     }
 
-    this.props.setFirstTap(first);
+    this.props.setFirstDot(first);
     return false
   }
 
@@ -685,7 +699,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   /** Left Control Zone - Rotate */
   leftControlZone = () => {
-    showMessageToast(getText('check_symbol_position'));
+    this.onSymbolUp();
     onToggleRotate();
   }
 
@@ -749,7 +763,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     
     if (this.props.leftToRightDiagonal && this.props.rightToLeftDiagonal) {
       onClearPage();
-      this.props.initializeDiagonal();
+      this.props.initializeCrossLine();
     }
   }
 
@@ -982,7 +996,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     */
     const shiftArray = ['top', 'left', 'bottom', 'right'];
     const shiftEdgeArray = ['top-left', 'bottom-left', 'bottom-right', 'top-right'];
-    const rotateDegree = this.props.rotation / 90;
+    const rotateDegree = this.getRotationOnPageMode() / 90;
 
     /** Plate의 width, height, gestureArea(짧은면 기준 1/3) */
     const {npaperWidth, npaperHeight, gestureArea} = this.getPaperSize();
@@ -1058,6 +1072,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
   getPaperSize = () => {
     // plate일 때, 해당 plate의 info를 가져옴.
     const noteItem = getNPaperInfo(this.props.pageInfo);
+    adjustNoteItemMarginForFilm(noteItem, this.props.pageInfo);
     const npaperWidth = noteItem.margin.Xmax - noteItem.margin.Xmin;
     const npaperHeight = noteItem.margin.Ymax - noteItem.margin.Ymin;
 
@@ -1065,6 +1080,31 @@ class PenBasedRenderer extends React.Component<Props, State> {
     const gestureArea = npaperWidth > npaperHeight ? npaperHeight/3 : npaperWidth/3
 
     return {npaperWidth, npaperHeight, gestureArea}
+  }
+
+  /** 페이지 mode(landscape/portrait)에 따른 회전값을 가져오기 위한 함수 
+   * landscape: 현재 rotation 값을 그대로 가져옴
+   * portrait: landscape에서 90도 회전된 상태의 값을 주어야 하므로 현재 rotation 값에 90을 더해준다.
+  */
+  getRotationOnPageMode = () => {
+    const currentPage = GridaDoc.getInstance().getPage(store.getState().activePage.activePageNo);
+    if (!currentPage) return
+    
+    let pageMode = "portrait";
+    if (currentPage.pageOverview.landscape) {
+      pageMode = "landscape";
+    }
+    
+    return pageMode === "portrait" ? (this.props.rotation+90)%360 : this.props.rotation 
+  }
+
+  onSymbolUp = () => {
+    this.props.setNotFirstPenDown(true);
+    showMessageToast(getText('check_symbol_position'));
+    this.props.showSymbol();
+    setTimeout(function() {
+      hideSymbol();
+    }, 3000);
   }
 
   render() {
@@ -1092,17 +1132,17 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
     const symbolDiv: CSSProperties = {
       position: "absolute",
-      left: ([0, 270]).includes(this.props.rotation) ? 5 : "",
-      right: ([90, 180]).includes(this.props.rotation) ? 5 : "",
-      top: ([0, 90]).includes(this.props.rotation) ? 5 : "",
-      bottom: ([180, 270]).includes(this.props.rotation) ? 5 : "",
+      left: ([0, 270]).includes(this.getRotationOnPageMode()) ? 5 : "",
+      right: ([90, 180]).includes(this.getRotationOnPageMode()) ? 5 : "",
+      top: ([0, 90]).includes(this.getRotationOnPageMode()) ? 5 : "",
+      bottom: ([180, 270]).includes(this.getRotationOnPageMode()) ? 5 : "",
       zIndex: 11,
     }
 
     const symbolSize: CSSProperties = {
       fontSize: 50,
       color: '#ff2222',
-      visibility: this.state.numDocPages > 0 && this.props.isMainView ? 'visible' : 'hidden'
+      visibility: this.props.show && this.props.isMainView ? 'visible' : 'hidden'
     }
 
     const shadowStyle: CSSProperties = {
@@ -1162,6 +1202,8 @@ const mapStateToProps = (state) => ({
   firstDot: state.gesture.doubleTap.firstDot,
   leftToRightDiagonal: state.gesture.crossLine.leftToRightDiagonal,
   rightToLeftDiagonal: state.gesture.crossLine.rightToLeftDiagonal,
+  notFirstPenDown: state.gesture.symbol.notFirstPenDown,
+  show: state.gesture.symbol.show,
   hideCanvas: state.gesture.hideCanvas,
   activePageNo: state.activePage.activePageNo
 });
@@ -1169,11 +1211,14 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   setCalibrationData: cali => setCalibrationData(cali),
   incrementTapCount: () => incrementTapCount(),
-  initializeTapCount: () => initializeTapCount(),
-  setFirstTap: (dot) => setFirstTap(dot),
+  initializeTap: () => initializeTap(),
+  setFirstDot: (dot) => setFirstDot(dot),
   setLeftToRightDiagonal: () => setLeftToRightDiagonal(),
   setRightToLeftDiagonal: () => setRightToLeftDiagonal(),
-  initializeDiagonal: () => initializeDiagonal(),
+  initializeCrossLine: () => initializeCrossLine(),
+  setNotFirstPenDown: (bool) => setNotFirstPenDown(bool),
+  showSymbol: () => showSymbol(),
+  hideSymbol: () => hideSymbol(),
   setHideCanvas: (bool) => setHideCanvas(bool),
   setActivePageNo: no => setActivePageNo(no)
 });

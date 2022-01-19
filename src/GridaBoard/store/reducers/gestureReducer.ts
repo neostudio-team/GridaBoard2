@@ -1,53 +1,85 @@
 import { NeoDot } from "../../../nl-lib/common/structures";
 import { store } from "../../client/pages/GridaBoard";
 
-const INCREMENT_TAP_COUNT = 'INCREMENT_TAP_COUNT';
-const INITIALIZE_TAP_COUNT = 'INITIALIZE_TAP_COUNT';
-const SET_FIRST_TAP = 'SET_FIRST_TAP';
 
-const INITIALIZE_DIAGONAL = 'INITIALIZE_DIAGONAL';
-const SET_LEFT_TO_RIGHT_DIAGONAL = 'SET_LEFT_TO_RIGHT_DIAGONAL';
-const SET_RIGHT_TO_LEFT_DIAGONAL = 'SET_RIGHT_TO_LEFT_DIAGONAL';
+const DoubleTapActionGroup = "DOUBLE_TAP";
+const CrossLineActionGroup = "CROSS_LINE";
+const SymbolActionGroup = "SYMBOL";
+
+
+const DoubleTapActionType = Object.freeze({
+  INITIALIZE_TAP: `${DoubleTapActionGroup}.INITIALIZE_TAP`,
+  INCREMENT_TAP_COUNT: `${DoubleTapActionGroup}.INCREMENT_TAP_COUNT`,
+  SET_FIRST_DOT: `${DoubleTapActionGroup}.SET_FIRST_DOT`,
+});
+
+const CrossLineActionType = Object.freeze({
+  INITIALIZE_CROSS_LINE: `${CrossLineActionGroup}.INITIALIZE_CROSS_LINE`,
+  SET_LEFT_TO_RIGHT_DIAGONAL: `${CrossLineActionGroup}.SET_LEFT_TO_RIGHT_DIAGONAL`,
+  SET_RIGHT_TO_LEFT_DIAGONAL: `${CrossLineActionGroup}.SET_RIGHT_TO_LEFT_DIAGONAL`,
+});
+
+const SymbolActionType = Object.freeze({
+  SET_NOT_FIRST_PEN_DOWN: `${SymbolActionGroup}.SET_NOT_FIRST_PEN_DOWN`,
+  SHOW: `${SymbolActionGroup}.SHOW`,
+  HIDE: `${SymbolActionGroup}.HIDE`
+});
 
 const SET_HIDE_CANVAS = 'SET_HIDE_CANVAS';
 
-// 액션 생성 함수
+
+// Double Tap Action Function
+export const initializeTap = () => {
+  store.dispatch({
+    type: DoubleTapActionType.INITIALIZE_TAP
+  });
+};
 export const incrementTapCount = () => {
   store.dispatch({
-    type: INCREMENT_TAP_COUNT
+    type: DoubleTapActionType.INCREMENT_TAP_COUNT
   });
 };
-
-export const initializeTapCount = () => {
+export const setFirstDot = (firstDot: NeoDot) => {
   store.dispatch({
-    type: INITIALIZE_TAP_COUNT
+    type: DoubleTapActionType.SET_FIRST_DOT, firstDot
   });
 };
 
-export const setFirstTap = (firstDot: NeoDot) => {
+// Cross Line Action Function
+export const initializeCrossLine = () => {
   store.dispatch({
-    type: SET_FIRST_TAP, firstDot
+    type: CrossLineActionType.INITIALIZE_CROSS_LINE
   });
 };
-
 export const setLeftToRightDiagonal = () => {
   store.dispatch({
-    type: SET_LEFT_TO_RIGHT_DIAGONAL
+    type: CrossLineActionType.SET_LEFT_TO_RIGHT_DIAGONAL
   });
 };
-
 export const setRightToLeftDiagonal = () => {
   store.dispatch({
-    type: SET_RIGHT_TO_LEFT_DIAGONAL
+    type: CrossLineActionType.SET_RIGHT_TO_LEFT_DIAGONAL
   });
 };
 
-export const initializeDiagonal = () => {
+// Symbol Action Function
+export const setNotFirstPenDown = (notFirstPenDown: boolean) => {
   store.dispatch({
-    type: INITIALIZE_DIAGONAL
+    type: SymbolActionType.SET_NOT_FIRST_PEN_DOWN, notFirstPenDown
   });
 };
+export const showSymbol = () => {
+  store.dispatch({
+    type: SymbolActionType.SHOW
+  });
+}
+export const hideSymbol = () => {
+  store.dispatch({
+    type: SymbolActionType.HIDE
+  });
+}
 
+// Hide Canvas Action Function
 export const setHideCanvas = (hideCanvas: boolean) => {
   store.dispatch({
     type: SET_HIDE_CANVAS, hideCanvas
@@ -64,13 +96,17 @@ const initialState = {
     leftToRightDiagonal: false,
     rightToLeftDiagonal: false
   },
-  hideCanvas: false
+  symbol: {
+    notFirstPenDown: false,
+    show: false,
+  },
+  hideCanvas: false,
 };
 
 // 리듀서
 export default function gestureReducer(state = initialState, action) {
   switch (action.type) {
-    case INITIALIZE_TAP_COUNT:
+    case DoubleTapActionType.INITIALIZE_TAP:
       return {
         ...state,
         doubleTap: {
@@ -78,7 +114,7 @@ export default function gestureReducer(state = initialState, action) {
           firstDot: null
         }
       }
-    case INCREMENT_TAP_COUNT:
+    case DoubleTapActionType.INCREMENT_TAP_COUNT:
       return {
         ...state,
         doubleTap: {
@@ -86,7 +122,7 @@ export default function gestureReducer(state = initialState, action) {
           tapCount: state.doubleTap.tapCount+1
         }
       };
-    case SET_FIRST_TAP:
+    case DoubleTapActionType.SET_FIRST_DOT:
       return {
         ...state,
         doubleTap: {
@@ -94,7 +130,7 @@ export default function gestureReducer(state = initialState, action) {
           firstDot: action.firstDot
         }
       }
-    case INITIALIZE_DIAGONAL:
+    case CrossLineActionType.INITIALIZE_CROSS_LINE:
       return {
         ...state,
         crossLine: {
@@ -102,7 +138,7 @@ export default function gestureReducer(state = initialState, action) {
           rightToLeftDiagonal: false  
         }
       }
-    case SET_LEFT_TO_RIGHT_DIAGONAL:
+    case CrossLineActionType.SET_LEFT_TO_RIGHT_DIAGONAL:
       return {
         ...state,
         crossLine: {
@@ -110,7 +146,7 @@ export default function gestureReducer(state = initialState, action) {
           leftToRightDiagonal: true
         }
       }
-    case SET_RIGHT_TO_LEFT_DIAGONAL:
+    case CrossLineActionType.SET_RIGHT_TO_LEFT_DIAGONAL:
       return {
         ...state,
         crossLine: {
@@ -118,6 +154,30 @@ export default function gestureReducer(state = initialState, action) {
           rightToLeftDiagonal: true
         }
       }
+    case SymbolActionType.SET_NOT_FIRST_PEN_DOWN:
+      return {
+        ...state,
+        symbol: {
+          ...state.symbol,
+          notFirstPenDown: action.notFirstPenDown
+        }
+      }
+    case SymbolActionType.SHOW:
+      return {
+        ...state,
+        symbol: {
+          ...state.symbol,
+          show: true
+        }
+      }
+    case SymbolActionType.HIDE:
+      return {
+        ...state,
+        symbol: {
+          ...state.symbol,
+          show: false
+        }
+      }  
     case SET_HIDE_CANVAS:
       return {
         ...state,

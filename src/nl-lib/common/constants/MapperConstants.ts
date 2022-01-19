@@ -39,7 +39,7 @@ export const PlateNcode_3: IPageSOBP = { // 부기보드
   section: 3,
   owner: 1013,
   book: 2,
-  page: 14,
+  page: 16,
 }
 
 export const FilmNcode_Landscape: IPageSOBP = {
