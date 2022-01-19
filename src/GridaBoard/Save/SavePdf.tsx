@@ -4,11 +4,12 @@ import { degrees, PDFDocument, PDFPage, rgb, StandardFonts } from 'pdf-lib';
 import GridaDoc from "../GridaDoc";
 
 import { InkStorage } from "nl-lib/common/penstorage";
-import { drawPath } from "nl-lib/common/util";
+import { drawPath, isSamePage } from "nl-lib/common/util";
 import { adjustNoteItemMarginForFilm, getNPaperInfo } from "../../nl-lib/common/noteserver";
 import { store } from "../client/pages/GridaBoard";
 import { NeoStroke } from "../../nl-lib/common/structures";
 import { firebaseAnalytics } from "../util/firebase_config";
+import { PlateNcode_1, PlateNcode_2 } from "../../nl-lib/common/constants";
 
 const PDF_TO_SCREEN_SCALE = 6.72; // (56/600)*72
 
@@ -61,7 +62,7 @@ export async function makePdfDocument() {
         pdfDoc = await PDFDocument.create();
       }
       const pdfPage = await pdfDoc.addPage();
-      if (page._rotation === 90 || page._rotation === 270) {
+      if (page._rotation === 90 || page._rotation === 270 || isSamePage(page.pageInfos[0], PlateNcode_2) || isSamePage(page.pageInfos[0], PlateNcode_1)) {
         const tmpWidth = pdfPage.getWidth();
         pdfPage.setWidth(pdfPage.getHeight());
         pdfPage.setHeight(tmpWidth);
