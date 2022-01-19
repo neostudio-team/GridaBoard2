@@ -415,8 +415,13 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
         this.renderer._opt.rotation = nextProps.rotation;
         
-        if (isSameNcode(nextProps.pageInfo, DefaultPlateNcode)){
-          return;
+        const doc = GridaDoc.getInstance();
+        const page = doc.getPageAt(0);
+        if(doc.pages.length !== 0){
+          const isPdf = page.pdf
+          if (isSameNcode(nextProps.pageInfo, DefaultPlateNcode) && isPdf !== undefined){
+            return;
+          }
         }
         const transform = MappingStorage.getInstance().getNPageTransform(pageInfo);
         this.renderer.setTransformParameters(transform.h, this.pdfSize);
