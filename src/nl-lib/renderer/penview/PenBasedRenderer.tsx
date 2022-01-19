@@ -13,6 +13,7 @@ import {callstackDepth, isSameNcode, isSamePage, makeNPageIdStr, uuidv4} from "n
 import {INeoSmartpen, IPenToViewerEvent} from "nl-lib/common/neopen";
 import {MappingStorage} from "nl-lib/common/mapper";
 import {DefaultPlateNcode, DefaultPUINcode} from "nl-lib/common/constants";
+import {PlateNcode_3} from "nl-lib/common/constants/MapperConstants";
 import {InkStorage} from "nl-lib/common/penstorage";
 import {isPlatePaper, isPUI, getNPaperInfo, adjustNoteItemMarginForFilm} from "nl-lib/common/noteserver";
 
@@ -362,7 +363,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     if ((this.props.rotation !== nextProps.rotation) && isSamePage(this.props.basePageInfo, nextProps.basePageInfo)) {
       //회전 버튼을 누를 경우만 들어와야 하는 로직, 회전된 pdf를 로드할 때는 들어오면 안됨
       //로드할 경우에는 this.props의 basePageInfo가 nullNCode로 세팅돼있기 때문에 들어오지 않음
-
+      this.props.setNotFirstPenDown(false);
       this.renderer.setRotation(nextProps.rotation, this.pdfSize);
 
       // const ctx = this.canvas.getContext('2d');
@@ -435,6 +436,8 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
         ret_val = true;
 
+        // 페이지 이동했을 때, notFirstPenDown state를 바꿔준다.
+        this.props.setNotFirstPenDown(false);
       }
 
       if (this.props.calibrationMode) {
@@ -537,10 +540,6 @@ class PenBasedRenderer extends React.Component<Props, State> {
     if (this.props.hideCanvas) {
       showMessageToast(getText('hide_canvas'));
     }
-    if (!this.props.notFirstPenDown) {
-      this.onSymbolUp();
-      this.props.setNotFirstPenDown();
-    }
     if (this.renderer) {
       // const { section, owner, book, page } = event;
       // if (isSamePage(this.props.pageInfo, { section, owner, book, page }))
@@ -575,6 +574,10 @@ class PenBasedRenderer extends React.Component<Props, State> {
     if (this.props.onNcodePageChanged) {
       this.renderer.registerPageInfoForPlate(event);//hover page info를 거치지 않고 바로 page info로 들어오는 경우(빨리 찍으면 hover 안들어옴)
       this.props.onNcodePageChanged({ section, owner, book, page });
+      // (페이지가 refresh 되고) 부기보드를 첫 터치했을때 심볼이 보여지도록 한다. 
+      if (isSamePage(this.props.pageInfo, PlateNcode_3) && !this.props.notFirstPenDown) {
+        this.onSymbolUp();
+      }
     }
   }
 
@@ -1092,6 +1095,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
   }
 
   onSymbolUp = () => {
+    this.props.setNotFirstPenDown(true);
     showMessageToast(getText('check_symbol_position'));
     this.props.showSymbol();
     setTimeout(function() {
@@ -1208,7 +1212,7 @@ const mapDispatchToProps = (dispatch) => ({
   setLeftToRightDiagonal: () => setLeftToRightDiagonal(),
   setRightToLeftDiagonal: () => setRightToLeftDiagonal(),
   initializeCrossLine: () => initializeCrossLine(),
-  setNotFirstPenDown: () => setNotFirstPenDown(),
+  setNotFirstPenDown: (bool) => setNotFirstPenDown(bool),
   showSymbol: () => showSymbol(),
   hideSymbol: () => hideSymbol(),
   setHideCanvas: (bool) => setHideCanvas(bool),
