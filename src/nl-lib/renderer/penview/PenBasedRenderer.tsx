@@ -1075,6 +1075,10 @@ class PenBasedRenderer extends React.Component<Props, State> {
     return {npaperWidth, npaperHeight, gestureArea}
   }
 
+  /** 페이지 mode(landscape/portrait)에 따른 회전값을 가져오기 위한 함수 
+   * landscape: 현재 rotation 값을 그대로 가져옴
+   * portrait: landscape에서 90도 회전된 상태의 값을 주어야 하므로 현재 rotation 값에 90을 더해준다.
+  */
   getRotationOnPageMode = () => {
     const currentPage = GridaDoc.getInstance().getPage(store.getState().activePage.activePageNo);
     if (!currentPage) return
