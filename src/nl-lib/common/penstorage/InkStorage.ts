@@ -176,10 +176,11 @@ export default class InkStorage {
 
     const activePageNo = store.getState().activePage.activePageNo;
 
-    if ((isPlatePaper(pageInfo) || isPUI(pageInfo)) && activePageNo === -1) {
-      if (isPlatePaper(pageInfo)) {
-        alert(getText("alert_needPage"));
-      }
+     // if ((isPlatePaper(pageInfo) || isPUI(pageInfo)) && activePageNo === -1) {
+      if ((isPUI(pageInfo)) && activePageNo === -1) {
+        // if (isPlatePaper(pageInfo)) {
+        //   alert(getText("alert_needPage"));
+        // }
       return;
     }
 

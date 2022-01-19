@@ -6,7 +6,7 @@ import { RootState } from "./store/rootReducer";
 import { g_availablePagesInSection, nullNcode } from "nl-lib/common/constants";
 import { NeoPdfDocument, IPdfOpenOption, NeoPdfManager, PdfManagerEventName, IPdfManagerEvent } from "nl-lib/common/neopdf";
 import { IPdfToNcodeMapItem, IPageSOBP, IGetNPageTransformType } from "nl-lib/common/structures";
-import { isSamePage, makeNPageIdStr, scrollToThumbnail } from "nl-lib/common/util";
+import { isPlatePage, isSamePage, makeNPageIdStr, scrollToThumbnail } from "nl-lib/common/util";
 
 
 import { InkStorage } from "nl-lib/common/penstorage";
@@ -378,6 +378,7 @@ export default class GridaDoc {
 
         case "note":
         case "default":
+        case "plate":
         default: {
           //
           const activePageNo = this.addNcodePage(pageInfo);
@@ -408,6 +409,9 @@ export default class GridaDoc {
     const found = msi.getNPageTransform(pageInfo);
 
     const page = new GridaPage(this.numPages, pageInfo, pageInfo);
+    if(isPlatePage(pageInfo)){
+      page._rotation = 270
+    }   
     this._pages.push(page);
 
     return this._pages.length - 1;
