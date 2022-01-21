@@ -378,7 +378,6 @@ export default class GridaDoc {
 
         case "note":
         case "default":
-        case "plate":
         default: {
           //
           const activePageNo = this.addNcodePage(pageInfo);
@@ -409,9 +408,6 @@ export default class GridaDoc {
     const found = msi.getNPageTransform(pageInfo);
 
     const page = new GridaPage(this.numPages, pageInfo, pageInfo);
-    if(isPlatePage(pageInfo)){
-      page._rotation = 270
-    }   
     this._pages.push(page);
 
     return this._pages.length - 1;
