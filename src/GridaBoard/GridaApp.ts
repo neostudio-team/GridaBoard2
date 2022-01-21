@@ -75,12 +75,9 @@ export default class GridaApp {
 
     const pageInfo = { section: event.section, owner: event.owner, book: event.book, page: event.page } as IPageSOBP;
 
-    const numDocPages = store.getState().activePage.numDocPages
-
-    if (isSameNcode(pageInfo, DefaultPlateNcode) && numDocPages !== 0 || isSameNcode(pageInfo, DefaultPUINcode) || isPUI(pageInfo)) {
+    if (isSameNcode(pageInfo, DefaultPlateNcode) || isSameNcode(pageInfo, DefaultPUINcode) || isPUI(pageInfo)) {
         return;
     }
-
     const msi = MappingStorage.getInstance();
     const found = msi.getNPageTransform(pageInfo);
 

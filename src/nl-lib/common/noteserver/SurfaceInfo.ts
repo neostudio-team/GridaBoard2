@@ -112,7 +112,7 @@ export function getNPaperInfo(pageInfo: IPageSOBP) {
   let isDefault = false;
   let key = section.toString() + "." + owner.toString() + "." + book.toString();
   let found = g_paperType.definition[key];
-  if ( !found || key === "3.1013.2") {
+  if ( !found) {
     key = g_paperType.defaultKey;
     found = g_paperType.definition[key];
     isDefault = true;
