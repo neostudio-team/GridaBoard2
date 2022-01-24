@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   selectColorBtn : {
     width : "40px",
     height : "40px",
-    marginLeft: "24px",
+    marginLeft: "16px",
   },
   colorDropDownStyle : {
     flexDirection: "row",
