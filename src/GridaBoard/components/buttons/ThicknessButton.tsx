@@ -9,7 +9,7 @@ import SimpleTooltip from "../SimpleTooltip";
 
 const useStyle = makeStyles(theme=>({
   icon : {
-    marginLeft: "22px",
+    marginLeft: "16px",
     padding: "8px",
     zIndex: 100
   },

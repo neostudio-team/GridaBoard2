@@ -63,7 +63,7 @@ const ConnectButton = (props: Props) => {
   return (
     <React.Fragment>
       {numPens < 1 ? (
-        <Button className={classes.connectBtn} variant="contained" color="primary" onClick={() => handleConnectPen()}>
+        <Button className={classes.connectBtn} variant="outlined" color="primary" onClick={() => handleConnectPen()}>
           + {getText("pen_connect")}
         </Button>
       ) : (

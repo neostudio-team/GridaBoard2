@@ -15,7 +15,7 @@ const menuStyle = makeStyles(theme => ({
     height: '40px',
     marginLeft: '24px',
     borderRadius: '4px',
-    borderColor: '#688FFF',
+    borderColor: theme.custom.icon.mono[2],
     borderWidth: '1px',
     alignItems: 'center',
     '& > button': {

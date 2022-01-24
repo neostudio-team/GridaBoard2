@@ -19,8 +19,9 @@ const useStyle = makeStyles(theme => ({
   },
   selected : {
     color: theme.palette.primary.main,
-    background: theme.custom.icon.mono[4],
-    padding: "8px"
+    background: theme.custom.icon.blue[3],
+    padding: "8px",
+    borderRadius: "8px"
   }
 }));
 
