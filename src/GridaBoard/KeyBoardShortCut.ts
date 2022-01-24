@@ -17,6 +17,7 @@ import { setleftDrawerOpen, setSaveOpen, showShortCut } from './store/reducers/u
 import { onToggleRotate } from "./components/buttons/RotateButton";
 import { fileOpenHandler } from "./Layout/HeaderLayer";
 import { startPrint } from "../nl-lib/ncodepod/NcodePrint/PrintNcodedPdfButton";
+import { scrollToThumbnail } from "../nl-lib/common/util/functions";
 
 /* 
 let _isCtrl = false;
@@ -213,6 +214,7 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
           return;
         }
         setActivePageNo(activePageNo-1);
+        scrollToThumbnail(activePageNo-1);
         break;
       }
       // page down
@@ -228,6 +230,7 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
           return;
         }
         setActivePageNo(activePageNo+1);
+        scrollToThumbnail(activePageNo+1);
         break;
       }
 
