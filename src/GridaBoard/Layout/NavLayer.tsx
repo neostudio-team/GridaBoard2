@@ -34,6 +34,7 @@ const useStyle = props => makeStyles(theme => ({
     height: "50px",
     zIndex: 1,
     zoom: 1 / props.brZoom,
+    backgroundColor: theme.custom.white[50],
     "&>div":{
       display: "inline-flex",
       flexDirection: "row",
@@ -51,6 +52,15 @@ const useStyle = props => makeStyles(theme => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+  },
+  headerButtonLiner: {
+    width: '1px',
+    minWidth: '1px',
+    minHeight: '1px',
+    height: '15px',
+    background: theme.custom.grey[1],
+    borderRadius: '4px !important',
+    borderRight: '0px !important',
   },
 }));
 
@@ -148,6 +158,7 @@ const NavLayer = (props: Props) => {
     <div className={classes.navStyle}>
         <div>
           <BoardNewButton />
+          <div className={classes.headerButtonLiner} style={{marginLeft: '16px'}} />
           <PenTypeButton />
 
           <CustomBadge badgeContent={`1~0`}>
@@ -157,7 +168,7 @@ const NavLayer = (props: Props) => {
           <CustomBadge badgeContent={`Z~B`}>
             <ThicknessButton />
           </CustomBadge>
-
+          <div className={classes.headerButtonLiner} style={{marginLeft: '16px', marginRight: '8px'}} />
           <CustomBadge badgeContent={`T`}>
             <TracePointButton />
           </CustomBadge>
