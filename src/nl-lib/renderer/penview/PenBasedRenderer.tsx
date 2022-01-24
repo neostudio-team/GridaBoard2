@@ -281,9 +281,9 @@ class PenBasedRenderer extends React.Component<Props, State> {
   }
 
   private unsubscribeAllPensEvent = () => {
-    this.subscribedPens.forEach(pen => {
+    this.subscribedPens.slice(0).forEach(pen => {
       this.unsubscribePenEvent(pen);
-    });
+    });    
   }
 
   /** pen array를 제외하고는 event listening을 하지 않도록 */

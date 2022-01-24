@@ -1,5 +1,5 @@
 import GridaDoc from 'GridaBoard/GridaDoc';
-import { setActivePageNo, setDocNumPages } from '../GridaBoard/store/reducers/activePageReducer';
+import { setActivePageNo, setDocNumPages, setUrlAndFilename } from '../GridaBoard/store/reducers/activePageReducer';
 import { setDate, setDocName, setIsNewDoc } from '../GridaBoard/store/reducers/docConfigReducer';
 import firebase, { secondaryFirebase, auth } from 'GridaBoard/util/firebase_config';
 import { IBoardData } from './structures/BoardStructures';
@@ -23,6 +23,9 @@ export const resetGridaBoard = async () => {
   const doc = GridaDoc.getInstance();
   doc.pages = [];
   doc._pdfd = [];
+  setActivePageNo(-1);
+  setDocNumPages(0);
+  setUrlAndFilename(undefined, undefined);
   
   MappingStorage.getInstance().resetTemporary();
   InkStorage.getInstance().resetStrokes();
