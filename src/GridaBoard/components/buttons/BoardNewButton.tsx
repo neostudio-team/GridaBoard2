@@ -8,7 +8,6 @@ import ConvertFileLoad from 'GridaBoard/Load/ConvertFileLoad';
 import { scrollToThumbnail } from '../../../nl-lib/common/util';
 import { setActivePageNo } from '../../store/reducers/activePageReducer';
 import { firebaseAnalytics } from '../../util/firebase_config';
-import { theme1 } from '../../theme';
 
 const menuStyle = makeStyles(theme => ({
   headerButton: {
@@ -16,7 +15,7 @@ const menuStyle = makeStyles(theme => ({
     height: '40px',
     marginLeft: '24px',
     borderRadius: '4px',
-    borderColor: theme1.custom.icon.mono[2],
+    borderColor: theme.custom.icon.mono[2],
     borderWidth: '1px',
     alignItems: 'center',
     '& > button': {
