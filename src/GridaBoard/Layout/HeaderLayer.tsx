@@ -439,7 +439,7 @@ const HeaderLayer = (props: Props) => {
           <KeyboardArrowDownRoundedIcon /> */}
         </div>
       </div>
-      <div style={{ height: '1px', background: 'rgba(255,255,255,1)', zoom: 1 / brZoom }}></div>
+      <div style={{ height: '1px', background: 'rgba(88, 98, 125, 0.15)', zoom: 1 / brZoom }}></div>
     </React.Fragment>
   );
 };
