@@ -20,7 +20,7 @@ import CombineDialog from './layout/component/dialog/CombineDialog';
 import { getCategoryArray } from "./BoardListPageFunc2";
 import GlobalDropdown from './layout/component/GlobalDropdown';
 import { setDefaultCategory, getDatabase } from "./BoardListPageFunc2"
-import { getTimeStamp } from './BoardListPageFunc';
+import { getTimeStamp, resetGridaBoard } from './BoardListPageFunc';
 import LoadingCircle from "GridaBoard/Load/LoadingCircle";
 import { setLoadingVisibility } from 'GridaBoard/store/reducers/loadingCircle'
 import { forceUpdateBoardList } from '../GridaBoard/store/reducers/appConfigReducer';
@@ -140,6 +140,7 @@ const BoardList = () => {
  
 
   const routeChange = async idx => {
+    await resetGridaBoard();
     const nowDocs = docsObj.docs[idx];
     if (nowDocs.dateDeleted !== 0) {
       return;
