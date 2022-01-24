@@ -1,5 +1,5 @@
 import { Button, Checkbox, makeStyles, Snackbar, SnackbarContent, Slide } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import getText from 'GridaBoard/language/language';
 import MainNavSelector from './component/mainContent/MainNavSelector';
 import MainNewButton from './component/mainContent/MainNewButton';
@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../GridaBoard/store/rootReducer';
 import { showSnackbar } from '../../GridaBoard/store/reducers/listReducer';
 import { store } from "GridaBoard/client/pages/GridaBoard";
+import { setActivePageNo } from '../../GridaBoard/store/reducers/activePageReducer';
 
 const useStyle = makeStyles(theme => ({
   wrap: {
@@ -317,6 +318,10 @@ const MainContent = (props: Props) => {
     setAllItemsChecked(false);
   }, [docs, selected]);
 
+  useEffect(() => {
+    setActivePageNo(0)
+  }, [])
+  
   const getNowDocs = () => {
     let tmpDocs = [];
     if (['recent', 'trash'].includes(selected)) {
