@@ -10,7 +10,6 @@ import getText from "../../language/language";
 import SimpleTooltip from "../SimpleTooltip";
 
 const pointerStyle = {
-  marginLeft: "12px",
   padding: "8px"
   // backgroundColor: "white"
 } as React.CSSProperties;
@@ -23,7 +22,8 @@ const TracePointButton = () => {
     if (sw) {
       const $elem = $("#btn_tracepoint").find(".c2");
       $elem.addClass("checked");
-      $('#btn_tracepoint').css('background', 'white');
+      $('#btn_tracepoint').css('background', '#E8ECF5');
+      $('#btn_tracepoint').css('borderRadius', '8px');
       $('#tracer_svg_icon').css('color', '#688FFF');
     } else {
       const $elem = $("#btn_tracepoint").find(".c2");
