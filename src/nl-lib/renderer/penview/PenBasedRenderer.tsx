@@ -1199,7 +1199,6 @@ class PenBasedRenderer extends React.Component<Props, State> {
                 d="M18 10v10H6V4h6v6h6zm2-2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2h8l6 6zm-6-3.172L17.172 8H14V4.828z"
               />
             </SvgIcon>
-            <br/><br/><br/><br/><br/>
             <Typography style={infoNoPageTitle}>
             {getText('initial_page_guide')}
             </Typography>
