@@ -26,7 +26,7 @@ import { onToggleRotate } from "GridaBoard/components/buttons/RotateButton";
 import { showMessageToast } from "GridaBoard/store/reducers/ui";
 import getText from "GridaBoard/language/language";
 import { onClearPage } from "boardList/layout/component/dialog/detail/AlertDialog";
-import Add from "@material-ui/icons/Add";
+import AddCircle from "@material-ui/icons/AddCircle";
 import { SvgIcon } from '@material-ui/core';
 import { theme } from "../../../GridaBoard/theme";
 
@@ -1130,16 +1130,16 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
     const symbolDiv: CSSProperties = {
       position: "absolute",
-      left: ([0, 270]).includes(this.getRotationOnPageMode()) ? 5 : "",
-      right: ([90, 180]).includes(this.getRotationOnPageMode()) ? 5 : "",
-      top: ([0, 90]).includes(this.getRotationOnPageMode()) ? 5 : "",
-      bottom: ([180, 270]).includes(this.getRotationOnPageMode()) ? 5 : "",
+      left: ([0, 270]).includes(this.getRotationOnPageMode()) ? 20 : "",
+      right: ([90, 180]).includes(this.getRotationOnPageMode()) ? 20 : "",
+      top: ([0, 90]).includes(this.getRotationOnPageMode()) ? 20 : "",
+      bottom: ([180, 270]).includes(this.getRotationOnPageMode()) ? 20 : "",
       zIndex: 11,
     }
 
     const symbolSize: CSSProperties = {
-      fontSize: 50,
-      color: '#ff2222',
+      fontSize: "40px",
+      color: theme.custom.icon.mono[0],
       visibility: this.props.show && this.props.isMainView ? 'visible' : 'hidden'
     }
 
@@ -1149,7 +1149,6 @@ class PenBasedRenderer extends React.Component<Props, State> {
     }
     
     const infoNoPageDiv: CSSProperties = {
-      positoin: "absolute",
       display: "flex",
       width: "246px",
       height: this.viewSize.height,
@@ -1188,7 +1187,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
         <div id={`${this.props.parentName}-fabric_container`} style={inkContainerDiv} >
           <canvas id={this.canvasId} style={inkCanvas} ref={this.setCanvasRef} />
           <div style={symbolDiv}>
-            <Add style={symbolSize} />
+            <AddCircle style={symbolSize} />
           </div>
         </div >
 
