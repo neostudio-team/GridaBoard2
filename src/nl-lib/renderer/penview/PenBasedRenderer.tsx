@@ -101,6 +101,8 @@ interface Props { // extends MixedViewProps {
   hideCanvasMode: boolean;
   setHideCanvasMode: any;
 
+  gestureMode: boolean;
+
   notFirstPenDown: boolean;
   show: boolean;
   setNotFirstPenDown: any;
@@ -731,7 +733,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     const { stroke } = event;
     this.crossLineEraser(stroke);
 
-    if (this.checkTap(stroke) && this.props.tapCount === 2) {
+    if (this.props.gestureMode && this.checkTap(stroke) && this.props.tapCount === 2) {
       this.doubleTapProcess(stroke.isPlate, stroke.dotArray[0]);
     }
       
@@ -745,8 +747,8 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   /** Paper에 X를 그렸을 때, stroke를 지우게 하기 위한 로직 */ 
   crossLineEraser = (stroke: NeoStroke) => {
-    // 플레이트가 아니라면 종료
-    if (!stroke.isPlate) return
+    // gestureMode가 아니거나 플레이트가 아니라면 종료
+    if (!this.props.gestureMode || !stroke.isPlate) return
 
     const [first, last] = this.getFirstLastItems(stroke.dotArray);
     // 임시, 플레이트 윗 파티션은 stroke 에 dotArray 가 들어오지 않으므로 예외처리 해놓음.
@@ -1242,6 +1244,7 @@ const mapStateToProps = (state) => ({
   notFirstPenDown: state.gesture.symbol.notFirstPenDown,
   show: state.gesture.symbol.show,
   hideCanvasMode: state.gesture.hideCanvasMode,
+  gestureMode: state.gesture.gestureMode,
   activePageNo: state.activePage.activePageNo
 });
 
