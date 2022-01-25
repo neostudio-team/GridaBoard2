@@ -27,6 +27,9 @@ import { showMessageToast } from "GridaBoard/store/reducers/ui";
 import getText from "GridaBoard/language/language";
 import { onClearPage } from "boardList/layout/component/dialog/detail/AlertDialog";
 import Add from "@material-ui/icons/Add";
+import { SvgIcon } from '@material-ui/core';
+import { theme } from "../../../GridaBoard/theme";
+
 
 
 /**
@@ -1144,6 +1147,39 @@ class PenBasedRenderer extends React.Component<Props, State> {
       color: "#a20",
       textShadow: "-1px 0 2px #fff, 0 1px 2px #fff, 1px 0 2px #fff, 0 -1px 2px #fff",
     }
+    
+    const infoNoPageDiv: CSSProperties = {
+      positoin: "absolute",
+      display: "flex",
+      width: "246px",
+      height: this.viewSize.height,
+      justifyContent: "center",
+      alignItems: "center",
+      margin: "auto",
+      padding: "0px",
+    }
+
+    const infoNoPageIcon: CSSProperties = {
+      position: "absolute",
+      width: "80px",
+      height: "80px",
+      color: theme.custom.icon.mono[2],
+      marginBottom: 150
+    }
+
+    const infoNoPageTitle: CSSProperties = {
+      position: "absolute",
+      width: "360px",
+      
+      fontFamily: "Noto Sans CJK KR",
+      fontStyle: "normal",
+      fontWeight: "normal",
+      fontSize: "18px",
+      lineHeight: "26px",
+      letterSpacing: "0.25px",
+
+      color: theme.palette.secondary.contrastText
+    }
 
     return (
       <div id="pen-based-renderer" ref={this.setMainDivRef} style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}>
@@ -1157,9 +1193,17 @@ class PenBasedRenderer extends React.Component<Props, State> {
         </div >
 
         {this.state.numDocPages <= 0 ? 
-            <Typography variant="h3" style={{color: '#b7b7b7', textAlign: 'center', fontWeight: 600, marginTop: this.props.viewSize.height*(3/7)}}>
-              {getText('initial_page_guide')}
+          <div style={infoNoPageDiv}>
+            <SvgIcon id="no_page_svg_icon" style={infoNoPageIcon}>
+              <path fillRule="evenodd" clipRule="evenodd"
+                d="M18 10v10H6V4h6v6h6zm2-2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2h8l6 6zm-6-3.172L17.172 8H14V4.828z"
+              />
+            </SvgIcon>
+            <br/><br/><br/><br/><br/>
+            <Typography style={infoNoPageTitle}>
+            {getText('initial_page_guide')}
             </Typography>
+          </div>
           : ""}
 
         {!this.props.noInfo ?
