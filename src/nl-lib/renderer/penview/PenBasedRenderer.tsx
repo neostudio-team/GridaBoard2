@@ -20,7 +20,7 @@ import {isPlatePaper, isPUI, getNPaperInfo, adjustNoteItemMarginForFilm} from "n
 import {setCalibrationData} from 'GridaBoard/store/reducers/calibrationDataReducer';
 import {store} from "GridaBoard/client/pages/GridaBoard";
 import GridaDoc from "GridaBoard/GridaDoc";
-import { initializeCrossLine, setLeftToRightDiagonal, setRightToLeftDiagonal, setHideCanvas, incrementTapCount, initializeTap, setFirstDot, setNotFirstPenDown, showSymbol, hideSymbol } from "GridaBoard/store/reducers/gestureReducer";
+import { initializeCrossLine, setLeftToRightDiagonal, setRightToLeftDiagonal, setHideCanvasMode, incrementTapCount, initializeTap, setFirstDot, setNotFirstPenDown, showSymbol, hideSymbol } from "GridaBoard/store/reducers/gestureReducer";
 import { setActivePageNo } from "GridaBoard/store/reducers/activePageReducer";
 import { onToggleRotate } from "GridaBoard/components/buttons/RotateButton";
 import { showMessageToast } from "GridaBoard/store/reducers/ui";
@@ -95,8 +95,8 @@ interface Props { // extends MixedViewProps {
   activePageNo: number;  
   setActivePageNo: any;
 
-  hideCanvas: boolean;
-  setHideCanvas: any;
+  hideCanvasMode: boolean;
+  setHideCanvasMode: any;
 
   notFirstPenDown: boolean;
   show: boolean;
@@ -536,7 +536,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
    * @param {{strokeKey:string, mac:string, time:number, stroke:NeoStroke}} event
    */
   onLivePenDown = (event: IPenToViewerEvent) => {
-    if (this.props.hideCanvas) {
+    if (this.props.hideCanvasMode) {
       showMessageToast(getText('hide_canvas'));
     }
     if (this.renderer) {
@@ -700,9 +700,9 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   /** Right Control Zone - Hide Canvas */
   rightControlZone = () => {
-    this.props.setHideCanvas(!this.props.hideCanvas);
+    this.props.setHideCanvasMode(!this.props.hideCanvasMode);
     
-    if(this.props.hideCanvas) {
+    if(this.props.hideCanvasMode) {
       return this.renderer.removeAllCanvasObject();
     }
     this.renderer.redrawStrokes(this.renderer.pageInfo);
@@ -910,7 +910,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     completed.splice(-2);
 
     // hideCanvas가 되어있을시 redraw 로직을 실행하면 다시 stroke가 생성되므로 로직이 실행되지 않도록 함수를 종료시켜준다. 
-    if (this.props.hideCanvas) return
+    if (this.props.hideCanvasMode) return
     this.renderer.redrawStrokes(pageInfo);
 
     // Thumbnail 영역 redraw 를 위한 dispath 추가
@@ -1199,7 +1199,7 @@ const mapStateToProps = (state) => ({
   rightToLeftDiagonal: state.gesture.crossLine.rightToLeftDiagonal,
   notFirstPenDown: state.gesture.symbol.notFirstPenDown,
   show: state.gesture.symbol.show,
-  hideCanvas: state.gesture.hideCanvas,
+  hideCanvasMode: state.gesture.hideCanvasMode,
   activePageNo: state.activePage.activePageNo
 });
 
@@ -1214,7 +1214,7 @@ const mapDispatchToProps = (dispatch) => ({
   setNotFirstPenDown: (bool) => setNotFirstPenDown(bool),
   showSymbol: () => showSymbol(),
   hideSymbol: () => hideSymbol(),
-  setHideCanvas: (bool) => setHideCanvas(bool),
+  setHideCanvasMode: (bool) => setHideCanvasMode(bool),
   setActivePageNo: no => setActivePageNo(no)
 });
 
