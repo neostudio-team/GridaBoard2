@@ -909,7 +909,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
   }
 
 
-  /** 특정 위치부터의 stroke를 지우기 위한 로직 */
+  /** 더블탭 stroke를 지우기 위한 로직 */
   removeDoubleTapStrokeOnActivePage = (pageInfo: IPageSOBP) => {
     const completed = this.renderer.storage.getPageStrokes(pageInfo);
     completed.splice(-2);
