@@ -22,6 +22,8 @@ import CustomBadge from "../components/CustomElement/CustomBadge"
 import { ArrowDropDown, ArrowDropUp } from "@material-ui/icons";
 import BoardNewButton from "../components/buttons/BoardNewButton";
 import { RootState } from "../store/rootReducer";
+import GestureButton from "../components/buttons/GestureButton";
+import HideCanvasButton from "../components/buttons/HideCanvasButton";
 
 const useStyle = props => makeStyles(theme => ({
   navStyle : {
@@ -171,6 +173,13 @@ const NavLayer = (props: Props) => {
           <div className={classes.headerButtonLiner} style={{marginLeft: '16px', marginRight: '16px'}} />
           <CustomBadge badgeContent={`T`}>
             <TracePointButton />
+          </CustomBadge>
+
+          <CustomBadge>
+            <GestureButton />
+          </CustomBadge>
+          <CustomBadge>
+            <HideCanvasButton />
           </CustomBadge>
         </div>
 
