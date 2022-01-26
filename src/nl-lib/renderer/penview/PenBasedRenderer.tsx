@@ -608,6 +608,12 @@ class PenBasedRenderer extends React.Component<Props, State> {
   onLivePenMove = (event: IPenToViewerEvent) => {
     const { stroke } = event;
     if (this.renderer) {
+      if (this.props.hideCanvasMode) {
+        if(event.dot !== undefined){
+          event.dot.x *= -1;
+          event.dot.y *= -1;
+        }
+      }
       this.renderer.pushLiveDot(event, this.props.rotation);
     }
   }
@@ -998,31 +1004,34 @@ class PenBasedRenderer extends React.Component<Props, State> {
     const shiftArray = ['top', 'left', 'bottom', 'right'];
     const shiftEdgeArray = ['top-left', 'bottom-left', 'bottom-right', 'top-right'];
     const rotateDegree = this.getRotationOnPageMode() / 90;
-
-    /** Plate의 width, height, gestureArea(짧은면 기준 1/3) */
+    let {x,y} = dot;
+    if(x < 0){
+      x *= -1;
+      y *= -1;
+    }
     const {npaperWidth, npaperHeight, gestureArea} = this.getPaperSize();
-    if (this.onTopControlZone(dot.x, dot.y, npaperWidth, npaperHeight, gestureArea)) {
+    if (this.onTopControlZone(x, y, npaperWidth, npaperHeight, gestureArea)) {
       return shiftArray[(0-rotateDegree+4)%4];
     }
-    else if (this.onLeftControlZone(dot.x, dot.y, npaperWidth, npaperHeight, gestureArea)) {
+    else if (this.onLeftControlZone(x, y, npaperWidth, npaperHeight, gestureArea)) {
       return shiftArray[(1-rotateDegree+4)%4];
     }
-    else if (this.onBottomControlZone(dot.x, dot.y, npaperWidth, npaperHeight, gestureArea)) {
+    else if (this.onBottomControlZone(x, y, npaperWidth, npaperHeight, gestureArea)) {
       return shiftArray[(2-rotateDegree+4)%4];
     }
-    else if (this.onRightControlZone(dot.x, dot.y, npaperWidth, npaperHeight, gestureArea)) {
+    else if (this.onRightControlZone(x, y, npaperWidth, npaperHeight, gestureArea)) {
       return shiftArray[(3-rotateDegree+4)%4];
     }
-    else if (this.onTopLeftControlZone(dot.x, dot.y, npaperWidth, npaperHeight, gestureArea)) {
+    else if (this.onTopLeftControlZone(x, y, npaperWidth, npaperHeight, gestureArea)) {
       return shiftEdgeArray[(0-rotateDegree+4)%4];
     }
-    else if (this.onBottomLeftControlZone(dot.x, dot.y, npaperWidth, npaperHeight, gestureArea)) {
+    else if (this.onBottomLeftControlZone(x, y, npaperWidth, npaperHeight, gestureArea)) {
       return shiftEdgeArray[(1-rotateDegree+4)%4];
     }
-    else if (this.onBottomRightControlZone(dot.x, dot.y, npaperWidth, npaperHeight, gestureArea)) {
+    else if (this.onBottomRightControlZone(x, y, npaperWidth, npaperHeight, gestureArea)) {
       return shiftEdgeArray[(2-rotateDegree+4)%4];
     }
-    else if (this.onTopRightControlZone(dot.x, dot.y, npaperWidth, npaperHeight, gestureArea)) {
+    else if (this.onTopRightControlZone(x, y, npaperWidth, npaperHeight, gestureArea)) {
       return shiftEdgeArray[(3-rotateDegree+4)%4];
     }
   }
