@@ -1153,6 +1153,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     
     const infoNoPageDiv: CSSProperties = {
       display: "flex",
+      flexDirection: "column",
       width: "246px",
       height: this.viewSize.height,
       justifyContent: "center",
@@ -1162,15 +1163,15 @@ class PenBasedRenderer extends React.Component<Props, State> {
     }
 
     const infoNoPageIcon: CSSProperties = {
-      position: "absolute",
+      position: "static",
       width: "80px",
       height: "80px",
       color: theme.custom.icon.mono[2],
-      marginBottom: "150px"
+      marginBottom: "20px"
     }
 
     const infoNoPageTitle: CSSProperties = {
-      position: "absolute",
+      position: "static",
       width: "360px",
       
       fontFamily: "Noto Sans CJK KR",
