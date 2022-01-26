@@ -20,13 +20,16 @@ import {isPlatePaper, isPUI, getNPaperInfo, adjustNoteItemMarginForFilm} from "n
 import {setCalibrationData} from 'GridaBoard/store/reducers/calibrationDataReducer';
 import {store} from "GridaBoard/client/pages/GridaBoard";
 import GridaDoc from "GridaBoard/GridaDoc";
-import { initializeCrossLine, setLeftToRightDiagonal, setRightToLeftDiagonal, setHideCanvas, incrementTapCount, initializeTap, setFirstDot, setNotFirstPenDown, showSymbol, hideSymbol } from "GridaBoard/store/reducers/gestureReducer";
+import { initializeCrossLine, setLeftToRightDiagonal, setRightToLeftDiagonal, setHideCanvasMode, incrementTapCount, initializeTap, setFirstDot, setNotFirstPenDown, showSymbol, hideSymbol } from "GridaBoard/store/reducers/gestureReducer";
 import { setActivePageNo } from "GridaBoard/store/reducers/activePageReducer";
 import { onToggleRotate } from "GridaBoard/components/buttons/RotateButton";
 import { showMessageToast } from "GridaBoard/store/reducers/ui";
 import getText from "GridaBoard/language/language";
 import { onClearPage } from "boardList/layout/component/dialog/detail/AlertDialog";
-import Add from "@material-ui/icons/Add";
+import AddCircle from "@material-ui/icons/AddCircle";
+import { SvgIcon } from '@material-ui/core';
+import { theme } from "../../../GridaBoard/theme";
+
 
 
 /**
@@ -95,8 +98,10 @@ interface Props { // extends MixedViewProps {
   activePageNo: number;  
   setActivePageNo: any;
 
-  hideCanvas: boolean;
-  setHideCanvas: any;
+  hideCanvasMode: boolean;
+  setHideCanvasMode: any;
+
+  gestureMode: boolean;
 
   notFirstPenDown: boolean;
   show: boolean;
@@ -475,6 +480,12 @@ class PenBasedRenderer extends React.Component<Props, State> {
       }
     }
 
+    if (this.props.hideCanvasMode && this.props.isMainView) {
+      this.renderer.removeAllCanvasObject();
+    } else {
+      this.renderer.redrawStrokes(nextProps.pageInfo);
+    }
+  
     return ret_val;
   }
 
@@ -536,7 +547,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
    * @param {{strokeKey:string, mac:string, time:number, stroke:NeoStroke}} event
    */
   onLivePenDown = (event: IPenToViewerEvent) => {
-    if (this.props.hideCanvas) {
+    if (this.props.hideCanvasMode) {
       showMessageToast(getText('hide_canvas'));
     }
     if (this.renderer) {
@@ -700,12 +711,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   /** Right Control Zone - Hide Canvas */
   rightControlZone = () => {
-    this.props.setHideCanvas(!this.props.hideCanvas);
-    
-    if(this.props.hideCanvas) {
-      return this.renderer.removeAllCanvasObject();
-    }
-    this.renderer.redrawStrokes(this.renderer.pageInfo);
+    this.props.setHideCanvasMode(!this.props.hideCanvasMode);
   }
 
   /** Top Left Control Zone */
@@ -728,7 +734,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     const { stroke } = event;
     this.crossLineEraser(stroke);
 
-    if (this.checkTap(stroke) && this.props.tapCount === 2) {
+    if (this.props.gestureMode && this.checkTap(stroke) && this.props.tapCount === 2) {
       this.doubleTapProcess(stroke.isPlate, stroke.dotArray[0]);
     }
       
@@ -742,8 +748,8 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   /** Paper에 X를 그렸을 때, stroke를 지우게 하기 위한 로직 */ 
   crossLineEraser = (stroke: NeoStroke) => {
-    // 플레이트가 아니라면 종료
-    if (!stroke.isPlate) return
+    // gestureMode가 아니거나 플레이트가 아니라면 종료
+    if (!this.props.gestureMode || !stroke.isPlate) return
 
     const [first, last] = this.getFirstLastItems(stroke.dotArray);
     // 임시, 플레이트 윗 파티션은 stroke 에 dotArray 가 들어오지 않으므로 예외처리 해놓음.
@@ -904,13 +910,13 @@ class PenBasedRenderer extends React.Component<Props, State> {
   }
 
 
-  /** 특정 위치부터의 stroke를 지우기 위한 로직 */
+  /** 더블탭 stroke를 지우기 위한 로직 */
   removeDoubleTapStrokeOnActivePage = (pageInfo: IPageSOBP) => {
     const completed = this.renderer.storage.getPageStrokes(pageInfo);
     completed.splice(-2);
 
     // hideCanvas가 되어있을시 redraw 로직을 실행하면 다시 stroke가 생성되므로 로직이 실행되지 않도록 함수를 종료시켜준다. 
-    if (this.props.hideCanvas) return
+    if (this.props.hideCanvasMode) return
     this.renderer.redrawStrokes(pageInfo);
 
     // Thumbnail 영역 redraw 를 위한 dispath 추가
@@ -1127,22 +1133,55 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
     const symbolDiv: CSSProperties = {
       position: "absolute",
-      left: ([0, 270]).includes(this.getRotationOnPageMode()) ? 5 : "",
-      right: ([90, 180]).includes(this.getRotationOnPageMode()) ? 5 : "",
-      top: ([0, 90]).includes(this.getRotationOnPageMode()) ? 5 : "",
-      bottom: ([180, 270]).includes(this.getRotationOnPageMode()) ? 5 : "",
+      left: ([0, 270]).includes(this.getRotationOnPageMode()) ? 20 : "",
+      right: ([90, 180]).includes(this.getRotationOnPageMode()) ? 20 : "",
+      top: ([0, 90]).includes(this.getRotationOnPageMode()) ? 20 : "",
+      bottom: ([180, 270]).includes(this.getRotationOnPageMode()) ? 20 : "",
       zIndex: 11,
     }
 
     const symbolSize: CSSProperties = {
-      fontSize: 50,
-      color: '#ff2222',
+      fontSize: "40px",
+      color: theme.custom.icon.mono[0],
       visibility: this.props.show && this.props.isMainView ? 'visible' : 'hidden'
     }
 
     const shadowStyle: CSSProperties = {
       color: "#a20",
       textShadow: "-1px 0 2px #fff, 0 1px 2px #fff, 1px 0 2px #fff, 0 -1px 2px #fff",
+    }
+    
+    const infoNoPageDiv: CSSProperties = {
+      display: "flex",
+      flexDirection: "column",
+      width: "246px",
+      height: this.viewSize.height,
+      justifyContent: "center",
+      alignItems: "center",
+      margin: "auto",
+      padding: "0px",
+    }
+
+    const infoNoPageIcon: CSSProperties = {
+      position: "static",
+      width: "80px",
+      height: "80px",
+      color: theme.custom.icon.mono[2],
+      marginBottom: "20px"
+    }
+
+    const infoNoPageTitle: CSSProperties = {
+      position: "static",
+      width: "360px",
+      
+      fontFamily: "Noto Sans CJK KR",
+      fontStyle: "normal",
+      fontWeight: "normal",
+      fontSize: "18px",
+      lineHeight: "26px",
+      letterSpacing: "0.25px",
+
+      color: theme.palette.secondary.contrastText
     }
 
     return (
@@ -1152,14 +1191,21 @@ class PenBasedRenderer extends React.Component<Props, State> {
         <div id={`${this.props.parentName}-fabric_container`} style={inkContainerDiv} >
           <canvas id={this.canvasId} style={inkCanvas} ref={this.setCanvasRef} />
           <div style={symbolDiv}>
-            <Add style={symbolSize} />
+            <AddCircle style={symbolSize} />
           </div>
         </div >
 
         {this.state.numDocPages <= 0 ? 
-            <Typography variant="h3" style={{color: '#b7b7b7', textAlign: 'center', fontWeight: 600, marginTop: this.props.viewSize.height*(3/7)}}>
-              {getText('initial_page_guide')}
+          <div style={infoNoPageDiv}>
+            <SvgIcon id="no_page_svg_icon" style={infoNoPageIcon}>
+              <path fillRule="evenodd" clipRule="evenodd"
+                d="M18 10v10H6V4h6v6h6zm2-2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2h8l6 6zm-6-3.172L17.172 8H14V4.828z"
+              />
+            </SvgIcon>
+            <Typography style={infoNoPageTitle}>
+            {getText('initial_page_guide')}
             </Typography>
+          </div>
           : ""}
 
         {!this.props.noInfo ?
@@ -1199,7 +1245,8 @@ const mapStateToProps = (state) => ({
   rightToLeftDiagonal: state.gesture.crossLine.rightToLeftDiagonal,
   notFirstPenDown: state.gesture.symbol.notFirstPenDown,
   show: state.gesture.symbol.show,
-  hideCanvas: state.gesture.hideCanvas,
+  hideCanvasMode: state.gesture.hideCanvasMode,
+  gestureMode: state.gesture.gestureMode,
   activePageNo: state.activePage.activePageNo
 });
 
@@ -1214,7 +1261,7 @@ const mapDispatchToProps = (dispatch) => ({
   setNotFirstPenDown: (bool) => setNotFirstPenDown(bool),
   showSymbol: () => showSymbol(),
   hideSymbol: () => hideSymbol(),
-  setHideCanvas: (bool) => setHideCanvas(bool),
+  setHideCanvasMode: (bool) => setHideCanvasMode(bool),
   setActivePageNo: no => setActivePageNo(no)
 });
 

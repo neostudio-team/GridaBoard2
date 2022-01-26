@@ -25,8 +25,8 @@ const SymbolActionType = Object.freeze({
   HIDE: `${SymbolActionGroup}.HIDE`
 });
 
-const SET_HIDE_CANVAS = 'SET_HIDE_CANVAS';
-
+const SET_HIDE_CANVAS_MODE = "SET_HIDE_CANVAS_MODE";
+const SET_GESTURE_MODE = "SET_GESTURE_MODE";
 
 // Double Tap Action Function
 export const initializeTap = () => {
@@ -80,9 +80,16 @@ export const hideSymbol = () => {
 }
 
 // Hide Canvas Action Function
-export const setHideCanvas = (hideCanvas: boolean) => {
+export const setHideCanvasMode = (hideCanvasMode: boolean) => {
   store.dispatch({
-    type: SET_HIDE_CANVAS, hideCanvas
+    type: SET_HIDE_CANVAS_MODE, hideCanvasMode
+  });
+};
+
+// Gesture Action Function
+export const setGestureMode = (gestureMode: boolean) => {
+  store.dispatch({
+    type: SET_GESTURE_MODE, gestureMode
   });
 };
 
@@ -100,7 +107,8 @@ const initialState = {
     notFirstPenDown: false,
     show: false,
   },
-  hideCanvas: false,
+  hideCanvasMode: false,
+  gestureMode: true
 };
 
 // 리듀서
@@ -178,10 +186,15 @@ export default function gestureReducer(state = initialState, action) {
           show: false
         }
       }  
-    case SET_HIDE_CANVAS:
+    case SET_HIDE_CANVAS_MODE:
       return {
         ...state,
-        hideCanvas: action.hideCanvas
+        hideCanvasMode: action.hideCanvasMode
+      }
+    case SET_GESTURE_MODE:
+      return {
+        ...state,
+        gestureMode: action.gestureMode
       }
     default:
       return state;
