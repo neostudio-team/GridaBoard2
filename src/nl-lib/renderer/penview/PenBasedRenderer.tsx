@@ -480,10 +480,14 @@ class PenBasedRenderer extends React.Component<Props, State> {
       }
     }
 
-    if (this.props.hideCanvasMode && this.props.isMainView) {
-      this.renderer.removeAllCanvasObject();
-    } else {
-      this.renderer.redrawStrokes(nextProps.pageInfo);
+    if (this.props.hideCanvasMode !== nextProps.hideCanvasMode) {
+      if (!this.props.isMainView) return
+      
+      if (nextProps.hideCanvasMode) {
+        this.renderer.removeAllCanvasObject();  
+      } else {
+        this.renderer.redrawStrokes(this.renderer.pageInfo);
+      }
     }
   
     return ret_val;
