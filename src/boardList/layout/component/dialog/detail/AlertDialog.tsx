@@ -11,7 +11,7 @@ import getText from "GridaBoard/language/language";
 import { InkStorage } from "nl-lib/common/penstorage";
 import { PageEventName } from "nl-lib/common/enums";
 import { changeGroup, showSnackbar } from "GridaBoard/store/reducers/listReducer";
-import { showMessageToast } from "GridaBoard/store/reducers/ui";
+import { setleftDrawerOpen, showMessageToast } from "GridaBoard/store/reducers/ui";
 import { showCalibrationDialog } from "../../../../../GridaBoard/store/reducers/calibrationReducer";
 import { makePdfUrl } from "../../../../../nl-lib/common/util";
 import { store } from "GridaBoard/client/pages/GridaBoard";
@@ -153,6 +153,9 @@ const AlertDialog = (props : Props)=>{
       case "deletePage" : {
         if (activePageNo === -1) return ;
         await GridaDoc.getInstance().removePages(activePageNo);
+        if(activePageNo === 0){
+          setleftDrawerOpen(true);
+        }
         showMessageToast(getText("page_deleted"));
         break;
       }
