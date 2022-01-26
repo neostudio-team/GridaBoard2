@@ -17,20 +17,21 @@
         <margin left="11.642" top="11.642" right="11.642" bottom="11.642"/>
     </preset>
     <book>
-        <title>Controller</title>
+        <title>
+    </title>
         <author>
     </author>
         <section>3</section>
         <owner>1013</owner>
         <code>1</code>
-        <revision>65</revision>
+        <revision>70</revision>
         <scale>0.001</scale>
         <start_page side="">1</start_page>
-        <dot_is_line_segment>false</dot_is_line_segment>
-        <line_segment_length>1</line_segment_length>
+        <dot_is_line_segment>true</dot_is_line_segment>
+        <line_segment_length>3</line_segment_length>
         <target_dpi>600</target_dpi>
-        <dotsize>1</dotsize>
-        <segment_info sub_code="" total_size="11" size="11" current_sequence="0" ncode_start_page="1" ncode_end_page="11"/>
+        <dotsize>2</dotsize>
+        <segment_info sub_code="" total_size="12" size="12" current_sequence="0" ncode_start_page="1" ncode_end_page="12"/>
         <extra_info>pdf_page_count=11</extra_info>
         <kind>0</kind>
     </book>
@@ -38,12 +39,12 @@
         <path></path>
     </ticket>
     <pdf>
-        <path>note_3_1013_1.pdf</path>
+        <path>note_1.pdf</path>
     </pdf>
     <config>
         <resource_mapping_mode>NORMAL</resource_mapping_mode>
     </config>
-    <pages count="11">
+    <pages count="12">
         <!--crop_margin="left, right, top, bottom"-->
         <page_item number="0" rotate_angle="0" x1="0" y1="0" x2="794.504" y2="581.906" crop_margin="33,33,33,33" bg_disabled="false" page_type="0"/>
         <page_item number="1" rotate_angle="0" x1="0" y1="0" x2="581.906" y2="136.866" crop_margin="33,33,33,33" bg_disabled="false" page_type="0"/>
@@ -56,6 +57,7 @@
         <page_item number="8" rotate_angle="0" x1="0" y1="0" x2="340.157" y2="31.1811" crop_margin="33.0009,33.0009,33.0009,33.0009" bg_disabled="false" page_type="0"/>
         <page_item number="9" rotate_angle="0" x1="0" y1="0" x2="790.92" y2="98.88" crop_margin="33.0009,33.0009,33.0009,33.0009" bg_disabled="false" page_type="0"/>
         <page_item number="10" rotate_angle="0" x1="0" y1="0" x2="198.85" y2="482.314" crop_margin="35.5039,35.504,35.504,35.5039" bg_disabled="false" page_type="0"/>
+        <page_item number="11" rotate_angle="0" x1="0" y1="0" x2="439.762" y2="340.549" crop_margin="35.5039,35.504,35.504,35.5039" bg_disabled="false" page_type="0"/>
     </pages>
     <action_table>
         <action>ChangeLanguage_Chinese</action>
@@ -3078,6 +3080,102 @@
             <name></name>
             <id>{3a01476c-ddcd-423c-83b3-505c90b0a8f7}</id>
             <command name="" action="color" param="#FFFF0200"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="11" page_name="012" type="Rectangle" x="326.006" y="68.3983" width="24" height="24" lock="1" xylock="0">
+            <name></name>
+            <id>{e76df594-9caa-4ef3-9cdc-eb65349e0917}</id>
+            <command name="" action="Custom" param="black"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="11" page_name="012" type="Rectangle" x="355.53" y="68.3983" width="24" height="24" lock="1" xylock="0">
+            <name></name>
+            <id>{155a52f7-170b-4668-b917-f03b76819533}</id>
+            <command name="" action="Custom" param="red"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="11" page_name="012" type="Rectangle" x="326.006" y="96.3014" width="24" height="24" lock="1" xylock="0">
+            <name></name>
+            <id>{9df902f0-46b7-4a48-86de-69ec2723df99}</id>
+            <command name="" action="Custom" param="highlighter"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="11" page_name="012" type="Rectangle" x="355.53" y="96.3014" width="24" height="24" lock="1" xylock="0">
+            <name></name>
+            <id>{a46464b7-3422-42a1-8f7e-12112c3891d9}</id>
+            <command name="" action="Custom" param="pen"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="11" page_name="012" type="Rectangle" x="326.451" y="124.183" width="24" height="24" lock="1" xylock="0">
+            <name></name>
+            <id>{933f9e3d-5bd0-4bbe-befd-a1ddf73f513e}</id>
+            <command name="" action="Custom" param="full"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="11" page_name="012" type="Rectangle" x="326.451" y="152.086" width="24" height="24" lock="1" xylock="0">
+            <name></name>
+            <id>{ee35ed0d-581f-406b-a93b-d3f03545a4e3}</id>
+            <command name="" action="Custom" param="zoom_out"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="11" page_name="012" type="Rectangle" x="355.975" y="152.086" width="24" height="24" lock="1" xylock="0">
+            <name></name>
+            <id>{ea59a9c5-b7ae-46f4-996d-f59f33d38426}</id>
+            <command name="" action="Custom" param="zoom_in"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="11" page_name="012" type="Rectangle" x="355.975" y="124.183" width="24" height="24" lock="1" xylock="0">
+            <name></name>
+            <id>{9f161057-9e45-4caa-93e4-fe517396b306}</id>
+            <command name="" action="Custom" param="fit"/>
             <language_resources>
                 <language resource_country="korean" resource_type="" resource_id=""/>
                 <language resource_country="english" resource_type="" resource_id=""/>
