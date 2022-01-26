@@ -480,6 +480,12 @@ class PenBasedRenderer extends React.Component<Props, State> {
       }
     }
 
+    if (this.props.hideCanvasMode && this.props.isMainView) {
+      this.renderer.removeAllCanvasObject();
+    } else {
+      this.renderer.redrawStrokes(nextProps.pageInfo);
+    }
+  
     return ret_val;
   }
 
@@ -706,11 +712,6 @@ class PenBasedRenderer extends React.Component<Props, State> {
   /** Right Control Zone - Hide Canvas */
   rightControlZone = () => {
     this.props.setHideCanvasMode(!this.props.hideCanvasMode);
-    
-    if(this.props.hideCanvasMode) {
-      return this.renderer.removeAllCanvasObject();
-    }
-    this.renderer.redrawStrokes(this.renderer.pageInfo);
   }
 
   /** Top Left Control Zone */
@@ -1165,7 +1166,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
       width: "80px",
       height: "80px",
       color: theme.custom.icon.mono[2],
-      marginBottom: 150
+      marginBottom: "150px"
     }
 
     const infoNoPageTitle: CSSProperties = {
