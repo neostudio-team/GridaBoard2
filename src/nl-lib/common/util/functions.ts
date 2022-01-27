@@ -465,7 +465,7 @@ export function scrollToBottom(id: string) {
 
 export function scrollToThumbnail(pageNo : Number){
   const ele = document.getElementById("thumbnail - " + pageNo + " -mixed_view");
-  (ele) ? ele.scrollIntoView({behavior: "smooth"}) : null;
+  (ele) ? ele.scrollIntoView({behavior: "smooth", block: "center"}) : null;
 }
 
 

@@ -8,7 +8,7 @@ import PenBasedRenderWorker from "./PenBasedRenderWorker";
 
 import {PageEventName, PenEventName, PLAYSTATE, ZoomFitEnum} from "nl-lib/common/enums";
 import {IPageSOBP, ISize, NeoDot, NeoStroke} from "nl-lib/common/structures";
-import {callstackDepth, isSameNcode, isSamePage, makeNPageIdStr, uuidv4} from "nl-lib/common/util";
+import {callstackDepth, isSameNcode, isSamePage, makeNPageIdStr, scrollToThumbnail, uuidv4} from "nl-lib/common/util";
 
 import {INeoSmartpen, IPenToViewerEvent} from "nl-lib/common/neopen";
 import {MappingStorage} from "nl-lib/common/mapper";
@@ -980,12 +980,14 @@ class PenBasedRenderer extends React.Component<Props, State> {
       return showMessageToast(getText('no_more_page'));
     }
     setActivePageNo(this.props.activePageNo-1);    
+    scrollToThumbnail(this.props.activePageNo-1);
   }
   nextChange = () => { // PageDown
     if (this.props.activePageNo === this.state.numDocPages-1) {
       return showMessageToast(getText('no_more_page'));
     }
     setActivePageNo(this.props.activePageNo+1);
+    scrollToThumbnail(this.props.activePageNo+1);
   }
 
 
