@@ -480,10 +480,11 @@ class PenBasedRenderer extends React.Component<Props, State> {
       }
     }
 
-    if (this.props.hideCanvasMode !== nextProps.hideCanvasMode && this.props.isMainView) {
+    // hideCanvasMode 상태에 따른 로직 처리
+    if (this.props.isMainView) { // 메인 뷰의 화면만 처리해준다. (thumbnail 제외)
       if (nextProps.hideCanvasMode) {
-        this.renderer.removeAllCanvasObject();  
-      } else {
+        this.renderer.removeAllCanvasObject(); // hideCanvasMode true 일 때, 계속 삭제해준다. -> 페이지 이동같은 event일때도 처리를 해줘야 하므로,
+      } else if (this.props.hideCanvasMode !== nextProps.hideCanvasMode) { // false 이고 hideCanvasMode 상태가 바뀔 때, redraw 해준다.
         this.renderer.redrawStrokes(this.renderer.pageInfo);
       }
     }
