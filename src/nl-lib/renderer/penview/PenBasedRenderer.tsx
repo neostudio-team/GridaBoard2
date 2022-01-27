@@ -623,6 +623,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   /** Touble tap process */
   doubleTapProcess = (isPlate: boolean, dot: NeoDot) => {
+    const pageInfo = this.renderer.pageInfo;
     // plate에서 작업하는 중에 발생하는 double tap 처리를 영역별로 구분
     if (isPlate) {
       switch(this.findDotPositionOnPlate(dot)) {
@@ -649,7 +650,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
         default:
           return
       }
-      this.removeDoubleTapStrokeOnActivePage(this.renderer.pageInfo);
+      this.removeDoubleTapStrokeOnActivePage(pageInfo);
     }
     this.props.initializeTap();
   }
@@ -927,13 +928,13 @@ class PenBasedRenderer extends React.Component<Props, State> {
     // hideCanvas가 되어있을시 redraw 로직을 실행하면 다시 stroke가 생성되므로 로직이 실행되지 않도록 함수를 종료시켜준다. 
     if (this.props.hideCanvasMode) return
     this.renderer.redrawStrokes(pageInfo);
-
+    
     // Thumbnail 영역 redraw 를 위한 dispath 추가
     this.renderer.storage.dispatcher.dispatch(PenEventName.ON_ERASER_MOVE, {
-      section: this.renderer.pageInfo.section,
-      owner: this.renderer.pageInfo.owner,
-      book: this.renderer.pageInfo.book,
-      page: this.renderer.pageInfo.page,
+      section: pageInfo.section,
+      owner: pageInfo.owner,
+      book: pageInfo.book,
+      page: pageInfo.page,
     });
   }
 
