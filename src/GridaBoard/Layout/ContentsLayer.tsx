@@ -12,6 +12,9 @@ import { makeStyles, Slide, Snackbar, SnackbarContent } from "@material-ui/core"
 import InformationButton from "../components/buttons/InformationButton";
 import { languageType } from "../language/language";
 import getText from 'GridaBoard/language/language';
+import CombineDialog from "../../boardList/layout/component/dialog/CombineDialog";
+import { showNoticeGestureDialog } from "../store/reducers/listReducer";
+import Cookies from "universal-cookie";
 
 const useStyle = props=>makeStyles(theme=>({
   root : {
@@ -49,6 +52,7 @@ const ContentsLayer = (props: Props) => {
   const [snackbarMsg, setSnackbarMsg] = useState("");
   const [snackbarMsgSuffix, setSnackbarMsgSuffix] = useState("");
   const snackbarType = useSelector((state: RootState) => state.list.snackbar.type);
+  const isShowDialog = useSelector((state: RootState) => state.list.dialog.show);
 
   useEffect(() => {
     switch (snackbarType) {
@@ -140,10 +144,20 @@ const ContentsLayer = (props: Props) => {
     setOpenSnackbar(false);
   };
 
+  const [openNotice, setOpenNotice] = useState(false);
+  useEffect(()=>{
+    const cookies = new Cookies();
+    const openNoticeCookie = cookies.get("openNoticeGesture");
+    if(openNoticeCookie !== "true"){
+      setOpenNotice(true);
+      showNoticeGestureDialog("noticeGesture")
+    }
+  },[])
+  
   return (
     <div id="main" className={`${classes.root}`}>
       {(languageType === "ko") ? <InformationButton className={classes.information} tutorialMain={1} tutorialSub={1} /> : ""}
-      
+      {openNotice ? <CombineDialog open={isShowDialog} /> : ""}
       <div id="mixed-viewer-layer" style={{
         position: "relative",
         height: '100%',

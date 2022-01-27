@@ -112,10 +112,11 @@ const useStyles = props => makeStyles((theme: Theme) => ({
   newPage : {
     padding: "70px",
     margin: "10px",
-    background: "rgba(0,0,0,0.05)",
-    border: "2px",
+    background: theme.palette.background.paper,
+    border: "1px" + theme.palette.primary.main,
     borderStyle: "dashed",
     textAlign: "center",
+    color: theme.palette.primary.main,
     fontWeight: "bold",
     fontSize: "30px",
     cursor: "pointer",

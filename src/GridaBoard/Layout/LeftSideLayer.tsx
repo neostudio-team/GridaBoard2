@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useCallback } from "react";
 import { RootState } from "../store/rootReducer";
 import { useSelector } from "react-redux";
-import { makeStyles } from "@material-ui/core";
+import { makeStyles, Theme, useTheme } from "@material-ui/core";
 import PersistentDrawerRight from "../View/Drawer/PersistentDrawerRight";
 import { updateDrawerWidth } from "../store/reducers/ui";
 import { fileOpenHandler } from "./HeaderLayer";
@@ -91,6 +91,7 @@ const LeftSideLayer = (props: Props) => {
   ///////////////////////////////////////////////
 
   const dragRef = useRef<HTMLDivElement | null >(null);
+  const themes = useTheme<Theme>();
 
   const handleDragIn = useCallback((e) => {
     e.preventDefault();
@@ -98,20 +99,23 @@ const LeftSideLayer = (props: Props) => {
   }, [])
   const handleDragOut = useCallback((e) => {
     console.log("Drag Out Layer")
-    dragRef.current.style.background = "rgba(0,0,0,0)"
+    dragRef.current.style.background = themes.custom.white[25]
+    dragRef.current.style.border = themes.palette.action.selected
     e.preventDefault();
     e.stopPropagation();
   }, [])
   const handleDragOver = useCallback((e) => {
     console.log("Drag Over Layer")
-    dragRef.current.style.background = "rgba(0,0,0,0.1)"
+    dragRef.current.style.background = themes.custom.icon.blue[3]
+    dragRef.current.style.border = "2px solid" + themes.palette.primary.main
+    dragRef.current.style.zIndex = "1"
     e.preventDefault();
     e.stopPropagation();
   }, [])
   const handleDrop = useCallback((e) => {
     console.log("Drop to Layer")
-    dragRef.current.style.background = "rgba(0,0,0,0)"
-    // resetGridaBoard();
+    dragRef.current.style.background = themes.custom.white[25]
+    dragRef.current.style.border = themes.palette.action.selected
     fileOpenHandler(e.dataTransfer.files)
     e.preventDefault();
     e.stopPropagation();

@@ -13,6 +13,8 @@ export const LISTActionTypes = Object.freeze({
   SHOW_ALERT : `${ActionGroup}.SHOW_ALERT`,
   HIDE_ALERT : `${ActionGroup}.HIDE_ALERT`,
   SHOW_SNACKBAR : `${ActionGroup}.SHOW_SNACKBAR`,
+  SHOW_NOTICE_GESTURE_DIALOG : `${ActionGroup}.SHOW_NOTICE_GESTURE_DIALOG`,
+  HIDE_NOTICE_GESTURE_DIALOG : `${ActionGroup}.HIDE_NOTICE_GESTURE_DIALOG`,
 });
 // 액션 생성 함수
 export const showGroupDialog = (option : {type : string, selected ?: any}) => {
@@ -67,6 +69,18 @@ export const showSnackbar = (option: { snackbarType: string, selectedDocName?: s
     selectedDocName: option.selectedDocName,
     selectedCategory: option.selectedCategory,
     categoryData : option.categoryData
+  });
+};
+
+export const showNoticeGestureDialog = (type : string) => {
+  store.dispatch({ 
+    type: LISTActionTypes.SHOW_ALERT,
+    diaType : type,
+  });
+};
+export const hideShowNoticeGestureDialog = () => {
+  store.dispatch({ 
+    type: LISTActionTypes.HIDE_ALERT
   });
 };
 
@@ -173,6 +187,24 @@ export default function listReducer(state = initialState, action) {
           type : "",
           selected : null,
           sub : null
+        }
+      }
+    case LISTActionTypes.SHOW_NOTICE_GESTURE_DIALOG : 
+      return {
+        ...state,
+        dialog : {
+          ...state.dialog,
+          show : true,
+          type : action.diaType as string,
+        }
+      }
+    case LISTActionTypes.HIDE_NOTICE_GESTURE_DIALOG : 
+      return {
+        ...state,
+        dialog : {
+          ...state.dialog,
+          show : false,
+          type : "",
         }
       }
     default:

@@ -7,6 +7,7 @@ import getText from "GridaBoard/language/language";
 import GroupDialog from "./detail/GroupDialog";
 import MoveDialog from "./detail/MoveDialog";
 import AlertDialog from "./detail/AlertDialog";
+import GestureDialog from "./detail/GestureDialog";
 
 const useStyle = makeStyles(theme=>({
   groupDialog : {
@@ -54,6 +55,53 @@ const useStyle = makeStyles(theme=>({
     "& > .noWarnTitle" : {
       marginBottom: "34px",
       marginTop: "70px !important"
+    },
+  },
+ 
+  gestureDialog: {
+    position: "fixed",
+    left: "300px",
+    top: "91px",
+    minWidth: "200px",
+    maxWidth: "370px",
+    minHeight: "160px",
+    maxHeight: "370px",
+    background: theme.custom.white[90],
+    boxShadow: theme.custom.shadows[0],
+    border: "1px solid" + theme.custom.icon.blue[2], 
+    borderRadius: "12px",
+    wordBreak: "break-all",
+    "& > .title" : {
+      margin: "16px",
+      fontSize: "17px",
+      fontFamily: "Noto Sans CJK KR",
+      lineHeight: "20px",
+    },
+    "& > .lottie" : {
+      height: "160px",
+      background: theme.custom.icon.blue[2],
+    },
+    "& > .sub" : {
+      margin: "15px",
+      fontSize: "15px",
+      fontFamily: "Noto Sans CJK KR",
+      lineHeight: "20px",
+      whiteSpace : "pre-wrap",
+    },
+    "& > .footer" : {
+      marginTop: "10px",
+      marginBottom: "16px",
+      width: "100%",
+      display: "flex",
+      justifyContent: "flex-end",
+      "& > button" : {
+        height: "40px",
+        marginRight: "16px",
+        padding: "8px",
+        "&:first-child" : {
+          border: "1px solid" + theme.custom.icon.mono[2],
+        }
+      }
     },
   },
   paper : {
@@ -148,6 +196,9 @@ const CombineDialog = (props : Props)=>{
   }else if(["deleteDoc", "logout", "toBoardList", "deletePage", "clearPage", "deleteGroup", "checkCalibration"].includes(diaType)){
     groupProps.classes.paper += `  ${classes.alertDialog}`;
     returnDialog = (<AlertDialog {...groupProps} />);
+  }else if(["noticeGesture"].includes(diaType)){
+    groupProps.classes.paper = `  ${classes.gestureDialog}`;
+    returnDialog = (<GestureDialog {...groupProps} />);
   }
 
   return returnDialog;
