@@ -480,10 +480,11 @@ class PenBasedRenderer extends React.Component<Props, State> {
       }
     }
 
-    if (this.props.hideCanvasMode !== nextProps.hideCanvasMode && this.props.isMainView) {
+    // hideCanvasMode 상태에 따른 로직 처리
+    if (this.props.isMainView) { // 메인 뷰의 화면만 처리해준다. (thumbnail 제외)
       if (nextProps.hideCanvasMode) {
-        this.renderer.removeAllCanvasObject();  
-      } else {
+        this.renderer.removeAllCanvasObject(); // hideCanvasMode true 일 때, 계속 삭제해준다. -> 페이지 이동같은 event일때도 처리를 해줘야 하므로,
+      } else if (this.props.hideCanvasMode !== nextProps.hideCanvasMode) { // false 이고 hideCanvasMode 상태가 바뀔 때, redraw 해준다.
         this.renderer.redrawStrokes(this.renderer.pageInfo);
       }
     }
@@ -622,6 +623,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   /** Touble tap process */
   doubleTapProcess = (isPlate: boolean, dot: NeoDot) => {
+    const pageInfo = this.renderer.pageInfo;
     // plate에서 작업하는 중에 발생하는 double tap 처리를 영역별로 구분
     if (isPlate) {
       switch(this.findDotPositionOnPlate(dot)) {
@@ -648,7 +650,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
         default:
           return
       }
-      this.removeDoubleTapStrokeOnActivePage(this.renderer.pageInfo);
+      this.removeDoubleTapStrokeOnActivePage(pageInfo);
     }
     this.props.initializeTap();
   }
@@ -926,13 +928,13 @@ class PenBasedRenderer extends React.Component<Props, State> {
     // hideCanvas가 되어있을시 redraw 로직을 실행하면 다시 stroke가 생성되므로 로직이 실행되지 않도록 함수를 종료시켜준다. 
     if (this.props.hideCanvasMode) return
     this.renderer.redrawStrokes(pageInfo);
-
+    
     // Thumbnail 영역 redraw 를 위한 dispath 추가
     this.renderer.storage.dispatcher.dispatch(PenEventName.ON_ERASER_MOVE, {
-      section: this.renderer.pageInfo.section,
-      owner: this.renderer.pageInfo.owner,
-      book: this.renderer.pageInfo.book,
-      page: this.renderer.pageInfo.page,
+      section: pageInfo.section,
+      owner: pageInfo.owner,
+      book: pageInfo.book,
+      page: pageInfo.page,
     });
   }
 
