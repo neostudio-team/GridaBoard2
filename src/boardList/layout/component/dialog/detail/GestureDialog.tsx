@@ -53,7 +53,7 @@ const GestureDialog = (props: Props)=>{
   }
 
   const success = () => {
-    console.log("더 알아본다")
+    closeEvent(false)
   }
 
   const onKeyPress = (e) => {
