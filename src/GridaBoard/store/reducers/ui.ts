@@ -36,7 +36,8 @@ export const UIActionTypes = Object.freeze({
   SET_PRINT_status : `${ActionGroup}.SET_PRINT_status`,
   SET_PRINT_progressOn : `${ActionGroup}.SET_PRINT_progressOn`,
   SET_PRINT_optionOn : `${ActionGroup}.SET_PRINT_optionOn`,
-  SET_PRINT_waitingOn : `${ActionGroup}.SET_PRINT_waitingOn`
+  SET_PRINT_waitingOn : `${ActionGroup}.SET_PRINT_waitingOn`,
+  SHOW_INFORMATION : `${ActionGroup}.SHOW_INFORMATION`
 });
 //]
 
@@ -202,6 +203,12 @@ export const setPrintOption = (types:string, data)=>{
   })
 }
 
+export const showInformation = (open:boolean)=>{
+  store.dispatch({
+    type : UIActionTypes.SHOW_INFORMATION,
+    open : open
+  })
+}
 
 
 
@@ -258,6 +265,7 @@ const initialState = {
     main : 1,
     sub : 1
   },
+  information : true,
   theme : "theme"
 }
 
@@ -346,6 +354,12 @@ export default (state = initialState, action) => {
       return {
         ...state,
         theme : action.theme
+      };
+    }
+    case UIActionTypes.SHOW_INFORMATION: {
+      return {
+        ...state,
+        information : action.open
       };
     }
     case UIActionTypes.REPORT_BROWSER_ZOOM: {

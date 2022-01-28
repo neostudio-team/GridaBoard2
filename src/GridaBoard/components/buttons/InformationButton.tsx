@@ -2,7 +2,9 @@ import React, {useState} from "react";
 import { setHelpMenu } from "../CustomElement/HelpMenu";
 import { IconButton, Button, SvgIcon, makeStyles, ClickAwayListener } from '@material-ui/core';
 import getText from "../../language/language";
-import { isWhiteSpace } from "../../../../public/pdf.worker.2.5.207";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store/rootReducer";
+import { showInformation } from "../../store/reducers/ui";
 
 const useStyle = makeStyles(theme => ({
   icon : {
@@ -68,7 +70,8 @@ type Props = {
 
 const InformationButton = (props: Props) => {
   const { className, tutorialMain, tutorialSub } = props;
-  const [isOpen, setIsOpen] = useState(false);
+  const isOpen = useSelector((state: RootState) => state.ui.information)
+  // const [isOpen, setIsOpen] = useState(false);
   const classes = useStyle();
   const selectArr = [
     {
@@ -85,7 +88,7 @@ const InformationButton = (props: Props) => {
       type : "onClick",
       title : "go_to_help",
       event : ()=>{
-        setIsOpen(false);
+        showInformation(false);
         // openTutorial();
         setHelpMenu(true, tutorialMain, tutorialSub);
       }
@@ -97,10 +100,10 @@ const InformationButton = (props: Props) => {
   ]
 
   function handleClick() {
-    setIsOpen((prev) => !prev);
+    showInformation(!isOpen);
   }
   function handleClickAway(){
-    setIsOpen(false);
+    showInformation(false);
   }
   return (
     <ClickAwayListener onClickAway={handleClickAway}>

@@ -137,7 +137,6 @@ const ThumbnailItem = (props: Props) => {
   const height = width / wh_ratio;
 
   const playState = PLAYSTATE.live;
-  let isMouseDown = false;
 
   // console.log(`thumbnail - ${pn}: pageNo: ${pdfPageNo} pdf: ${pdf} pdfUrl: ${pdfUrl} fingerprint: ${pdfFingerprint} `)
   return (
