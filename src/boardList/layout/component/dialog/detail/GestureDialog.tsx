@@ -48,12 +48,16 @@ const GestureDialog = (props: Props)=>{
     closeEvent(false)
     const cookies = new Cookies();
     cookies.set("openNoticeGesture", true, {
-      maxAge: 15
+      maxAge: 99999999
     });
   }
 
   const success = () => {
-    closeEvent(false)
+    closeEvent(false);
+    const cookies = new Cookies();
+    cookies.set("openNoticeGesture", true, {
+      maxAge: 99999999
+    });
   }
 
   const onKeyPress = (e) => {

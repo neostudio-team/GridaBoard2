@@ -5,7 +5,7 @@ import { store } from "./client/pages/GridaBoard";
 import { IBrushType, ZoomFitEnum } from "nl-lib/common/enums";
 import PenManager from "nl-lib/neosmartpen/PenManager";
 import { setActivePageNo } from "./store/reducers/activePageReducer";
-import GridaDoc from "./GridaDoc";
+import GridaDoc, {addBlankPage} from "./GridaDoc";
 import { setViewFit } from "./store/reducers/viewFitReducer";
 import { setZoomStore } from "./store/reducers/zoomReducer";
 import { setRotationTrigger } from "./store/reducers/rotate";
@@ -18,6 +18,7 @@ import { onToggleRotate } from "./components/buttons/RotateButton";
 import { fileOpenHandler } from "./Layout/HeaderLayer";
 import { startPrint } from "../nl-lib/ncodepod/NcodePrint/PrintNcodedPdfButton";
 import { scrollToThumbnail } from "../nl-lib/common/util/functions";
+import { setGestureMode, setHideCanvasMode } from "./store/reducers/gestureReducer";
 
 /* 
 let _isCtrl = false;
@@ -28,29 +29,15 @@ export function KeyBoardShortCut_keyup(evt: KeyboardEvent) {
   if (evt.defaultPrevented) {
     return; // Should do nothing if the default action has been cancelled
   }
+  const isCtrl = evt.ctrlKey, isAlt = evt.altKey, isShift = evt.shiftKey;
 
-  switch (evt.key) {
-    case "Alt": {
-      _isAlt = false;
-      break;
-    }
 
-    case "Control": {
-      _isCtrl = false;
-      break;
-    }
+  const cmd = (isCtrl ? 1 : 0) | (isAlt ? 2 : 0) | (isShift ? 4 : 0) | (evt.metaKey ? 8 : 0);
 
-    case "Shift": {
-      _isShift = false;
-      break;
-    }
-  }
-  const cmd = (_isCtrl ? 1 : 0) | (_isAlt ? 2 : 0) | (_isShift ? 4 : 0) | (evt.metaKey ? 8 : 0);
+  console.log(`key up cmd=${cmd} ==> code=${evt.code}  key => ${evt.key}`);
 
-  // console.log(`key up cmd=${cmd} ==> code=${evt.code}  key => ${evt.key}`);
-
-} */
-
+}
+ */
 
 export default function KeyBoardShortCut(evt: KeyboardEvent) {
   if (evt.defaultPrevented) {
@@ -282,10 +269,26 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
       case "7":
         // togglePenStrokeVisible(evt.keyCode - 0x30);
         break;
-
       case "0":
         // toggleAllStrokesVisible();
         break;
+    }
+    switch (evt.code){
+      case "KeyG" : { // shift + G 제스처 기능 온오프
+        evt.preventDefault(); //web 기본 오픈 기능 강제 스탑
+        setGestureMode(!store.getState().gesture.gestureMode);
+        break ;
+      }
+      case "KeyH" : { // shift + H 필기 숨기기
+        evt.preventDefault(); //web 기본 오픈 기능 강제 스탑
+        setHideCanvasMode(!store.getState().gesture.hideCanvasMode);
+        break ;
+      }
+      case "KeyN" : { // shift + N 새 페이지
+        evt.preventDefault(); //web 기본 오픈 기능 강제 스탑
+        addBlankPage();
+        break ;
+      }
     }
   } else if (cmd == 1) {
     switch (evt.code) {

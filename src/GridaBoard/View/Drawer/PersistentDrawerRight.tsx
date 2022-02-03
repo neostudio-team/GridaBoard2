@@ -6,17 +6,11 @@ import DrawerPages from './DrawerPages';
 import { RootState } from '../../store/rootReducer';
 import { useSelector } from "react-redux";
 import AddIcon from '@material-ui/icons/Add';
-import GridaDoc from '../../GridaDoc';
+import GridaDoc, { addBlankPage } from '../../GridaDoc';
 import { setActivePageNo } from "../../store/reducers/activePageReducer";
 import { scrollToBottom } from '../../../nl-lib/common/util';
 import getText from "../../language/language";
 
-
-const addBlankPage = async (event) => {
-  const doc = GridaDoc.getInstance();
-  const pageNo = await doc.addBlankPage();
-  setActivePageNo(pageNo);
-}
 
 const useStyles = props => makeStyles((theme: Theme) => ({
   root: {
@@ -160,7 +154,7 @@ export default function PersistentDrawerRight(props: Props) {
       >
       {/* <Toolbar className={classes.customizeToolbar} /> */}
         <div id="drawer_content" className={classes.drawerContainer}>
-          { (numDocPages === 0) ? <div className={classes.newPage} onClick={(e) => addBlankPage(e)}>+</div> : null }
+          { (numDocPages === 0) ? <div className={classes.newPage} onClick={(e) => addBlankPage()}>+</div> : null }
           < DrawerPages noInfo={props.noInfo} />
           <div className={classes.liner}></div>
           

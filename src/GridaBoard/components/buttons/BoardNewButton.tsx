@@ -2,12 +2,13 @@ import { Button, ClickAwayListener, Grow, makeStyles, MenuItem, MenuList, Paper,
 import React, { useState } from 'react';
 import getText from 'GridaBoard/language/language';
  import { ArrowDropDown, Add } from '@material-ui/icons';
-import GridaDoc from 'GridaBoard/GridaDoc';
+import GridaDoc, { addBlankPage } from 'GridaBoard/GridaDoc';
 import { IFileBrowserReturn, IPageSOBP } from 'nl-lib/common/structures';
 import ConvertFileLoad from 'GridaBoard/Load/ConvertFileLoad';
 import { scrollToThumbnail } from '../../../nl-lib/common/util';
 import { setActivePageNo } from '../../store/reducers/activePageReducer';
 import { firebaseAnalytics } from '../../util/firebase_config';
+import CustomBadge from '../CustomElement/CustomBadge';
 
 const menuStyle = makeStyles(theme => ({
   headerButton: {
@@ -84,10 +85,8 @@ const BoardNewButton = () => {
     setOpen(false);
   };
 
-  const addBlankPage = async (event) => {
-    const doc = GridaDoc.getInstance();
-    const pageNo = await doc.addBlankPage();
-    setActivePageNo(pageNo);
+  const addBlankPageAndSub = async (event) => {
+    const pageNo = await addBlankPage();
     scrollToThumbnail(pageNo);
     setOpen(false);
 
@@ -99,11 +98,13 @@ const BoardNewButton = () => {
   return (
     <React.Fragment>
       <div ref={anchorRef}>
-        <Button className={classes.headerButton} variant="outlined" onClick={handleToggle}>
-          <div style={{ marginLeft: '13px' }}>{<Add />}</div>
-          <div className={classes.headerButtonLiner} style={{margin: '3px'}} />
-          <div style={{ marginRight: "15px"}}><ArrowDropDown /></div>
-        </Button>
+        <CustomBadge badgeContent={`Shift-N`}>
+          <Button className={classes.headerButton} variant="outlined" onClick={handleToggle}>
+            <div style={{ marginLeft: '13px' }}>{<Add />}</div>
+            <div className={classes.headerButtonLiner} style={{margin: '3px'}} />
+            <div style={{ marginRight: "15px"}}><ArrowDropDown /></div>
+          </Button>
+        </CustomBadge>
       </div>
       <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal style={{ zIndex: 10, width: 500 }}>
         {({ TransitionProps, placement }) => (
@@ -121,7 +122,7 @@ const BoardNewButton = () => {
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList>
                   {/* map으로 돌릴 경우 onClick에 모든 index가 한번씩 들어옴 */}
-                  <MenuItem className={classes.menuItem} onClick={addBlankPage}>
+                  <MenuItem className={classes.menuItem} onClick={addBlankPageAndSub}>
                     <span style={{ marginLeft: '10px' }}>{options[0]}</span>
                   </MenuItem>
                   <MenuItem className={classes.menuItem} onClick={fileOpenHandler}>
