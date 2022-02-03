@@ -5,7 +5,7 @@ import { store } from "./client/pages/GridaBoard";
 import { IBrushType, ZoomFitEnum } from "nl-lib/common/enums";
 import PenManager from "nl-lib/neosmartpen/PenManager";
 import { setActivePageNo } from "./store/reducers/activePageReducer";
-import GridaDoc from "./GridaDoc";
+import GridaDoc, {addBlankPage} from "./GridaDoc";
 import { setViewFit } from "./store/reducers/viewFitReducer";
 import { setZoomStore } from "./store/reducers/zoomReducer";
 import { setRotationTrigger } from "./store/reducers/rotate";
@@ -289,6 +289,18 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
     }
   } else if (cmd == 1) {
     switch (evt.code) {
+      case "KeyG" : {
+        evt.preventDefault(); //web 기본 오픈 기능 강제 스탑
+        break ;
+      }
+      case "KeyH" : {
+        evt.preventDefault(); //web 기본 오픈 기능 강제 스탑
+        break ;
+      }
+      case "KeyN" : {
+        evt.preventDefault(); //web 기본 오픈 기능 강제 스탑
+        break ;
+      }
       case "KeyO":{ // ctrl-o
         evt.preventDefault(); //web 기본 오픈 기능 강제 스탑
         fileOpenHandler("");

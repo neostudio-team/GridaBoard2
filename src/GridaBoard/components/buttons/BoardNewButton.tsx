@@ -2,7 +2,7 @@ import { Button, ClickAwayListener, Grow, makeStyles, MenuItem, MenuList, Paper,
 import React, { useState } from 'react';
 import getText from 'GridaBoard/language/language';
  import { ArrowDropDown, Add } from '@material-ui/icons';
-import GridaDoc from 'GridaBoard/GridaDoc';
+import GridaDoc, { addBlankPage } from 'GridaBoard/GridaDoc';
 import { IFileBrowserReturn, IPageSOBP } from 'nl-lib/common/structures';
 import ConvertFileLoad from 'GridaBoard/Load/ConvertFileLoad';
 import { scrollToThumbnail } from '../../../nl-lib/common/util';
@@ -84,10 +84,8 @@ const BoardNewButton = () => {
     setOpen(false);
   };
 
-  const addBlankPage = async (event) => {
-    const doc = GridaDoc.getInstance();
-    const pageNo = await doc.addBlankPage();
-    setActivePageNo(pageNo);
+  const addBlankPageAndSub = async (event) => {
+    const pageNo = await addBlankPage();
     scrollToThumbnail(pageNo);
     setOpen(false);
 
@@ -121,7 +119,7 @@ const BoardNewButton = () => {
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList>
                   {/* map으로 돌릴 경우 onClick에 모든 index가 한번씩 들어옴 */}
-                  <MenuItem className={classes.menuItem} onClick={addBlankPage}>
+                  <MenuItem className={classes.menuItem} onClick={addBlankPageAndSub}>
                     <span style={{ marginLeft: '10px' }}>{options[0]}</span>
                   </MenuItem>
                   <MenuItem className={classes.menuItem} onClick={fileOpenHandler}>

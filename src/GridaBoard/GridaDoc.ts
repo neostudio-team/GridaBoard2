@@ -468,3 +468,11 @@ export default class GridaDoc {
     return undefined;
   }
 }
+
+export const addBlankPage = async () => {
+  const doc = GridaDoc.getInstance();
+  const pageNo = await doc.addBlankPage();
+  setActivePageNo(pageNo);
+
+  return pageNo;
+}
