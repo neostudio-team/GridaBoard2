@@ -174,10 +174,10 @@ const NavLayer = (props: Props) => {
             <TracePointButton />
           </CustomBadge>
 
-          <CustomBadge>
+          <CustomBadge badgeContent={`Shift-G`}>
             <GestureButton />
           </CustomBadge>
-          <CustomBadge>
+          <CustomBadge badgeContent={`Shift-H`}>
             <HideCanvasButton />
           </CustomBadge>
         </div>

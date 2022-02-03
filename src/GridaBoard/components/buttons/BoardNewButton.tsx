@@ -8,6 +8,7 @@ import ConvertFileLoad from 'GridaBoard/Load/ConvertFileLoad';
 import { scrollToThumbnail } from '../../../nl-lib/common/util';
 import { setActivePageNo } from '../../store/reducers/activePageReducer';
 import { firebaseAnalytics } from '../../util/firebase_config';
+import CustomBadge from '../CustomElement/CustomBadge';
 
 const menuStyle = makeStyles(theme => ({
   headerButton: {
@@ -97,11 +98,13 @@ const BoardNewButton = () => {
   return (
     <React.Fragment>
       <div ref={anchorRef}>
-        <Button className={classes.headerButton} variant="outlined" onClick={handleToggle}>
-          <div style={{ marginLeft: '13px' }}>{<Add />}</div>
-          <div className={classes.headerButtonLiner} style={{margin: '3px'}} />
-          <div style={{ marginRight: "15px"}}><ArrowDropDown /></div>
-        </Button>
+        <CustomBadge badgeContent={`Shift-N`}>
+          <Button className={classes.headerButton} variant="outlined" onClick={handleToggle}>
+            <div style={{ marginLeft: '13px' }}>{<Add />}</div>
+            <div className={classes.headerButtonLiner} style={{margin: '3px'}} />
+            <div style={{ marginRight: "15px"}}><ArrowDropDown /></div>
+          </Button>
+        </CustomBadge>
       </div>
       <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal style={{ zIndex: 10, width: 500 }}>
         {({ TransitionProps, placement }) => (
