@@ -927,7 +927,6 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
     // hideCanvas가 되어있을시 redraw 로직을 실행하면 다시 stroke가 생성되므로 로직이 실행되지 않도록 함수를 종료시켜준다. 
     if (this.props.hideCanvasMode) return
-    this.renderer.redrawStrokes(pageInfo);
     
     // Thumbnail 영역 redraw 를 위한 dispath 추가
     this.renderer.storage.dispatcher.dispatch(PenEventName.ON_ERASER_MOVE, {
