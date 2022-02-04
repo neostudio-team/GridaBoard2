@@ -85,7 +85,7 @@ const AlertDialog = (props : Props)=>{
   const selectedData = dialogTypes[type];
   console.log(selectedData);
 
-  let subText = selectedData.sub;
+  const subText = selectedData.sub;
 
   if(type == "deleteDoc"){
     let count = 1;
@@ -153,7 +153,7 @@ const AlertDialog = (props : Props)=>{
       case "deletePage" : {
         if (activePageNo === -1) return ;
         await GridaDoc.getInstance().removePages(activePageNo);
-        if(activePageNo === 0){
+        if(GridaDoc.getInstance()._pages.length === 0){
           setleftDrawerOpen(true);
         }
         showMessageToast(getText("page_deleted"));

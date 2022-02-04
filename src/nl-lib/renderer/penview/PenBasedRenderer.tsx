@@ -790,7 +790,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     const B = last.point.x - first.point.x;
     const C = (first.point.x-last.point.x)*first.point.y + (last.point.y-first.point.y)*first.point.x;
     const threshold = 50;
-    for (let dot of stroke.dotArray) {
+    for (const dot of stroke.dotArray) {
       const x = dot.point.x;
       const y = dot.point.y;                       
       const distance = Math.abs(A*x+B*y+C)/Math.sqrt(Math.pow(A, 2) + Math.pow(B, 2));
