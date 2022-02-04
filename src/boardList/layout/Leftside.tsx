@@ -159,6 +159,10 @@ const Leftside = (props : Props)=>{
   const selected = props.selected;
   // const keyList = props.categoryKey;
   const category = [...props.category];
+  /**
+   * category Data
+   * [Category Name, Order, Doc Count , DB Key]
+   */
   category.sort((a,b)=>a[1]-b[1]);
   // console.log(category);
 
@@ -192,7 +196,7 @@ const Leftside = (props : Props)=>{
         <div className="category">
           {category.map((el, idx)=>{
             if(el[1] == -1) return ;
-            const title = idx === 0 ? getText("boardList_unshelved").replace("%d", el[2]) : el[0] + ` (${el[2]})`;
+            const title = el[3] === 0 ? getText("boardList_unshelved").replace("%d", el[2]) : el[0] + ` (${el[2]})`;
             return (
             <div key={el[1]} onClick={e=>selectCategory(el[3])} className={selected === el[3]? classes.selected : "" }>
               <span>{title}</span>
