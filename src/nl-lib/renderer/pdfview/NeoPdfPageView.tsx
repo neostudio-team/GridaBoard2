@@ -26,7 +26,7 @@ interface PageState {
 
   pdf: NeoPdfDocument,
   pdfPageNo: number,
-
+  
   pdfNumPages : number,
   zoom: number,
 }
@@ -106,18 +106,18 @@ export default class NeoPdfPageView extends Component<PageProps, PageState> {
     // const loaded = nextState.page !== this.state.page;
     // const loaded = nextState.status === "loaded" && (this.state.status !== nextState.status);
     const loaded = nextState.page !== this.state.page;
-    if (loaded) {
+    if (loaded && nextState.page.pageNo !== -1) {
       // console.log(`*State PageView ${nextProps.pdfPageNo}:* LOADED ${this.state.page?.pageNo} => ${nextState.page?.pageNo}, zoom ${nextState.zoom}, status=${this.state.status} => ${nextState.status}`);
       if (nextState.page && nextProps.pdf && nextState.zoom > 0)
         this.renderPage(nextState.page, nextState.zoom, nextState.pdfPageNo, nextProps.pdf.fingerprint, rotationChanged);
     }
 
-    if (this.state.zoom !== nextState.zoom && nextState.page && nextProps.pdf) {
+    if (this.state.zoom !== nextState.zoom && nextState.page && nextState.page.pageNo !== -1 && nextProps.pdf) {
       // console.log(`*State PageView ${nextProps.pdfPageNo}:* ZOOM CHANGED ${nextState.zoom}, status=${this.state.status} => ${nextState.status}`);
       this.renderPage(nextState.page, nextState.zoom, nextState.pdfPageNo, nextProps.pdf.fingerprint, rotationChanged);
     }
 
-    if (rotationChanged && nextState.page) { 
+    if (rotationChanged && nextState.page && nextState.page.pageNo !== -1) { 
       nextState.page.viewport.rotation = nextProps.rotation;
       this.renderPage(nextState.page, nextState.zoom, nextState.pdfPageNo, nextProps.pdf.fingerprint, rotationChanged);
     }

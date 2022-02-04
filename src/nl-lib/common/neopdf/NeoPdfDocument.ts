@@ -110,12 +110,13 @@ export class NeoPdfDocument {
     return undefined;
   }
   deletePage = async (pageNo:number)=>{
+    this._pages[pageNo].pageNo = -1;
     this._pages.splice(pageNo,1);
     this._pagesOverview.splice(pageNo,1);
     this._numPages -= 1;
     
     for(let i = pageNo; i < this._numPages; i++){
-      this._pages[0].pageNo -= 1;
+      this._pages[i].pageNo -= 1;
     }
     this.removedPage.push(pageNo);
   }
