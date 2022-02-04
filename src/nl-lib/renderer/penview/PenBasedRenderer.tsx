@@ -996,6 +996,11 @@ class PenBasedRenderer extends React.Component<Props, State> {
   addBlankPage = () => {
     const doc = GridaDoc.getInstance();
     const pageNo = doc.addBlankPage();
+    /** 직전 작업 페이지의 mode(landscape/portrait)에 따라 페이지 각도를 설정하는 로직 (사용미정) */ 
+    // if ([0, 180].includes(this.getRotationOnPageMode())) {
+    //   doc._pages[pageNo]._rotation = 270;
+    // }
+    doc._pages[pageNo]._rotation = 270;
     setActivePageNo(pageNo);
   }
 
