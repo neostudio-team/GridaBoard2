@@ -194,14 +194,19 @@ const ConvertFileLoad = (props: Props) => {
     const xhr = new XMLHttpRequest();
     
     xhr.open("POST" , responJson.data.result.form.url , true);
-    xhr.onreadystatechange = () => {
+    xhr.onreadystatechange = async () => {
+      try{
         if(xhr.readyState == 4){
           const response: HTMLAllCollection = xhr.responseXML.all;
           //전송 완료
           //TODO : 예외처리 해줘야 함
           //어떤 예외처리?? 모르겠음 찾아봐야함 분명 문제 생길듯
-          setTask(response);
+          await setTask(response);
         }
+      }catch(e){
+        console.log(e);
+        setLoadingVisibility(false);
+      }
     }
     xhr.send(formData);
   } 
