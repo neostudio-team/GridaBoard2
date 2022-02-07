@@ -543,6 +543,8 @@ class PenBasedRenderer extends React.Component<Props, State> {
       this.inkStorage.removeEventListener(PageEventName.PAGE_CLEAR, this.removeAllCanvasObjectOnActivePage);
       this.inkStorage.removeEventListener(PenEventName.ON_ERASER_MOVE, this.renderer.redrawStrokes);
     }
+    this.props.initializeCrossLine();
+    this.props.initializeTap();
   }
 
   /**
