@@ -643,7 +643,7 @@ export class MappingStorage {
 
     for (let i = 0; i < this._data.arrDocMap.length; i++) {
       const item = this._data.arrDocMap[i];
-      const clone = cloneObj(item);
+      const clone = JSON.parse(JSON.stringify(item));
       clone.params = null;
       this.dumpJson(prefix, clone);
       console.log(`[${prefix}]..............................................................................................................................`);
@@ -761,6 +761,7 @@ function storageAvailable(type) {
 // 이것 참고해서 더 수정할 것
 
 (function () {
+  // await new Promise(resolve => setTimeout(resolve, 10));
   const msi = MappingStorage.getInstance();
   msi.loadMappingInfo();
 
