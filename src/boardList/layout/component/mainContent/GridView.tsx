@@ -229,9 +229,10 @@ const GridView = (props: Props) => {
       {docsList.map((el, idx) => {
         const path = pathList[idx];
         const times = new Date(el.last_modified.seconds * 1000);
-        const docCategory = el.category == 'Unshelved' ? '' : el.category;
         const timestamp = getTimeStamp(el.created);
         const keyStr = el.doc_name + '_' + timestamp;
+        const categoryName = allCategory[el.category][0] === 'Unshelved' ? 
+          getText("boardList_unshelved").substring(0,5) : allCategory[el.category][0]
         
         return (
           <React.Fragment key={keyStr}>
@@ -248,7 +249,7 @@ const GridView = (props: Props) => {
                 <div className="contentData">
                   <div>{`${times.getFullYear()}/${times.getMonth()+1}/${times.getDate()}`}</div>
                   <div />
-                  {props.category === 'trash' ? <div>{allCategory[el.category][0]}</div> : <div>{el.docNumPages} page</div>}
+                  {props.category === 'trash' ? <div>{categoryName}</div> : <div>{el.docNumPages} page</div>}
                 </div>
               </div>
               <Grow in={showCheckBoxes[idx]}>
