@@ -70,6 +70,7 @@ type Props = {
 
 const InformationButton = (props: Props) => {
   const { className, tutorialMain, tutorialSub } = props;
+  const [gestureMain, gestureSub] = [3, 1];
   const isOpen = useSelector((state: RootState) => state.ui.information)
   // const [isOpen, setIsOpen] = useState(false);
   const classes = useStyle();
@@ -95,7 +96,11 @@ const InformationButton = (props: Props) => {
     },
     {
       type: "onClick",
-      title: "pen_gesture_guide"
+      title: "pen_gesture_guide",
+      event : ()=>{
+        showInformation(false);
+        setHelpMenu(true, gestureMain, gestureSub);
+      }
     }
   ]
 
