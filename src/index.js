@@ -16,7 +16,6 @@ import ReactDOM from 'react-dom';
 import Root from './GridaBoard/client/Root';
 import './index.css';
 import * as serviceWorker from './serviceWorker';
-import { getBrowserZoomFactor} from "./nl-lib/common/util";
 
 // import "./electron-starter.js";
 

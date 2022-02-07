@@ -643,7 +643,7 @@ export class MappingStorage {
 
     for (let i = 0; i < this._data.arrDocMap.length; i++) {
       const item = this._data.arrDocMap[i];
-      const clone = JSON.parse(JSON.stringify(item));
+      const clone = cloneObj(item);
       clone.params = null;
       this.dumpJson(prefix, clone);
       console.log(`[${prefix}]..............................................................................................................................`);
@@ -760,10 +760,10 @@ function storageAvailable(type) {
 // https://www.bsidesoft.com/1426 , [js] localStorage 키별 용량 제약 처리
 // 이것 참고해서 더 수정할 것
 
-(function () {
+// (function () {
   // await new Promise(resolve => setTimeout(resolve, 10));
-  const msi = MappingStorage.getInstance();
-  msi.loadMappingInfo();
+  // const msi = MappingStorage.getInstance();
+  // msi.loadMappingInfo();
 
   // https://developer.chrome.com/docs/apps/offline_storage/#query ==> enter
 
@@ -810,7 +810,7 @@ function storageAvailable(type) {
   //   function (e) { console.log('Error', e); }
   // );
 
-})();
+// })();
 
 
 
