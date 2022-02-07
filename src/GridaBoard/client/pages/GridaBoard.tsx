@@ -21,6 +21,7 @@ import { turnOnGlobalKeyShortCut } from "../../GlobalFunctions";
 import CombineDialog from 'boardList/layout/component/dialog/CombineDialog';
 import firebase, { auth, secondaryAuth, secondaryFirebase, signInWith } from 'GridaBoard/util/firebase_config';
 import Cookies from "universal-cookie";
+import { MappingStorage } from "nl-lib/common/mapper/MappingStorage";
 
 
 
@@ -203,6 +204,8 @@ const GridaBoard = () => {
 
 (function () {
   window.visualViewport.addEventListener("resize", viewportHandler);
+  const msi = MappingStorage.getInstance();
+  msi.loadMappingInfo();
 
   const app = GridaApp.getInstance();
   app.start();
