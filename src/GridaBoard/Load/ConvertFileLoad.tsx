@@ -144,6 +144,11 @@ const ConvertFileLoad = (props: Props) => {
     const fileType = fullFileName.substring(foundPosArr[foundPosArr.length - 1] + 1, fullFileName.length);
     fullFileName = fullFileName.substring(0, foundPosArr[foundPosArr.length - 1]);
     (isNewLoad) ? setDocName(fullFileName) : null;
+
+    if(!(fileType === "pdf" || fileType === "grida") && inputer.files[0].name[0] === ".") {
+      alert(getText("alert_wrongFileName"));
+      return;
+    }
     
     const result = {
       result : "success",
