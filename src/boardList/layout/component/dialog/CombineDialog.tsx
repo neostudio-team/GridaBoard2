@@ -65,7 +65,7 @@ const useStyle = makeStyles(theme=>({
     minWidth: "200px",
     maxWidth: "370px",
     minHeight: "160px",
-    maxHeight: "370px",
+    maxHeight: "380px",
     background: theme.custom.white[90],
     boxShadow: theme.custom.shadows[0],
     border: "1px solid" + theme.custom.icon.blue[2], 
@@ -77,8 +77,10 @@ const useStyle = makeStyles(theme=>({
       fontFamily: "Noto Sans CJK KR",
       lineHeight: "20px",
     },
-    "& > .lottie" : {
-      height: "160px",
+    "& > .diaImg" : {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "center",
       background: theme.custom.icon.blue[2],
     },
     "& > .sub" : {

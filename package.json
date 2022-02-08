@@ -30,7 +30,6 @@
     "gapi-script": "1.1.0",
     "jquery": "3.6.0",
     "jszip": "3.6.0",
-    "lottie-web": "^5.8.1",
     "nan": "2.14.0",
     "path-browserify": "0.0.1",
     "path-intersection": "2.2.1",

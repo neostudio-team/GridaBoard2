@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
-import lottie from "lottie-web";
-import lottieFile from "./tmp.json"
 import { Button, Dialog, DialogProps } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 import getText from "GridaBoard/language/language";
 import Cookies from "universal-cookie";
 import { ArrowDropUp } from "@material-ui/icons";
+import { setHelpMenu } from "GridaBoard/components/CustomElement/HelpMenu";
 
 interface Props extends  DialogProps {
   type ?: string
@@ -23,29 +22,11 @@ const GestureDialog = (props: Props)=>{
   const { open, closeEvent, type,  ...rest } = props;
   const { title, sub, cancelBtn, successBtn } = dialogTypes[type];
   
-  const [containerEl, setContainerEl] = useState();
-  useEffect(() => {
-    lottie.loadAnimation({
-      container: containerEl,
-      renderer: "svg",
-      loop: true,
-      autoplay:true,
-      animationData: lottieFile
-    });
-    return () => lottie.stop();
-  }, [containerEl])
-  
-  const handleRef = useCallback(
-    (el) => {
-      if(el){
-        setContainerEl(el);
-      }
-    },
-    [setContainerEl]
-  )
+  const [gestureMain, gestureSub] = [3, 1];
+  const gestureDialogImage = "/helpImg/ko/main3/sub2/0.png";
 
   const cancel = () => {
-    closeEvent(false)
+    closeEvent(false);
     const cookies = new Cookies();
     cookies.set("openNoticeGesture", true, {
       maxAge: 99999999
@@ -58,6 +39,7 @@ const GestureDialog = (props: Props)=>{
     cookies.set("openNoticeGesture", true, {
       maxAge: 99999999
     });
+    setHelpMenu(true, gestureMain, gestureSub);
   }
 
   const onKeyPress = (e) => {
@@ -80,7 +62,9 @@ const GestureDialog = (props: Props)=>{
           {title}   
           <CloseIcon className="close" onClick={()=>{cancel()}}/>
         </div>
-        <div className="lottie" ref={handleRef}/>
+        <div className="diaImg">
+          <img src={gestureDialogImage}/>
+        </div>
         <div className="sub">{sub}</div>
         <div className="footer">
           <Button variant="contained" disableElevation color="secondary" onClick={()=>{cancel()}} >{cancelBtn}</Button>
