@@ -614,6 +614,8 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
       pdf_xy = this.ncodeToPdfXy_plate(dot, this.currentPageInfo);
     }
 
+    hps[NUM_HOVER_POINTERS-1].set({ left: pdf_xy.x, top: pdf_xy.y })
+
     // hover point를 쉬프트해서 옮겨 놓는다
     for (let i = NUM_HOVER_POINTERS - 1; i > 0; i--) {
       hps[i].set({ left: hps[i - 1].left, top: hps[i - 1].top });
