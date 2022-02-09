@@ -440,8 +440,13 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
         ret_val = true;
 
-        // 페이지 이동했을 때, notFirstPenDown state를 바꿔준다.
+        /** 페이지 이동했을 때, Symbol을 비롯한 제스처 로직들의 초기화가 이루어져야 한다.
+         *  notFirstPenDown - Symbol 첫 touch를 확인하기 위한 state
+         *  & crossLine, doubleTap 관련 state의 초기화
+         * */ 
         this.props.setNotFirstPenDown(false);
+        this.props.initializeCrossLine();
+        this.props.initializeTap();
       }
 
       if (this.props.calibrationMode) {
