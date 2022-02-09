@@ -1,6 +1,6 @@
 import GridaDoc from 'GridaBoard/GridaDoc';
 import { setActivePageNo, setDocNumPages, setUrlAndFilename } from '../GridaBoard/store/reducers/activePageReducer';
-import { setDate, setDocName, setIsNewDoc } from '../GridaBoard/store/reducers/docConfigReducer';
+import { setDate, setDocId, setDocName, setIsNewDoc } from '../GridaBoard/store/reducers/docConfigReducer';
 import firebase, { secondaryFirebase, auth } from 'GridaBoard/util/firebase_config';
 import { IBoardData } from './structures/BoardStructures';
 import { MappingStorage } from 'nl-lib/common/mapper';
@@ -38,6 +38,7 @@ export const startNewGridaPage = async () => {
   // const pageNo = await GridaDoc.getInstance().addBlankPage();
   // setActivePageNo(pageNo);
   setDocName('undefined');
+  setDocId("undefined");
   setIsNewDoc(true);
   setDocNumPages(0);
 }
@@ -594,6 +595,8 @@ export async function saveThumbnail(docName: string) {
     }
   );
 
+
+  return gridaFileName;
   /** Upload thumbnail image using Firebase
    * -----------------------------------------------------------------------------------
    */
@@ -601,13 +604,13 @@ export async function saveThumbnail(docName: string) {
   // saveAs(blob, 'abc.png');
 }
 
-export async function updateDB(docName: string, thumb_path: string, grida_path: string, date) {
+export async function updateDB(docId: string, thumb_path: string, grida_path: string, date) {
   const doc = GridaDoc.getInstance();
 
   const db = secondaryFirebase.firestore();
   const userId = firebase.auth().currentUser.email;
 
-  const docId = `${userId}_${docName}_${date}`;
+  // const docId = `${userId}_${docName}_${date}`;
 
   db.collection(userId)
     .doc(docId)
@@ -618,7 +621,7 @@ export async function updateDB(docName: string, thumb_path: string, grida_path: 
       docNumPages: doc.numPages,
     })
     .then(function () {
-      console.log(`${docName} is created`);
+      console.log(`${docId} is created`);
       setLoadingVisibility(false);
     })
     .catch(error => {

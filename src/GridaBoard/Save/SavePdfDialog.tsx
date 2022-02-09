@@ -11,7 +11,7 @@ import getText from "../language/language";
 import { makeThumbnail, saveThumbnail, updateDB } from 'boardList/BoardListPageFunc';
 import { store } from '../client/pages/GridaBoard';
 import firebase, { secondaryFirebase } from 'GridaBoard/util/firebase_config';
-import { setDocName, setIsNewDoc } from '../store/reducers/docConfigReducer';
+import { setDocId, setDocName, setIsNewDoc } from '../store/reducers/docConfigReducer';
 import { setLoadingVisibility } from '../store/reducers/loadingCircle';
 import { showSnackbar } from '../store/reducers/listReducer';
 
@@ -127,12 +127,11 @@ const SavePdfDialog = (props: Props) => {
     const gridaBlob = await makeGridaBlob();
 
     //3. thumbnail, last_modifed, grida 업데이트
-    const docName = store.getState().docConfig.docName;
+    const docId = store.getState().docConfig.docId;
     const date = store.getState().docConfig.date;
-    const userId = firebase.auth().currentUser.email;
     const uid =  firebase.auth().currentUser.uid;
 
-    const gridaFileName = `${userId}_${docName}_${date}.grida`;
+    const gridaFileName = `${docId}.grida`; // `${userId}_${docName}_${date}.grida`;
 
     const storageRef = secondaryFirebase.storage().ref();
     const gridaRef = storageRef.child(`grida/${uid}/${gridaFileName}`);
@@ -168,7 +167,7 @@ const SavePdfDialog = (props: Props) => {
         }
       },
       async function () {
-        const thumbFileName = `${userId}_${docName}_${date}.png`;
+        const thumbFileName = `${docId}.png`; // `${userId}_${docName}_${date}.png`;
         const pngRef = storageRef.child(`thumbnail/${uid}/${thumbFileName}`);
 
         const thumbUploadTask = pngRef.put(imageBlob);
@@ -202,7 +201,7 @@ const SavePdfDialog = (props: Props) => {
             }
           },
           async function () {
-            updateDB(docName, "thumb_path", "grida_path", date);
+            updateDB(docId, "thumb_path", "grida_path", date);
             handleClickSaveAway();
           }
         );
@@ -211,7 +210,7 @@ const SavePdfDialog = (props: Props) => {
     );
   }
 
-  const handleSavePdf = () => {
+  const handleSavePdf = async () => {
     //공백과 .으로는 시작 할 수 없음
     let rtTrue = true;
     if(selectedName == ""){
@@ -254,8 +253,9 @@ const SavePdfDialog = (props: Props) => {
     }else if (saveType === "pdf") {
       savePDF(selectedName);
     } else if (saveType === "saveAs" || saveType === "overwrite") {
-      saveThumbnail(selectedName);
+      const gridaFileName = await saveThumbnail(selectedName);
       setDocName(selectedName);
+      setDocId(gridaFileName);
       setIsNewDoc(false);
     } 
     setOpen(false);

@@ -13,7 +13,7 @@ import * as neolabTheme from 'GridaBoard/theme';
 import Header from './layout/Header';
 import Leftside from './layout/Leftside';
 import MainContent from './layout/MainContent';
-import { setDate, setDocName, setIsNewDoc } from '../GridaBoard/store/reducers/docConfigReducer';
+import { setDate, setDocId, setDocName, setIsNewDoc } from '../GridaBoard/store/reducers/docConfigReducer';
 import { RootState } from '../GridaBoard/store/rootReducer';
 import { showGroupDialog, hideGroupDialog, changeGroup } from 'GridaBoard/store/reducers/listReducer';
 import CombineDialog from './layout/component/dialog/CombineDialog';
@@ -222,6 +222,7 @@ const BoardList = () => {
         );
         
         setDocName(nowDocs.doc_name);
+        setDocId(nowDocs.docId);
         setIsNewDoc(false);
 
         const m_sec = getTimeStamp(nowDocs.created)
