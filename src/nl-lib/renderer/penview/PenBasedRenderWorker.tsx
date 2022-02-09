@@ -696,6 +696,7 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     if (!pageInfo) return;
 
     this.pageInfo = { ...pageInfo };
+    this.currentPageInfo = { ...pageInfo };
 
     const pdfSize = {
       width: Math.round(pageSize.width),
