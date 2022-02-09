@@ -5,7 +5,7 @@ import { NU_TO_PU, PU_TO_NU } from 'nl-lib/common/constants';
 import { ZoomFitEnum } from 'nl-lib/common/enums';
 import { calcRotatedH, calcRotatedH90, calcRotatedH180, calcRotatedH270, calcRevH } from 'nl-lib/common/mapper/CoordinateTanslater';
 import { InkStorage } from 'nl-lib/common/penstorage';
-import { TransformParameters, ISize, IPageSOBP } from 'nl-lib/common/structures';
+import { TransformParameters, ISize, IPageSOBP, NeoDot } from 'nl-lib/common/structures';
 import { makeNPageIdStr } from 'nl-lib/common/util';
 import { PATH_THICKNESS_SCALE } from 'nl-lib/common/util';
 import { PDFVIEW_ZOOM_MAX, PDFVIEW_ZOOM_MIN } from '../RendererConstants';
@@ -894,11 +894,10 @@ export default abstract class RenderWorkerBase {
    * @protected
    * @param {{x:number, y:number}} dot
    */
-  protected focusToDot = (dot: { x: number; y: number }) => {
+  protected focusToDot = (dot: NeoDot) => {
     if (!this._opt.autoFocus) return;
     const margin_to_go_ratio = 0.25;
-    const canvas_xy = this.funcNcodeToPdfXy(dot);
-    const screen_xy = this.pdfToScreenXy(canvas_xy);
+    const screen_xy = this.pdfToScreenXy(dot.point);
 
     let dx = 0,
       dy = 0;
