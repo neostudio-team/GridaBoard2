@@ -8,7 +8,7 @@ import GridaDoc from "../GridaDoc";
 import { InkStorage } from '../../nl-lib/common/penstorage';
 import { useHistory } from 'react-router';
 import { scrollToBottom } from '../../nl-lib/common/util';
-import { setDocName } from '../store/reducers/docConfigReducer';
+import { setDocName, setIsNewDoc } from '../store/reducers/docConfigReducer';
 
 // import {fileConvert} from "./LoadGrida";
 
@@ -143,7 +143,10 @@ const ConvertFileLoad = (props: Props) => {
     
     const fileType = fullFileName.substring(foundPosArr[foundPosArr.length - 1] + 1, fullFileName.length);
     fullFileName = fullFileName.substring(0, foundPosArr[foundPosArr.length - 1]);
-    (isNewLoad) ? setDocName(fullFileName) : null;
+    if(isNewLoad){
+      setDocName(fullFileName);
+      setIsNewDoc(true);
+    }
 
     if(!(fileType === "pdf" || fileType === "grida") && inputer.files[0].name[0] === ".") {
       alert(getText("alert_wrongFileName"));
