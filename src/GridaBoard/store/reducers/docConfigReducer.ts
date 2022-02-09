@@ -19,6 +19,13 @@ export const setDocName = async (docName: string) => {
   });
 };
 
+export const setDocId = (docId:string) => {
+  store.dispatch({
+    type: ACTION_TYPE.SET,
+    value: { docId: docId } as ActionValue,
+  });
+}
+
 export const setDate = async (date: string) => {
   store.dispatch({
     type: ACTION_TYPE.SET,
@@ -37,6 +44,7 @@ type ActionValue = {
   docName: string,
   isNewDoc: boolean,
   date: string,
+  docId : string
 }
 //]
 
@@ -45,6 +53,7 @@ const initialState = {
   docName: 'undefined',
   isNewDoc: true,
   date: '',
+  docId : "undefined"
 };
 
 export default (state = initialState, action) => {
