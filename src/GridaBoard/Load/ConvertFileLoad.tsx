@@ -124,9 +124,6 @@ const ConvertFileLoad = (props: Props) => {
 
   async function inputChange()
   {
-    const path = `/app`;
-    history.push(path);
-
     const inputer = document.getElementById("fileForconvert") as HTMLInputElement;
     let fullFileName = inputer.files[0].name;
     
@@ -148,9 +145,11 @@ const ConvertFileLoad = (props: Props) => {
       setIsNewDoc(true);
     }
 
-    if(!(fileType === "pdf" || fileType === "grida") && inputer.files[0].name[0] === ".") {
-      alert(getText("alert_wrongFileName"));
-      return;
+    if(!(fileType === "pdf" || fileType === "grida")) {
+      if(inputer.files[0].name[0] === "." || inputer.files[0].name[0].search(/[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥0-9.+_\- .]/g) !== -1){
+        alert(getText("alert_wrongFileName"));
+        return;
+      }
     }
     
     const result = {
@@ -172,6 +171,10 @@ const ConvertFileLoad = (props: Props) => {
     }else{
       doFileConvert(inputer);
     }
+    
+    const path = `/app`;
+    history.push(path);
+
   }
 
   async function doFileConvert(inputer: HTMLInputElement){
@@ -197,6 +200,18 @@ const ConvertFileLoad = (props: Props) => {
     for(const key in responJson.data.result.form.parameters){
       formData.set(key, responJson.data.result.form.parameters[key]);
     }
+
+
+    // const testArrayBuffer = new Uint8Array(await inputer.files[0].arrayBuffer());
+    
+    // const names = inputer.files[0].name.split(".");
+    // const fileType = names[names.length-1];
+    
+    // const file = new File([testArrayBuffer], "temp." + fileType, {
+    //   type : inputer.files[0].type,
+    //   lastModified : inputer.files[0].lastModified    
+    // });
+    
     formData.set("file", inputer.files[0]);
 
     const xhr = new XMLHttpRequest();
@@ -209,7 +224,7 @@ const ConvertFileLoad = (props: Props) => {
           //전송 완료
           //TODO : 예외처리 해줘야 함
           //어떤 예외처리?? 모르겠음 찾아봐야함 분명 문제 생길듯
-          await setTask(response);
+          await setTask(response, inputer.files[0].name);
         }
       }catch(e){
         console.log(e);
@@ -219,7 +234,7 @@ const ConvertFileLoad = (props: Props) => {
     xhr.send(formData);
   } 
 
-  async function setTask(res:HTMLAllCollection){
+  async function setTask(res:HTMLAllCollection, fileName: string){
     //컨버팅 중
       try{
         const subOption = {};
@@ -282,9 +297,8 @@ const ConvertFileLoad = (props: Props) => {
             //모든게 괜찮을 경우 open
             const url = job.tasks[0].result.files[0].url;
             console.log(url);
-      
             const doc = GridaDoc.getInstance();
-            await doc.openPdfFile({ url: url, filename: job.tasks[0].result.files[0].filename });
+            await doc.openPdfFile({ url: url, filename: fileName});
           }  
         }
       }catch(e){
