@@ -122,6 +122,10 @@ export default class NeoPdfPageView extends Component<PageProps, PageState> {
       this.renderPage(nextState.page, nextState.zoom, nextState.pdfPageNo, nextProps.pdf.fingerprint, rotationChanged);
     }
 
+    if(pdfChanged && !nextProps.pdf){
+      this.setState({ renderCount: this.state.renderCount + 1 });
+    } 
+
     const rendered = this.state.renderCount !== nextState.renderCount;
     // console.log(`*State PageView ${nextProps.pdfPageNo}:* rendered=${rendered}  this.state.status=${this.state.status} => ${nextState.status}`);
     return rendered;
@@ -381,8 +385,9 @@ export default class NeoPdfPageView extends Component<PageProps, PageState> {
       zoom: 1,
       left: 0,
       top: 0,
-      width: 600
+      width: 600,
       // background: "#fff"
+      visibility: status === "N/A" ? "hidden" : "visible", 
     }
 
     const shadowStyle: CSSProperties = {
