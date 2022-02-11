@@ -422,13 +422,13 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
         if (isSameNcode(nextProps.pageInfo, DefaultPUINcode) || isPUI(nextProps.pageInfo)) { 
           //1. PUI에 쓸 경우 페이지가 바뀌는 것을 막기 위함
-          return;
+          return false;
         }
-
+ 
         this.renderer._opt.rotation = nextProps.rotation;
         
         if (isSameNcode(nextProps.pageInfo, DefaultPlateNcode)){
-          return;
+          return false;
         }
         const transform = MappingStorage.getInstance().getNPageTransform(pageInfo);
         this.renderer.setTransformParameters(transform.h, this.pdfSize);
