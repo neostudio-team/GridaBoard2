@@ -1,8 +1,9 @@
 import { DialogContent, makeStyles, TextField } from '@material-ui/core';
 import { LensTwoTone } from '@material-ui/icons';
 import React, { useState } from 'react';
-import { store } from '../client/pages/GridaBoard';
+import { useSelector } from 'react-redux';
 import getText from "../language/language";
+import { RootState } from '../store/rootReducer';
 
 
 type Props = {
@@ -24,14 +25,15 @@ const PdfDialogTextArea = (props: Props) => {
   const {saveType, ...rest} = props;
   const classes = useStyles();
   let textRef = null as HTMLElement;
-  const isNewDoc = store.getState().docConfig.isNewDoc;
-  let isNewLoadFileName = "";
+  const isNewDoc = useSelector((state : RootState) => state.docConfig.isNewDoc);
+  const newLoadFileName = useSelector((state : RootState) => state.docConfig.docName);
+  let usePdfName = "";
   if(isNewDoc && saveType == "overwrite"){
-    if(store.getState().docConfig.docName !== "undefined"){
-      isNewLoadFileName = store.getState().docConfig.docName;
+    if(newLoadFileName !== "undefined"){
+      usePdfName = newLoadFileName;
     }
   }
-  const [pdfName, setPdfName] = useState(isNewLoadFileName);
+  const [pdfName, setPdfName] = useState(usePdfName);
 
   const onChange = (e) => {
     let pdfName = e.target.value;
