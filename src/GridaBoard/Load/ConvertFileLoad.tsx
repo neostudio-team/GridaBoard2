@@ -146,7 +146,7 @@ const ConvertFileLoad = (props: Props) => {
     }
 
     if(!(fileType === "pdf" || fileType === "grida")) {
-      if(inputer.files[0].name[0] === "." || inputer.files[0].name[0].search(/[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥0-9.+_\- .]/g) !== -1){
+      if(fullFileName[0] === "." || fullFileName.search(/[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥0-9.+_\- .]/g) !== -1){
         alert(getText("alert_wrongFileName"));
         return;
       }
