@@ -532,6 +532,12 @@ class MixedPageView_module extends React.Component<MixedViewProps, State>  {
         case "note":
         default: {
           const size = getNPaperSize_pu(pageInfo);
+          if (this.props.rotation === 90 || this.props.rotation === 270) {
+            const tmpWidth = size.width;
+            size.width = size.height;
+            size.height = tmpWidth;
+          }
+
           this._internal.pdfSize = { ...size };
           console.log(`PDF SIZE: ${size.width}, ${size.height}`);
 
