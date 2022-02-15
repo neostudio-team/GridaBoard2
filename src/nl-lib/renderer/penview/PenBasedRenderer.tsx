@@ -590,6 +590,9 @@ class PenBasedRenderer extends React.Component<Props, State> {
     if (this.props.calibrationMode) {
       return;
     }
+    if (isPUI(event as IPageSOBP)) {
+      return;
+    }
     /** pdf pageNo를 바꿀 수 있게, container에게 전달한다. */
     if (this.props.onNcodePageChanged) {
       this.renderer.registerPageInfoForPlate(event);//hover page info를 거치지 않고 바로 page info로 들어오는 경우(빨리 찍으면 hover 안들어옴)
@@ -894,10 +897,12 @@ class PenBasedRenderer extends React.Component<Props, State> {
     
     const activePageNo = store.getState().activePage.activePageNo;
     const activePage = GridaDoc.getInstance().getPageAt(activePageNo);
+    if(activePageNo === -1) return ;
+    
     const activePageInfo = activePage.pageInfos[0];//plate에 쓰는 경우 plate의 pageInfo가 아닌 실제 pageInfo가 필요
 
     let isPlate = false;
-    if (isSamePage(activePageInfo, this.props.pageInfo) && isSameNcode(DefaultPlateNcode, pageInfo)) {
+    if (isSamePage(activePageInfo, this.props.pageInfo) && isSameNcode(DefaultPlateNcode, pageInfo) || isPUI(pageInfo)) {
       isPlate = true;
     }
 
