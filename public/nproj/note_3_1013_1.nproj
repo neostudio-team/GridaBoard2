@@ -3487,7 +3487,7 @@
         <symbol page="12" page_name="013" type="Rectangle" x="206.095" y="258.049" width="24.0678" height="24.0048" lock="1" xylock="0">
             <name></name>
             <id>{ec675098-597e-457e-b6f5-06d8b8967e41}</id>
-            <command name="" action="Custom" param="##FF00ABEB"/>
+            <command name="" action="Custom" param="#FF00ABEB"/>
             <language_resources>
                 <language resource_country="korean" resource_type="" resource_id=""/>
                 <language resource_country="english" resource_type="" resource_id=""/>
