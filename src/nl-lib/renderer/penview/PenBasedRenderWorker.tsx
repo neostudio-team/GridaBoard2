@@ -533,7 +533,7 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     const pdf_x = newX * platePdfRatio;
     const pdf_y = newY * platePdfRatio;
 
-    return {x: pdf_x, y: pdf_y, f: dot.f};
+    return {x: pdf_x, y: pdf_y, f: dot.f, finalRotation: finalRotation};
   }
 
   movePenTracker = (event: IPenToViewerEvent, pageInfo: IPageSOBP) => {
