@@ -124,6 +124,9 @@ const ConvertFileLoad = (props: Props) => {
 
   async function inputChange()
   {
+    const path = `/app`;
+    history.push(path);
+
     const inputer = document.getElementById("fileForconvert") as HTMLInputElement;
     let fullFileName = inputer.files[0].name;
     
@@ -146,7 +149,8 @@ const ConvertFileLoad = (props: Props) => {
     }
 
     if(!(fileType === "pdf" || fileType === "grida")) {
-      if(fullFileName[0] === "." || fullFileName.search(/[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥0-9.+_\- .]/g) !== -1){
+      if(inputer.files[0].name[0] === "." || fullFileName.search(/[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥0-9.+_\- .]/g) !== -1){
+        history.replace(`/list`);
         alert(getText("alert_wrongFileName"));
         return;
       }
@@ -171,10 +175,6 @@ const ConvertFileLoad = (props: Props) => {
     }else{
       doFileConvert(inputer);
     }
-    
-    const path = `/app`;
-    history.push(path);
-
   }
 
   async function doFileConvert(inputer: HTMLInputElement){
