@@ -670,7 +670,19 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
   };
 
   redrawStrokes = (pageInfo: IPageSOBP, isMainView?: boolean) => {
-    if (isSamePage(this.pageInfo, pageInfo) || this.pageInfo === undefined) {
+    const activePageNo = store.getState().activePage.activePageNo;
+    const activePage = GridaDoc.getInstance().getPageAt(activePageNo);
+    const activePageInfo = activePage.pageInfos[0];
+    /**
+     * 현재 문제 this.pageInfo가 undefined로 들아올 때, 아래의 redraw 로직을 타면 첫번째 thumbnail에 직전 작업했던 page의 stroke가 같이 들어감.
+     * 그렇다고 아래의 조건에서 this.pageInfo === undefined를 제외시키면 첫번째 thumbnail stroke의 회전이 제대로 동작하지 않음.
+     * 9c2678e0e3165c42796acabe6b656cededd156d1 커밋 참고
+     * 따라서, this.pageInfo가 undefined로 들어올 때 다른 페이지에서 동작(페이지이동/회전)시 첫번째 썸네일에 stroke가 들어오는 것을 막고,
+     * 첫번째 썸네일 페이지에서 회전시 정상적으로 동작되게 하기 위하여 activePageNo가 0(첫번째 thumbnail)일때만 동작하게 해야함
+     * 추가로, 현재 들어온 pageInfo와 activePageInfo가 같을때만 동작할 수 있도록 조건을 추가(1->0으로 이동시 activePageNo가 0으로 활성화되면서 로직을 타게됨)
+     * 정리: this.pageInfo가 undefined로 들어오면서 작업페이지가 첫번째(0) thumbnail일때만 아래의 로직을 타게 수정하면 된다.
+     */
+    if (isSamePage(this.pageInfo, pageInfo) || (this.pageInfo === undefined && activePageNo === 0 && isSamePage(pageInfo, activePageInfo))) {
       this.removeAllCanvasObject();
       this.resetLocalPathArray();
       this.resetPageDependentData();
