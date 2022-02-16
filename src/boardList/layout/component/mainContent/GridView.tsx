@@ -124,7 +124,7 @@ const GridView = (props: Props) => {
   
   useEffect(()=>{
     getData();
-  },[]); 
+  },[docsList]); 
   useEffect(() => {
     //초기화 
     setPathList([]);
