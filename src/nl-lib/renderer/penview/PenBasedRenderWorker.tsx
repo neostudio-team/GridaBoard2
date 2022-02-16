@@ -672,6 +672,7 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
   redrawStrokes = (pageInfo: IPageSOBP, isMainView?: boolean) => {
     const activePageNo = store.getState().activePage.activePageNo;
     const activePage = GridaDoc.getInstance().getPageAt(activePageNo);
+    if (!activePage) return;
     const activePageInfo = activePage.pageInfos[0];
     /**
      * 현재 문제 this.pageInfo가 undefined로 들아올 때, 아래의 redraw 로직을 타면 첫번째 thumbnail에 직전 작업했던 page의 stroke가 같이 들어감.
