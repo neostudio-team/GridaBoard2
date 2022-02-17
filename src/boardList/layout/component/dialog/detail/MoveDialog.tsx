@@ -324,7 +324,7 @@ const MoveDialog = (props: Props)=>{
       {categoryData.map((el,idx)=>{
         return (<div key={idx} onClick={e=>selectCategory(idx)} className={`${moveClasses.contentItems} ${idx === nowSelect ? moveClasses.selectedItem: ""}`}>
             <div>
-              {el[0]}{` (${el[2]})`}
+              {el[0] === "Unshelved" ? getText("boardList_unshelved").substring(0,5) : el[0]}{` (${el[2]})`}
             </div>
             { nowSelect === idx ? 
             <SvgIcon>
