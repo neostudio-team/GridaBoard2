@@ -9,6 +9,7 @@ import { RotateRight } from "@material-ui/icons";
 import SimpleTooltip2 from "../SimpleTooltip2";
 import getText from 'GridaBoard/language/language';
 import { store } from "GridaBoard/client/pages/GridaBoard";
+import { setNotFirstPenDown } from "../../store/reducers/gestureReducer";
 
 export const onToggleRotate = () => {
   const activePageNo = store.getState().activePage.activePageNo;
@@ -18,6 +19,7 @@ export const onToggleRotate = () => {
   if(activePageNo === -1) return ;
 
   setRotationTrigger(!rotationTrigger);
+  setNotFirstPenDown(false);
 
   const page = doc.getPageAt(activePageNo);
 
