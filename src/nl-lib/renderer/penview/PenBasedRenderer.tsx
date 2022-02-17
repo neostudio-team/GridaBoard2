@@ -582,25 +582,28 @@ class PenBasedRenderer extends React.Component<Props, State> {
   onLivePenPageInfo = (event: IPenToViewerEvent) => {
     const { section, owner, book, page } = event;
     const prevPageInfo = this.props.pageInfo;
+    let isRun = true;
+
     if (isSamePage(prevPageInfo, event as IPageSOBP) && (!this.shouldSendPageInfo)) {
-      return;
+      isRun = false;
     }
     this.shouldSendPageInfo = false;
 
     if (this.props.calibrationMode) {
-      return;
+      isRun = false;
     }
     if (isPUI(event as IPageSOBP)) {
-      return;
+      isRun = false;
     }
     /** pdf pageNo를 바꿀 수 있게, container에게 전달한다. */
-    if (this.props.onNcodePageChanged) {
+    if (isRun && this.props.onNcodePageChanged) {
       this.renderer.registerPageInfoForPlate(event);//hover page info를 거치지 않고 바로 page info로 들어오는 경우(빨리 찍으면 hover 안들어옴)
       this.props.onNcodePageChanged({ section, owner, book, page });
-      // (페이지가 refresh 되고) 부기보드를 첫 터치했을때 심볼이 보여지도록 한다. 
-      if (isSamePage(this.props.pageInfo, PlateNcode_3) && !this.props.notFirstPenDown) {
-        this.onSymbolUp();
-      }
+    }
+
+    // (페이지가 refresh 되고) 부기보드를 첫 터치했을때 심볼이 보여지도록 한다. 추가, 회전 후 부기보드를 첫 터치할 때 심볼이 보여지도록 한다.
+    if (isSamePage(this.props.pageInfo, PlateNcode_3) && !this.props.notFirstPenDown) {
+      this.onSymbolUp();
     }
   }
 
@@ -725,7 +728,6 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   /** Left Control Zone - Rotate */
   leftControlZone = () => {
-    this.onSymbolUp();
     onToggleRotate();
   }
 
