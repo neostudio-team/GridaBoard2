@@ -271,6 +271,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
       pen.removeEventListener(PenEventName.ON_PEN_MOVE, this.onLivePenMove);
       pen.removeEventListener(PenEventName.ON_PEN_UP, this.onLivePenUp);
       pen.removeEventListener(PenEventName.ON_HOVER_MOVE, this.onLiveHoverMove);
+      pen.removeEventListener(PenEventName.ON_PEN_HOVER_PAGEINFO, this.onLiveHoverPageInfo);
       pen.removeEventListener(PenEventName.ON_PEN_UP_FOR_HOMOGRAPHY, this.setTransformParametersForPen);
 
       pen.removeEventListener(PenEventName.ON_PEN_DOWN_VIRTUAL, this.onLivePenDown);
