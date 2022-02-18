@@ -671,7 +671,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
         case "top-right":
         case "bottom-left":
         case "bottom-right":
-          if (this.onPlusControlZone(dot)) {
+          if (isSamePage(PlateNcode_3, this.props.pageInfo) && this.onPlusControlZone(dot)) {
             this.plusControlZone();
           }
           break;
@@ -1029,7 +1029,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     // if ([0, 180].includes(this.getRotationOnPageMode())) {
     //   doc._pages[pageNo]._rotation = 270;
     // }
-    doc._pages[pageNo]._rotation = 270;
+    doc._pages[pageNo]._rotation = (270+this.getRotationOnPageMode())%360;
     setActivePageNo(pageNo);
   }
 
