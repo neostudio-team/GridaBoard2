@@ -8,7 +8,7 @@ import { makeGridaBlob, saveGrida } from "./SaveGrida";
 import PdfDialogTextArea from './PdfDialogTextArea';
 import { turnOnGlobalKeyShortCut } from '../GlobalFunctions';
 import getText from "../language/language";
-import { makeThumbnail, saveThumbnail, updateDB } from 'boardList/BoardListPageFunc';
+import { makeThumbnail, saveGridaToDB, updateDB } from 'boardList/BoardListPageFunc';
 import { store } from '../client/pages/GridaBoard';
 import firebase, { secondaryFirebase } from 'GridaBoard/util/firebase_config';
 import { setDocId, setDocName, setIsNewDoc } from '../store/reducers/docConfigReducer';
@@ -253,9 +253,12 @@ const SavePdfDialog = (props: Props) => {
     }else if (saveType === "pdf") {
       savePDF(selectedName);
     } else if (saveType === "saveAs" || saveType === "overwrite") {
-      const gridaFileName = await saveThumbnail(selectedName);
+      const gridaFileName = await saveGridaToDB(selectedName);
       setDocName(selectedName);
-      setDocId(gridaFileName);
+      
+      const docId = gridaFileName.slice(0, gridaFileName.length - 6);
+      setDocId(docId);
+      
       setIsNewDoc(false);
     } 
     setOpen(false);

@@ -399,6 +399,15 @@ export async function makeThumbnail() {
   } else {
     const existingPdfBytes = await fetch(docPage.pdf.url).then(res => res.arrayBuffer());
     pdfDoc = await PDFDocument.load(existingPdfBytes);
+
+    for (const page of docPages) {
+      page.pdf.removedPage.forEach(el => {
+        pdfDoc.removePage(el);
+      });
+
+      (pdfDoc as any).pageCache.value = (pdfDoc as any).pageCache.populate();
+    }
+    
     pdfDoc.getPages()[0].setRotation(degrees(docPage._rotation));
   }
 
@@ -500,7 +509,7 @@ export async function makeThumbnail() {
   */
 }
 
-export async function saveThumbnail(docName: string) {
+export async function saveGridaToDB(docName: string) {
   setLoadingVisibility(true);
   const imageBlob = await makeThumbnail();
 

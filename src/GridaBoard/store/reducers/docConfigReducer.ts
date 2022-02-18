@@ -40,11 +40,18 @@ export const setIsNewDoc = async (isNew: boolean) => {
   });
 };
 
+export const setIsPdfEdited = async (isEdited: boolean) => {
+  store.dispatch({
+    type: ACTION_TYPE.SET,
+    value: { isPdfEdited: isEdited } as ActionValue,
+  });
+};
 type ActionValue = {
   docName: string,
   isNewDoc: boolean,
   date: string,
-  docId : string
+  docId : string,
+  isPdfEdited: boolean,
 }
 //]
 
@@ -52,6 +59,7 @@ type ActionValue = {
 const initialState = {
   docName: 'undefined',
   isNewDoc: true,
+  isPdfEdited: false,
   date: '',
   docId : "undefined"
 };
