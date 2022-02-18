@@ -66,8 +66,8 @@ const useStyle = makeStyles(theme => ({
   },
   hidecanvasSvgIcon : {
     position: "absolute",
-    width: "65px",
-    height: "65px",
+    width: "40px",
+    height: "40px",
     color: "rgba(88, 98, 125, 0.25)",
     zIndex: 1000,
     opacity: 0.78,
