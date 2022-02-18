@@ -8,7 +8,7 @@ import PenBasedRenderWorker from "./PenBasedRenderWorker";
 
 import {PageEventName, PenEventName, PLAYSTATE, ZoomFitEnum} from "nl-lib/common/enums";
 import {IPageSOBP, ISize, NeoDot, NeoStroke} from "nl-lib/common/structures";
-import {callstackDepth, isSameNcode, isSamePage, makeNPageIdStr, scrollToThumbnail, uuidv4} from "nl-lib/common/util";
+import {callstackDepth, isPlatePage, isSameNcode, isSamePage, makeNPageIdStr, scrollToThumbnail, uuidv4} from "nl-lib/common/util";
 
 import {INeoSmartpen, IPenToViewerEvent} from "nl-lib/common/neopen";
 import {MappingStorage} from "nl-lib/common/mapper";
@@ -20,7 +20,7 @@ import {isPlatePaper, isPUI, getNPaperInfo, adjustNoteItemMarginForFilm} from "n
 import {setCalibrationData} from 'GridaBoard/store/reducers/calibrationDataReducer';
 import {store} from "GridaBoard/client/pages/GridaBoard";
 import GridaDoc from "GridaBoard/GridaDoc";
-import { initializeCrossLine, setLeftToRightDiagonal, setRightToLeftDiagonal, setHideCanvasMode, incrementTapCount, initializeTap, setFirstDot, setNotFirstPenDown, showSymbol, hideSymbol } from "GridaBoard/store/reducers/gestureReducer";
+import { initializeCrossLine, setLeftToRightDiagonal, setRightToLeftDiagonal, setHideCanvasMode, incrementTapCount, initializeTap, setFirstDot, setNotFirstPenDown, showSymbol, hideSymbol, setGestureDisable } from "GridaBoard/store/reducers/gestureReducer";
 import { setActivePageNo } from "GridaBoard/store/reducers/activePageReducer";
 import { onToggleRotate } from "GridaBoard/components/buttons/RotateButton";
 import { showMessageToast } from "GridaBoard/store/reducers/ui";
@@ -29,6 +29,7 @@ import { onClearPage } from "boardList/layout/component/dialog/detail/AlertDialo
 import AddCircle from "@material-ui/icons/AddCircle";
 import { SvgIcon } from '@material-ui/core';
 import { theme } from "../../../GridaBoard/theme";
+import { PenManager } from "../../neosmartpen";
 
 
 
@@ -108,6 +109,9 @@ interface Props { // extends MixedViewProps {
   setNotFirstPenDown: any;
   showSymbol: any;
   hideSymbol: any;
+
+  gestureDisable: boolean;
+  setGestureDisable: any;
 }
 
 /**
@@ -584,6 +588,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     const { section, owner, book, page } = event;
     const prevPageInfo = this.props.pageInfo;
     let isRun = true;
+    
 
     if (isSamePage(prevPageInfo, event as IPageSOBP) && (!this.shouldSendPageInfo)) {
       isRun = false;
@@ -595,6 +600,15 @@ class PenBasedRenderer extends React.Component<Props, State> {
     }
     if (isPUI(event as IPageSOBP)) {
       isRun = false;
+    }
+
+    if(event.mac !== PenManager.getInstance().virtualPen.mac && !isPUI(event as IPageSOBP) && !this.props.calibrationMode){ // 가상펜이 아닐 경우
+      const isPlate = isPlatePage(event as IPageSOBP);
+      if(isPlate && this.props.gestureDisable){
+        this.props.setGestureDisable(false);
+      }else if(!isPlate && !this.props.gestureDisable){
+        this.props.setGestureDisable(true);
+      }
     }
     /** pdf pageNo를 바꿀 수 있게, container에게 전달한다. */
     if (isRun && this.props.onNcodePageChanged) {
@@ -960,7 +974,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   /**
    *
-   * @param {{strokeKey:string, mac:string, stroke:NeoStroke, dot:NeoDxot}} event
+   * @param {{strokeKey:string, mac:string, stroke:NeoStroke, dot:NeoDot}} event
    */
 
   onLiveHoverMove = (event: IPenToViewerEvent) => {
@@ -1281,6 +1295,7 @@ const mapStateToProps = (state) => ({
   show: state.gesture.symbol.show,
   hideCanvasMode: state.gesture.hideCanvasMode,
   gestureMode: state.gesture.gestureMode,
+  gestureDisable: state.gesture.gestureDisable,
   activePageNo: state.activePage.activePageNo
 });
 
@@ -1295,6 +1310,7 @@ const mapDispatchToProps = (dispatch) => ({
   setNotFirstPenDown: (bool) => setNotFirstPenDown(bool),
   showSymbol: () => showSymbol(),
   hideSymbol: () => hideSymbol(),
+  setGestureDisable: (bool) => setGestureDisable(bool),
   setHideCanvasMode: (bool) => setHideCanvasMode(bool),
   setActivePageNo: no => setActivePageNo(no)
 });

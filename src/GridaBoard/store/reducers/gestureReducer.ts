@@ -27,6 +27,7 @@ const SymbolActionType = Object.freeze({
 
 const SET_HIDE_CANVAS_MODE = "SET_HIDE_CANVAS_MODE";
 const SET_GESTURE_MODE = "SET_GESTURE_MODE";
+const SET_GESTURE_DISABLE = "SET_GESTURE_DISABLE";
 
 // Double Tap Action Function
 export const initializeTap = () => {
@@ -92,6 +93,12 @@ export const setGestureMode = (gestureMode: boolean) => {
     type: SET_GESTURE_MODE, gestureMode
   });
 };
+export const setGestureDisable = (mode: boolean) => {
+  store.dispatch({
+    type: SET_GESTURE_DISABLE, 
+    mode
+  });
+};
 
 // 초기 상태
 const initialState = {
@@ -108,7 +115,8 @@ const initialState = {
     show: false,
   },
   hideCanvasMode: false,
-  gestureMode: true
+  gestureMode: true,
+  gestureDisable : false
 };
 
 // 리듀서
@@ -196,6 +204,11 @@ export default function gestureReducer(state = initialState, action) {
         ...state,
         gestureMode: action.gestureMode
       }
+      case SET_GESTURE_DISABLE : 
+        return {
+          ...state,
+          gestureDisable : action.mode 
+        }
     default:
       return state;
   }

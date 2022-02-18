@@ -84,6 +84,7 @@ const NavLayer = (props: Props) => {
   const [docViewDetail, setDocViewDetail] = useState(0);
   const [isCollapsed, setCollapsed] = useState(false);
 
+  const gestureDisable = useSelector((state: RootState) => state.gesture.gestureDisable);
   const brZoom = useSelector((state: RootState) => state.ui.browser.zoom);
   const classes = useStyle({brZoom:brZoom})();
   const badgeInVisible = !useSelector((state: RootState) => state.ui.shotcut.show);
@@ -174,9 +175,11 @@ const NavLayer = (props: Props) => {
             <TracePointButton />
           </CustomBadge>
 
-          <CustomBadge badgeContent={`Shift-G`}>
-            <GestureButton />
-          </CustomBadge>
+          {gestureDisable ? "" : 
+            (<CustomBadge badgeContent={`Shift-G`}>
+              <GestureButton />
+            </CustomBadge>)
+          }
           <CustomBadge badgeContent={`Shift-H`}>
             <HideCanvasButton />
           </CustomBadge>
