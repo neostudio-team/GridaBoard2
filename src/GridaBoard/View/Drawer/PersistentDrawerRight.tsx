@@ -104,11 +104,11 @@ const useStyles = props => makeStyles((theme: Theme) => ({
     position: "relative"
   },
   newPage : {
-    padding: "70px",
-    margin: "10px",
+    padding: "60px 50px",
+    margin: "10px 24px",
     background: theme.palette.background.paper,
-    border: "1px" + theme.palette.primary.main,
-    borderStyle: "dashed",
+    // border: "1px" + theme.palette.primary.main,
+    // borderStyle: "dashed",
     textAlign: "center",
     color: theme.palette.primary.main,
     fontWeight: "bold",
@@ -116,7 +116,15 @@ const useStyles = props => makeStyles((theme: Theme) => ({
     cursor: "pointer",
     "&:hover" : {
       backgroundColor: "rgba(0, 0, 0, 0.1)"
-    }
+    },
+    backgroundImage: `
+      repeating-linear-gradient(0deg, ${theme.palette.primary.main}, ${theme.palette.primary.main} 10px, transparent 10px, transparent 20px, ${theme.palette.primary.main} 20px), 
+      repeating-linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.primary.main} 10px, transparent 10px, transparent 20px, ${theme.palette.primary.main} 20px), 
+      repeating-linear-gradient(180deg, ${theme.palette.primary.main}, ${theme.palette.primary.main} 10px, transparent 10px, transparent 20px, ${theme.palette.primary.main} 20px), 
+      repeating-linear-gradient(270deg, ${theme.palette.primary.main}, ${theme.palette.primary.main} 10px, transparent 10px, transparent 20px, ${theme.palette.primary.main} 20px)`,
+    backgroundSize: "1px 100%, 100% 1px, 1px 100% , 100% 1px",
+    backgroundPosition: "0 0, 0 0, 100% 0, 0 100%",
+    backgroundRepeat: "no-repeat"
   }
 }));
 
@@ -154,9 +162,12 @@ export default function PersistentDrawerRight(props: Props) {
       >
       {/* <Toolbar className={classes.customizeToolbar} /> */}
         <div id="drawer_content" className={classes.drawerContainer}>
-          { (numDocPages === 0) ? <div className={classes.newPage} onClick={(e) => addBlankPage()}>+</div> : null }
+          {numDocPages === 0 ? 
+          <div className={classes.newPage} onClick={(e) => addBlankPage()}>
+            <AddIcon />
+          </div> 
+          : null}
           < DrawerPages noInfo={props.noInfo} />
-          <div className={classes.liner}></div>
           
           {/* <div className={classes.drawerFooter} >
             <Button variant="contained" color="primary" onClick={(evnet) => addBlankPage(event)} >
