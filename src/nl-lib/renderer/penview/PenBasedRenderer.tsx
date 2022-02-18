@@ -1153,7 +1153,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     this.props.showSymbol();
     setTimeout(function() {
       hideSymbol();
-    }, 3000);
+    }, 10000);
   }
 
   render() {
