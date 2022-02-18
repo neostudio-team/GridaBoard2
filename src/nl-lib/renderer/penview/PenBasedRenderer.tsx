@@ -617,7 +617,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     }
 
     // (페이지가 refresh 되고) 부기보드를 첫 터치했을때 심볼이 보여지도록 한다. 추가, 회전 후 부기보드를 첫 터치할 때 심볼이 보여지도록 한다.
-    if (isSamePage(this.props.pageInfo, PlateNcode_3) && !this.props.notFirstPenDown) {
+    if (isPlatePage(this.props.pageInfo) && !this.props.notFirstPenDown) {
       this.onSymbolUp();
     }
   }
