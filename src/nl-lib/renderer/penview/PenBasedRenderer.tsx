@@ -657,7 +657,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
         case "top-right":
         case "bottom-left":
         case "bottom-right":
-          if (this.onPlusControlZone(dot)) {
+          if (isSamePage(PlateNcode_3, this.props.pageInfo) && this.onPlusControlZone(dot)) {
             this.plusControlZone();
           }
           break;
