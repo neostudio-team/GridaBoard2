@@ -116,7 +116,7 @@ const initialState = {
   },
   hideCanvasMode: false,
   gestureMode: true,
-  gestureDisable : false
+  gestureDisable : true
 };
 
 // 리듀서
