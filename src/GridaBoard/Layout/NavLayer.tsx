@@ -16,7 +16,7 @@ import TracePointButton from "../components/buttons/TracePointButton";
 import ColorButtons from "../components/navbar/ColorButtons";
 import FitButton from "../components/buttons/FitButton";
 import PageNumbering from "../components/navbar/PageNumbering";
-import { Collapse, IconButton, makeStyles } from "@material-ui/core";
+import { Collapse, IconButton, makeStyles, Typography } from "@material-ui/core";
 import CustomBadge from "../components/CustomElement/CustomBadge"
 import { ArrowDropDown, ArrowDropUp } from "@material-ui/icons";
 import BoardNewButton from "../components/buttons/BoardNewButton";
@@ -63,6 +63,27 @@ const useStyle = props => makeStyles(theme => ({
     borderRadius: '4px !important',
     borderRight: '0px !important',
   },
+  shapeCircleFilled: {
+    width: "24px",
+    height: "24px",
+    padding: "8px"
+  },
+  shapeCircle: {
+    width: "8px",
+    height: "8px",
+    borderRadius: "8px",
+    backgroundColor: props.gestureDisable ? "#4EE4A5" : theme.palette.primary.main
+  },
+  caption: {
+    padding: "4px",
+    color: "#121212",
+    fontFamily: "Noto Sans CJK KR",
+    fontStyle: "normal",
+    fontWeight: "bold",
+    fontSize: "11px",
+    lineHeight: "16px",
+    letterSpacing: "0.25px"
+  }
 }));
 
 const printBtnId = "printTestButton";
@@ -83,10 +104,10 @@ const NavLayer = (props: Props) => {
   const [mapViewDetail, setMapViewDetail] = useState(0);
   const [docViewDetail, setDocViewDetail] = useState(0);
   const [isCollapsed, setCollapsed] = useState(false);
-
+  
   const gestureDisable = useSelector((state: RootState) => state.gesture.gestureDisable);
   const brZoom = useSelector((state: RootState) => state.ui.browser.zoom);
-  const classes = useStyle({brZoom:brZoom})();
+  const classes = useStyle({brZoom:brZoom, gestureDisable:gestureDisable})();
   const badgeInVisible = !useSelector((state: RootState) => state.ui.shotcut.show);
 
   let mapJson = {} as any;
@@ -170,19 +191,21 @@ const NavLayer = (props: Props) => {
           <CustomBadge badgeContent={`Z~B`}>
             <ThicknessButton />
           </CustomBadge>
+          
           <div className={classes.headerButtonLiner} style={{marginLeft: '16px', marginRight: '16px'}} />
           <CustomBadge badgeContent={`T`}>
             <TracePointButton />
           </CustomBadge>
+          <CustomBadge badgeContent={`Shift-H`}>
+            <HideCanvasButton />
+          </CustomBadge>
 
+          <div className={classes.headerButtonLiner} style={{marginLeft: '16px'}} />
           {gestureDisable ? "" : 
             (<CustomBadge badgeContent={`Shift-G`}>
               <GestureButton />
             </CustomBadge>)
           }
-          <CustomBadge badgeContent={`Shift-H`}>
-            <HideCanvasButton />
-          </CustomBadge>
         </div>
 
         <div>
@@ -190,6 +213,15 @@ const NavLayer = (props: Props) => {
         </div>
 
         <div>
+          <div>
+            <div className={classes.shapeCircleFilled}>
+              <div className={classes.shapeCircle}></div>
+            </div>
+            <Typography className={classes.caption}>
+              {gestureDisable ? "PAGE MODE" : "PLATE MODE"}
+            </Typography>
+          </div>
+          <div className={classes.headerButtonLiner} style={{marginLeft: '16px'}} />
           <FitButton />
           <HeaderController {...props} /> 
         </div>
