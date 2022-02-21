@@ -213,14 +213,12 @@ const NavLayer = (props: Props) => {
         </div>
 
         <div>
-          <div>
-            <div className={classes.shapeCircleFilled}>
-              <div className={classes.shapeCircle}></div>
-            </div>
-            <Typography className={classes.caption}>
-              {gestureDisable ? "PAGE MODE" : "PLATE MODE"}
-            </Typography>
+          <div className={classes.shapeCircleFilled}>
+            <div className={classes.shapeCircle}></div>
           </div>
+          <Typography className={classes.caption}>
+            {gestureDisable ? "PAGE MODE" : "PLATE MODE"}
+          </Typography>
           <div className={classes.headerButtonLiner} style={{marginLeft: '16px'}} />
           <FitButton />
           <HeaderController {...props} /> 
