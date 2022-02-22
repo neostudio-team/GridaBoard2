@@ -49,8 +49,8 @@ const GestureDialog = (props: Props)=>{
   }
 
   return (
-    <>
-      <ArrowDropUp className="arrow" style={{position:"fixed", left:"484.3px", top:"100px", zIndex:1200, fontSize:"40px", color:"#CED3E2"}}/>
+    <div>
+      <ArrowDropUp className="arrow" style={{position:"fixed", left:"557.3px", top:"100px", zIndex:1200, fontSize:"40px", color:"#CED3E2"}}/>
       <Dialog
         onClose={closeEvent}
         {...rest}
@@ -71,7 +71,7 @@ const GestureDialog = (props: Props)=>{
           <Button variant="contained" disableElevation color="primary" onClick={()=>{success()}}>{successBtn}</Button>        
         </div>
       </Dialog>
-    </>
+    </div>
   );
 };
 

@@ -60,7 +60,7 @@ const useStyle = makeStyles(theme=>({
  
   gestureDialog: {
     position: "fixed",
-    left: "300px",
+    left: "373px",
     top: "91px",
     minWidth: "200px",
     maxWidth: "370px",
