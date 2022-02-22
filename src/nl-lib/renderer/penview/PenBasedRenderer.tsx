@@ -1078,20 +1078,20 @@ class PenBasedRenderer extends React.Component<Props, State> {
   onTopControlZone = (x: number, y: number, width: number, height: number, gestureArea: number) => {
     return  x > (width-gestureArea)/2 && 
             x < width-(width-gestureArea)/2 && 
-            y < gestureArea
+            y < gestureArea*(3/5)
   }
   onBottomControlZone = (x: number, y: number, width: number, height: number, gestureArea: number) => {
     return  x > (width-gestureArea)/2 && 
             x < width-(width-gestureArea)/2 && 
-            y > height-gestureArea
+            y > height-(gestureArea*(3/5))
   }
   onLeftControlZone = (x: number, y: number, width: number, height: number, gestureArea: number) => {
-    return  x < gestureArea && 
+    return  x < gestureArea*(3/5) && 
             y > (height-gestureArea)/2 && 
             y < height-(height-gestureArea)/2
   }
   onRightControlZone = (x: number, y: number, width: number, height: number, gestureArea: number) => {
-    return  x > width-gestureArea && 
+    return  x > width-(gestureArea*(3/5)) && 
             y > (height-gestureArea)/2 && 
             y < height-(height-gestureArea)/2
   }
