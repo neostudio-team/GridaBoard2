@@ -10,6 +10,7 @@ import GridaDoc, { addBlankPage } from '../GridaDoc';
 import { InkStorage } from 'nl-lib/common/penstorage';
 import { onToggleRotate } from './buttons/RotateButton';
 import { setHideCanvasMode } from '../store/reducers/gestureReducer';
+import { scrollToThumbnail } from '../../nl-lib/common/util';
 
 
 // 2020-12-09 현재 구현되어 있는 부분까지 PUI 완성(페이지 넘어가는 부분과 스트로크 찍히는 오류 수정할 것)
@@ -306,6 +307,7 @@ export default class PUIController {
           return;
         }
         setActivePageNo(activePageNo-1);
+        scrollToThumbnail(activePageNo-1);
         break;
       }
       case "next": {
@@ -315,6 +317,7 @@ export default class PUIController {
           return;
         }
         setActivePageNo(activePageNo+1);
+        scrollToThumbnail(activePageNo+1);
         break;
       }
       case "add_page" : {
