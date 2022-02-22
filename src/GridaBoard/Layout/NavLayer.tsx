@@ -23,6 +23,7 @@ import BoardNewButton from "../components/buttons/BoardNewButton";
 import { RootState } from "../store/rootReducer";
 import GestureButton from "../components/buttons/GestureButton";
 import HideCanvasButton from "../components/buttons/HideCanvasButton";
+import getText from "nl-lib/../GridaBoard/language/language";
 
 const useStyle = props => makeStyles(theme => ({
   navStyle : {
@@ -217,7 +218,7 @@ const NavLayer = (props: Props) => {
             <div className={classes.shapeCircle}></div>
           </div>
           <Typography className={classes.caption}>
-            {gestureDisable ? "PAGE MODE" : "PLATE MODE"}
+            {gestureDisable ? getText("nav_page_mode") : getText("nav_plate_mode")}
           </Typography>
           <div className={classes.headerButtonLiner} style={{marginLeft: '16px'}} />
           <FitButton />
