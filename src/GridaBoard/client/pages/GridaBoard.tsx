@@ -22,6 +22,7 @@ import CombineDialog from 'boardList/layout/component/dialog/CombineDialog';
 import firebase, { auth, secondaryAuth, secondaryFirebase, signInWith } from 'GridaBoard/util/firebase_config';
 import Cookies from "universal-cookie";
 import { MappingStorage } from "nl-lib/common/mapper/MappingStorage";
+import { showNoticeGestureDialog } from "../../store/reducers/listReducer";
 
 
 
@@ -158,6 +159,18 @@ const GridaBoard = () => {
       }
     })
   }
+
+
+  
+  const gestureDisable = useSelector((state: RootState) => state.gesture.gestureDisable);
+  useEffect(()=>{
+    const cookies = new Cookies();
+    const openNoticeCookie = cookies.get("openNoticeGesture");
+    if(openNoticeCookie !== "true" && !gestureDisable){
+      showNoticeGestureDialog("noticeGesture");
+    }
+  },[gestureDisable])
+  
 
 
   turnOnGlobalKeyShortCut(true);
