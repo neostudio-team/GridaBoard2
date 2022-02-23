@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import HeadBanner from "./HeadBanner";
 import HeaderLayer from "./HeaderLayer";
 import NavLayer from "./NavLayer";
 import LeftSideLayer from "./LeftSideLayer";
@@ -126,6 +127,7 @@ const ViewLayer = (props: Props) => {
 
   return (
     <div className={classes.wrap}>
+      <HeadBanner />
       <AppBar position="relative" color="transparent" elevation={0}> 
         <Collapse in={isView} className={classes.headerCollapse} timeout={0}>
           <HeaderLayer {...props} handlePenLogWindow={handlePenLogWindow} hidden={hiddenTest} />
