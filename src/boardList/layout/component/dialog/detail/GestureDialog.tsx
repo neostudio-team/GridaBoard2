@@ -52,6 +52,7 @@ const GestureDialog = (props: Props)=>{
     <div>
       <ArrowDropUp className="arrow" style={{position:"fixed", left:"557.3px", top:"100px", zIndex:1200, fontSize:"40px", color:"#CED3E2"}}/>
       <Dialog
+        disableBackdropClick
         onClose={closeEvent}
         {...rest}
         open={open}
