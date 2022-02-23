@@ -6,6 +6,7 @@ import { AccessTime, DeleteOutline, Add, MoreVert } from '@material-ui/icons';
 import { showGroupDialog } from 'GridaBoard/store/reducers/listReducer';
 import { showDropDown } from 'GridaBoard/store/reducers/listReducer';
 import copylightLogo from "../copylight_logo.png";
+import SideBanner from './component/dialog/detail/SideBanner';
 const useStyle = makeStyles(theme=>({
   wrap : {
     background : theme.custom.white[50],
@@ -121,6 +122,8 @@ const useStyle = makeStyles(theme=>({
   },
   banner : {
     display: "flex",
+    
+    flexDirection: "column",
     bottom : "0px",
     width: "100%",
     position: "absolute",
@@ -217,7 +220,9 @@ const Leftside = (props : Props)=>{
       </div>
       <Liner />
       <div className={classes.banner}>
-        {/* <div className="banner"></div> */}
+        <div className="banner">
+          {/* <SideBanner /> */}
+        </div>
         <div className="copylight">
           <img src={copylightLogo} alt=""/> 
           <span>© NEOLAB Convergence Inc. All Rights</span>
