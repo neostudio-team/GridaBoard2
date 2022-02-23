@@ -404,7 +404,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
       this.pdfSize = { ...nextProps.pdfSize, scale: this.pdfSize.scale };
 
       //회전 후 symbol(toast포함)의 display 상태 초기화(안보이도록 처리)
-      this.onSymbolDown();
+      hideToastMessage();
       ret_val = true;
     }
 
@@ -458,7 +458,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
         this.props.setNotFirstPenDown(false);
         this.props.initializeCrossLine();
         this.props.initializeTap();
-        this.onSymbolDown();
+        hideToastMessage();
       }
 
       if (this.props.calibrationMode) {
@@ -622,7 +622,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
       this.renderer.registerPageInfoForPlate(event);//hover page info를 거치지 않고 바로 page info로 들어오는 경우(빨리 찍으면 hover 안들어옴)
       this.props.onNcodePageChanged({ section, owner, book, page });
       //Plate <-> NcodePage 변화에서의 symbol(toast포함)의 display 상태 초기화(안보이도록 처리)
-      this.onSymbolDown();
+      hideToastMessage();
     }
 
     // (페이지가 refresh 되고) 부기보드를 첫 터치했을때 심볼이 보여지도록 한다. 추가, 회전 후 부기보드를 첫 터치할 때 심볼이 보여지도록 한다.
@@ -1157,13 +1157,13 @@ class PenBasedRenderer extends React.Component<Props, State> {
   }
 
   onSymbolUp = () => {
-    clearTimeout(this.symbolTimer);
+    // clearTimeout(this.symbolTimer);
     this.props.setNotFirstPenDown(true);
     showMessageToast(getText('check_symbol_position'));
-    this.props.showSymbol();
-    this.symbolTimer = setTimeout(function() {
-      hideSymbol();
-    }, 10000);
+    // this.props.showSymbol();
+    // this.symbolTimer = setTimeout(function() {
+    //   hideSymbol();
+    // }, 10000);
   }
 
   onSymbolDown = () => {
@@ -1207,7 +1207,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
       fontSize: "32px",
       color: theme.palette.error.main,
       opacity: 0.5,
-      visibility: this.props.show && this.props.isMainView ? 'visible' : 'hidden'
+      visibility: this.props.isMainView ? 'visible' : 'hidden'
     }
 
     const shadowStyle: CSSProperties = {
