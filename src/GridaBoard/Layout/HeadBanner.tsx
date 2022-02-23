@@ -13,6 +13,7 @@ const useStyle = makeStyles(theme=>({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    cursor: "pointer",
     "& > img" : {
       height: "100%",
     }
