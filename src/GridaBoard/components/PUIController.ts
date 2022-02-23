@@ -321,7 +321,25 @@ export default class PUIController {
         break;
       }
       case "add_page" : {
-        addBlankPage();
+        const activePageNo = store.getState().activePage.activePageNo;
+        const doc = GridaDoc.getInstance();
+        const currentPage = doc.getPage(activePageNo);
+        const pageNo = doc.addBlankPage();
+
+        let currentRotation = 0;
+        let pageMode = "portrait";
+        if (currentPage) {
+          if (currentPage.pageOverview.landscape) {
+            pageMode = "landscape";
+          }
+          pageMode === "portrait" ? 
+            (currentRotation = (currentPage.pageOverview.rotation + 90) % 360) : 
+            (currentRotation = currentPage.pageOverview.rotation);
+        }
+
+        doc._pages[pageNo]._rotation = (270 + currentRotation) % 360;
+
+        setActivePageNo(pageNo);
         break;
       }
       case "rotate_page" : {
