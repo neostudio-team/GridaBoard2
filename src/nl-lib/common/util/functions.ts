@@ -463,7 +463,10 @@ export function scrollToBottom(id: string) {
   // (ele) ? ele.scrollTo(0, ele.scrollHeight) : null;
 }
 
-export function scrollToThumbnail(pageNo : Number){
+export function scrollToThumbnail(pageNo: Number, event?: KeyboardEvent){
+  if(event){
+    event.preventDefault();
+  }
   const ele = document.getElementById("thumbnail - " + pageNo + " -mixed_view");
   (ele) ? ele.scrollIntoView({behavior: "smooth", block: "center"}) : null;
 }

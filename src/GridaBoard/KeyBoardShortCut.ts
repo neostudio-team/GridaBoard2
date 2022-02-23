@@ -201,7 +201,7 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
           return;
         }
         setActivePageNo(activePageNo-1);
-        scrollToThumbnail(activePageNo-1);
+        scrollToThumbnail(activePageNo-1, evt);
         break;
       }
       // page down
@@ -217,7 +217,7 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
           return;
         }
         setActivePageNo(activePageNo+1);
-        scrollToThumbnail(activePageNo+1);
+        scrollToThumbnail(activePageNo+1, evt);
         break;
       }
 
