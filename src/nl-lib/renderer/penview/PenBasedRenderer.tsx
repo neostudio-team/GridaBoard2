@@ -23,7 +23,7 @@ import GridaDoc from "GridaBoard/GridaDoc";
 import { initializeCrossLine, setLeftToRightDiagonal, setRightToLeftDiagonal, setHideCanvasMode, incrementTapCount, initializeTap, setFirstDot, setNotFirstPenDown, showSymbol, hideSymbol, setGestureDisable } from "GridaBoard/store/reducers/gestureReducer";
 import { setActivePageNo } from "GridaBoard/store/reducers/activePageReducer";
 import { onToggleRotate } from "GridaBoard/components/buttons/RotateButton";
-import { showMessageToast } from "GridaBoard/store/reducers/ui";
+import { hideToastMessage, showMessageToast } from "GridaBoard/store/reducers/ui";
 import getText from "GridaBoard/language/language";
 import { onClearPage } from "boardList/layout/component/dialog/detail/AlertDialog";
 import AddCircle from "@material-ui/icons/AddCircle";
@@ -183,6 +183,8 @@ class PenBasedRenderer extends React.Component<Props, State> {
   fitMargin = 0;
   fixed = false;
   shouldSendPageInfo = false;
+
+  symbolTimer: any;
 
   setMainDivRef = (div: HTMLDivElement) => {
     this.mainDiv = div;
@@ -400,6 +402,9 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
       this.renderer.onPageSizeChanged(nextProps.pdfSize);
       this.pdfSize = { ...nextProps.pdfSize, scale: this.pdfSize.scale };
+
+      //회전 후 symbol(toast포함)의 display 상태 초기화(안보이도록 처리)
+      this.onSymbolDown();
       ret_val = true;
     }
 
@@ -448,10 +453,12 @@ class PenBasedRenderer extends React.Component<Props, State> {
         /** 페이지 이동했을 때, Symbol을 비롯한 제스처 로직들의 초기화가 이루어져야 한다.
          *  notFirstPenDown - Symbol 첫 touch를 확인하기 위한 state
          *  & crossLine, doubleTap 관련 state의 초기화
+         *  symbol(toast포함)의 display 상태 초기화(안보이도록 처리)
          * */ 
         this.props.setNotFirstPenDown(false);
         this.props.initializeCrossLine();
         this.props.initializeTap();
+        this.onSymbolDown();
       }
 
       if (this.props.calibrationMode) {
@@ -614,6 +621,8 @@ class PenBasedRenderer extends React.Component<Props, State> {
     if (isRun && this.props.onNcodePageChanged) {
       this.renderer.registerPageInfoForPlate(event);//hover page info를 거치지 않고 바로 page info로 들어오는 경우(빨리 찍으면 hover 안들어옴)
       this.props.onNcodePageChanged({ section, owner, book, page });
+      //Plate <-> NcodePage 변화에서의 symbol(toast포함)의 display 상태 초기화(안보이도록 처리)
+      this.onSymbolDown();
     }
 
     // (페이지가 refresh 되고) 부기보드를 첫 터치했을때 심볼이 보여지도록 한다. 추가, 회전 후 부기보드를 첫 터치할 때 심볼이 보여지도록 한다.
@@ -1148,12 +1157,18 @@ class PenBasedRenderer extends React.Component<Props, State> {
   }
 
   onSymbolUp = () => {
+    clearTimeout(this.symbolTimer);
     this.props.setNotFirstPenDown(true);
     showMessageToast(getText('check_symbol_position'));
     this.props.showSymbol();
-    setTimeout(function() {
+    this.symbolTimer = setTimeout(function() {
       hideSymbol();
     }, 10000);
+  }
+
+  onSymbolDown = () => {
+    hideSymbol();
+    hideToastMessage();
   }
 
   render() {
