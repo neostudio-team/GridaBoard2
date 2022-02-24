@@ -401,6 +401,8 @@ export async function makeThumbnail() {
     pdfDoc = await PDFDocument.load(existingPdfBytes);
 
     for (const page of docPages) {
+      //page에 pdf가 없거나, pdf가 바뀌면 스탑
+      if(page.pdf === undefined || page.pdf.url === docPage.pdf.url) break ;
       page.pdf.removedPage.forEach(el => {
         pdfDoc.removePage(el);
       });
