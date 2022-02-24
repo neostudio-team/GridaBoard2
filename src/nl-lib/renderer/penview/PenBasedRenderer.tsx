@@ -1040,6 +1040,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     // }
     doc._pages[pageNo]._rotation = (270+this.getRotationOnPageMode())%360;
     setActivePageNo(pageNo);
+    scrollToThumbnail(pageNo);
   }
 
   /** Plate 내에서의 dot position 파악 (상, 하, 좌, 우, 좌상단) */
