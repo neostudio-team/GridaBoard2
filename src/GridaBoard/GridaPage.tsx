@@ -38,6 +38,10 @@ export default class GridaPage {
     this._pdf = pdf;
     this._pdfPageNo = pdfPageNo;
     this._pdfPage = pdf.getPage(pdfPageNo);
+
+    if (this._pdf.pagesOverview[this._pdfPageNo - 1]) {
+      this._rotation = this._pdf.pagesOverview[this._pdfPageNo - 1].rotation;
+    }
     // this._pageToNcodeMap = this._pdfPage.pageToNcodeMap;
   }
 

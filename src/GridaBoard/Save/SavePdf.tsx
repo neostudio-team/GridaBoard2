@@ -61,11 +61,12 @@ export async function makePdfDocument() {
         pdfDoc = await PDFDocument.create();
       }
       const pdfPage = await pdfDoc.addPage();
-      if (page._rotation === 90 || page._rotation === 270) {
-        const tmpWidth = pdfPage.getWidth();
-        pdfPage.setWidth(pdfPage.getHeight());
-        pdfPage.setHeight(tmpWidth);
-      }
+      pdfPage.setRotation(degrees(page._rotation));
+      // if (page._rotation === 90 || page._rotation === 270) {
+      //   const tmpWidth = pdfPage.getWidth();
+        // pdfPage.setWidth(pdfPage.getHeight());
+        // pdfPage.setHeight(tmpWidth);
+      // }
     }
     else {
       //pdf인 경우
@@ -101,13 +102,10 @@ export async function makePdfDocument() {
           }
         } else {
           pdfDoc = pdfDocSrc;
-          // 최초 로딩 되었을때 각도가 유지됨
-          const pdfRotation = pdfDoc.getPages()[i].getRotation();
-          pdfDoc.getPages()[i++].setRotation(degrees((pdfRotation.angle + page._rotation)%360));
+          pdfDoc.getPages()[i++].setRotation(degrees((page._rotation)%360));
         }
       } else {
-        const pdfRotation = pdfDoc.getPages()[i].getRotation();
-        pdfDoc.getPages()[i++].setRotation(degrees((pdfRotation.angle + page._rotation)%360));
+        pdfDoc.getPages()[i++].setRotation(degrees((page._rotation)%360));
         continue;
       }
     }
@@ -157,10 +155,10 @@ export function addStroke(page: PDFPage, NeoStrokes: NeoStroke[], isPdf: boolean
     const brushType = NeoStrokes[j].brushType;
     const dotArr = NeoStrokes[j].dotArray;
     const rgbStrArr = NeoStrokes[j].color.match(/\d+/g);
-    const stroke_h = NeoStrokes[j].h;
+    // const stroke_h = NeoStrokes[j].h;
     const stroke_h_origin = NeoStrokes[j].h_origin;
-    const { a, b, c, d, e, f, g, h } = stroke_h;
-    const { a: a0, b: b0, c: c0, d: d0, e: e0, f: f0, g: g0, h: h0 } = stroke_h_origin;
+    // const { a, b, c, d, e, f, g, h } = stroke_h;
+    // const { a: a0, b: b0, c: c0, d: d0, e: e0, f: f0, g: g0, h: h0 } = stroke_h_origin;
     let opacity = 1;
     if (NeoStrokes[j].brushType === 1) {
       opacity = 0.3;
@@ -259,18 +257,19 @@ export function addStroke(page: PDFPage, NeoStrokes: NeoStroke[], isPdf: boolean
     } else {
       if (isPdf) {
         for (let k = 0; k < dotArr.length; k++) {
+          const { a, b, c, d, e, f, g, h } = stroke_h_origin;
           const dot = dotArr[k];
-          const nominator = g0 * dot.x + h0 * dot.y + 1;
-          const px = (a0 * dot.x + b0 * dot.y + c0) / nominator;
-          const py = (d0 * dot.x + e0 * dot.y + f0) / nominator;
+          const nominator = g * dot.x + h * dot.y + 1;
+          const px = (a * dot.x + b * dot.y + c) / nominator;
+          const py = (d * dot.x + e * dot.y + f) / nominator;
           
           const pdf_xy = { x: px, y: py};
 
           pointArray.push({ x: pdf_xy.x, y: pdf_xy.y, f: dot.f });
         }
-        // page.setRotation(degrees(gridaPageObj.rotation));
       } else {
         for (let k = 0; k < dotArr.length; k++) {
+          const { a, b, c, d, e, f, g, h } = stroke_h_origin; //stroke_h;
           const dot = dotArr[k];
           const nominator = g * dot.x + h * dot.y + 1;
           const px = (a * dot.x + b * dot.y + c) / nominator;
