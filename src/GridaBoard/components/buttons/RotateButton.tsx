@@ -36,12 +36,13 @@ export const onToggleRotate = () => {
     page._rotation += 90;
   }
 
-  setNotFirstPenDown(false);
   // setIsVertical((prev)=>!prev);
 
   const tmp = page.pageOverview.sizePu.width ;
   page.pageOverview.sizePu.width = page.pageOverview.sizePu.height;
   page.pageOverview.sizePu.height = tmp;
+
+  setNotFirstPenDown(false);
 }
 
 const RotateButton = (props: IconButtonProps) => {
