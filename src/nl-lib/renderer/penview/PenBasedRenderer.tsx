@@ -1207,7 +1207,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
       fontSize: "32px",
       color: theme.palette.error.main,
       opacity: 0.5,
-      visibility: this.props.isMainView ? 'visible' : 'hidden'
+      visibility: !this.props.gestureDisable && this.props.isMainView ? 'visible' : 'hidden'
     }
 
     const shadowStyle: CSSProperties = {
