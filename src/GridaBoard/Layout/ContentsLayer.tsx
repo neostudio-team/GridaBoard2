@@ -102,12 +102,6 @@ const ContentsLayer = (props: Props) => {
     }
   }, [rotationTrigger])
 
-  useEffect(() => {
-    if (activePageNo_store !== activePageNo) {
-      setLocalActivePageNo(activePageNo_store);
-    }
-
-  }, [activePageNo_store])
   
   if (activePageNo_store >= 0) {
     const doc = GridaDoc.getInstance();
