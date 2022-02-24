@@ -855,6 +855,8 @@ export default class PenComm extends ProtocolHandlerBase {
      *  9:  4 - book
      * 13:  4 - page
     */
+   console.log("11111111111111", this.isPenDown);
+
 
     const owner = intFromBytes(buf, 5, 3);
     const section = intFromBytes(buf, 8, 1);
@@ -865,6 +867,7 @@ export default class PenComm extends ProtocolHandlerBase {
     if (!this.isPenDown) {
       eventMode = PenCommEventEnum.PAGE_INFO_HOVER;
     }
+    console.log(section, owner, book, page);
 
     const e = makePenEvent(this.deviceInfo.deviceType, eventMode, { section, owner, book, page, timeStamp: this.currentTime });
     const isHover = eventMode === PenCommEventEnum.PAGE_INFO_HOVER;

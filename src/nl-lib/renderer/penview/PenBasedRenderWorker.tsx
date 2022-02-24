@@ -639,11 +639,11 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     cursor.waitCount = 0;
     const self = this;
 
-    cursor.intervalHandle = window.setInterval(() => {
+    cursor.intervalHandle = window.setInterval(function(_cursor){
       const cursor = this.penCursors[e.mac];
       if (!cursor) {
         console.log(`ERROR: pen cursor has not been initiated`);
-        clearInterval(cursor.intervalHandle);
+        clearInterval(_cursor.intervalHandle);
         return;
       }
       const hps = cursor.hoverPoints;
@@ -666,7 +666,7 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
           clearInterval(cursor.intervalHandle);
         }
       }
-    }, REMOVE_HOVER_POINTS_INTERVAL);
+    }.bind(this, cursor), REMOVE_HOVER_POINTS_INTERVAL);
   };
 
   redrawStrokes = (pageInfo: IPageSOBP, isMainView?: boolean) => {
