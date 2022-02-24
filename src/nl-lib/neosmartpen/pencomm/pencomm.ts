@@ -91,6 +91,15 @@ export default class PenComm extends ProtocolHandlerBase {
 
   penHandler: INeoSmartpen;
 
+  hoverSOBP = {
+    isHover : false,
+    section : -1,
+    owner : -1,
+    book : -1,
+    page : -1,
+    time : -1
+  }
+
   private _strokeStartTime: number;
 
   private _currentTime: number;
@@ -610,6 +619,12 @@ export default class PenComm extends ProtocolHandlerBase {
     // console.log("    #1 INFO");
     const isHover = eventMode === PenCommEventEnum.PAGE_INFO_HOVER;
 
+    if(isHover){
+      this.hoverSOBP = { time: Date.now(), isHover, section, owner, book, page }
+    }else{
+      this.hoverSOBP.isHover = false;
+    }
+
     // console.log( "0x64");
     this.penHandler.onPageInfo(e, isHover);
 
@@ -856,6 +871,7 @@ export default class PenComm extends ProtocolHandlerBase {
      * 13:  4 - page
     */
 
+
     const owner = intFromBytes(buf, 5, 3);
     const section = intFromBytes(buf, 8, 1);
     const book = intFromBytes(buf, 9, 4);
@@ -868,6 +884,12 @@ export default class PenComm extends ProtocolHandlerBase {
 
     const e = makePenEvent(this.deviceInfo.deviceType, eventMode, { section, owner, book, page, timeStamp: this.currentTime });
     const isHover = eventMode === PenCommEventEnum.PAGE_INFO_HOVER;
+
+    if(isHover){
+      this.hoverSOBP = { time: Date.now(), isHover, section, owner, book, page }
+    }else{
+      this.hoverSOBP.isHover = false;
+    }
 
     // console.log("0x6b");
 
@@ -961,6 +983,16 @@ export default class PenComm extends ProtocolHandlerBase {
     const x = dotX + dotFx / 100;
     const y = dotY + dotFy / 100;
     const e = makePenEvent(DeviceTypeEnum.PEN, PenCommEventEnum.PEN_MOVE_HOVER, { x, y, force, timediff, timeStamp: this.currentTime });
+    
+    if(this.hoverSOBP.isHover && Date.now() - this.hoverSOBP.time > 1000){
+      const pageInfoEvent = makePenEvent(
+        this.deviceInfo.deviceType, 
+        PenCommEventEnum.PAGE_INFO_HOVER, 
+        { section : this.hoverSOBP.section, owner : this.hoverSOBP.owner, book : this.hoverSOBP.book, page : this.hoverSOBP.page, timeStamp: this.currentTime }
+      );
+      this.hoverSOBP.time = Date.now();
+      this.penHandler.onPageInfo(pageInfoEvent, true);
+    }
 
     this.penHandler.onHoverMove(e);
   }
