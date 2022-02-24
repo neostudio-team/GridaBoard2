@@ -19,7 +19,6 @@ export const onToggleRotate = () => {
   if(activePageNo === -1) return ;
 
   setRotationTrigger(!rotationTrigger);
-  setNotFirstPenDown(false);
 
   const page = doc.getPageAt(activePageNo);
 
@@ -37,6 +36,7 @@ export const onToggleRotate = () => {
     page._rotation += 90;
   }
 
+  setNotFirstPenDown(false);
   // setIsVertical((prev)=>!prev);
 
   const tmp = page.pageOverview.sizePu.width ;
