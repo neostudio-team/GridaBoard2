@@ -400,15 +400,10 @@ export async function makeThumbnail() {
     const existingPdfBytes = await fetch(docPage.pdf.url).then(res => res.arrayBuffer());
     pdfDoc = await PDFDocument.load(existingPdfBytes);
 
-    for (const page of docPages) {
-      //page에 pdf가 없거나, pdf가 바뀌면 스탑
-      if(page.pdf === undefined || page.pdf.url === docPage.pdf.url) break ;
-      page.pdf.removedPage.forEach(el => {
-        pdfDoc.removePage(el);
-      });
-
+    docPage.pdf.removedPage.forEach(el => {
+      pdfDoc.removePage(el);
       (pdfDoc as any).pageCache.value = (pdfDoc as any).pageCache.populate();
-    }
+    });
     
     pdfDoc.getPages()[0].setRotation(degrees(docPage._rotation));
   }
