@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Button, ButtonProps } from '@material-ui/core';
-import { IFileBrowserReturn } from '../../nl-lib/common/structures';
+import { IFileBrowserReturn } from 'nl-lib/common/structures';
 import getText from "../language/language";
 import CloudConvert from 'cloudconvert';
 import { setLoadingVisibility } from '../store/reducers/loadingCircle';
 import GridaDoc from "../GridaDoc";
-import { InkStorage } from '../../nl-lib/common/penstorage';
+import { InkStorage } from 'nl-lib/common/penstorage';
 import { useHistory } from 'react-router';
-import { scrollToBottom } from '../../nl-lib/common/util';
+import { scrollToBottom, sleep } from 'nl-lib/common/util';
 import { setDocName, setIsNewDoc } from '../store/reducers/docConfigReducer';
 
 // import {fileConvert} from "./LoadGrida";
@@ -34,10 +34,19 @@ interface Props extends ButtonProps {
   isNewLoad?: Boolean
 }
 // 그리다 파일을 불러왔을때 이용
-function fileConvert(selectedFile){
+async function fileConvert(selectedFile){
   if (selectedFile.result === "success") {
     const file = selectedFile.file;
     const reader = new FileReader();
+    const doc = GridaDoc.getInstance();
+    
+    if(doc._pages.length !== 0){
+      // 기존에 사용하던게 있으면
+      if(!confirm(getText("toBoardList_sub"))){
+        setLoadingVisibility(false);
+        return ;
+      }
+    }
 
     let url = selectedFile.url;
     let jsonFile = null;
@@ -164,6 +173,7 @@ const ConvertFileLoad = (props: Props) => {
       url : null
     };
     setLoadingVisibility(true);
+    await sleep(10);
     if(fileType == "pdf" || fileType == "grida"){
       result.file = inputer.files[0];
       result.url = URL.createObjectURL(result.file);
