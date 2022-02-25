@@ -135,10 +135,8 @@ export default class GridaDoc {
     const pdfDoc = await NeoPdfManager.getInstance().getGrida({ url: option.url, filename: option.filename, purpose: "open pdf by GridaDoc" }, gridaRawData, neoStroke);
 
     if (pdfDoc) {
-      const found = this._pdfd.find(item => item.fingerprint === pdfDoc.fingerprint);
-      if (!found) {
-        this._pages = [];
-      }
+      this._pages = [];
+
       let activePageNo = await this.appendPdfDocumentForGrida(pdfDoc, pageInfos, basePageInfos); //이 안에서 doc에 pages를 넣어줌
       
       if (activePageNo === -1) {
