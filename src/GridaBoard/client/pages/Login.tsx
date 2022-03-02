@@ -161,13 +161,6 @@ const Login = () => {
   });
   
   
-  const openNoticeCookie = cookies.get("openNoticeView");
-  let isOpen = false;
-  if(openNoticeCookie !== "true"){
-    isOpen = true;
-  }
-  const [openNotice, setOpenNotice] = useState(isOpen);
-  
   if(logined){
     console.log(auth.currentUser);
     console.log(secondaryAuth.currentUser);
@@ -175,7 +168,7 @@ const Login = () => {
     return (<Redirect to="/list" />);
   }
 
-  let termsText = [];
+  const termsText = [];
   let tempTerm = getText("signin_agree").split("[%TERM]");
   termsText.push(tempTerm[0]);
   termsText.push("signin_agree_term");
@@ -186,7 +179,6 @@ const Login = () => {
 
   return (
     <MuiThemeProvider theme={theme}>
-    {openNotice ? <OpenNoticePopup setOpenNotice={setOpenNotice} /> : ""}
       <div className={classes.wrap}>
         <div >
           <div className={classes.slider}>
