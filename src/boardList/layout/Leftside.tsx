@@ -221,7 +221,7 @@ const Leftside = (props : Props)=>{
       <Liner />
       <div className={classes.banner}>
         <div className="banner">
-          {/* <SideBanner /> */}
+          <SideBanner />
         </div>
         <div className="copylight">
           <img src={copylightLogo} alt=""/> 

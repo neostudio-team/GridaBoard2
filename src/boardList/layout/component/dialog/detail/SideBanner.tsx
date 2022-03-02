@@ -34,11 +34,10 @@ const SideBanner = () => {
   }
 
   const cookies = new Cookies();
-  const bannerCookie = cookies.get(data.tag);
 
   
   let _check = false;
-  if(languageType === "ko" && !bannerCookie){ //banner는 한국어 일때만 적용
+  if(languageType === "ko"){ //banner는 한국어 일때만 적용
     _check = true;
   }
 
@@ -49,8 +48,10 @@ const SideBanner = () => {
 
 
   return (
-    <div className={style.root} onClick={moveCallback}>
-      <img src={data.img}/>
+    <div>
+      {_check ? (<div className={style.root} onClick={moveCallback}>
+        <img src={data.img}/>
+      </div>) : ""}
     </div>
   );
 }
