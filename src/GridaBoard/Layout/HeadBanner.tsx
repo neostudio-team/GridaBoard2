@@ -51,7 +51,6 @@ const HeadBanner = () => {
 
 
   const [checked, setChecked] = useState(_check);
-  console.log(setChecked);
 
   
 
