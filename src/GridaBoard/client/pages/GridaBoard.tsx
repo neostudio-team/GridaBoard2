@@ -8,7 +8,7 @@ import CloseIcon from "@material-ui/icons/Close";
 // import App from "../shared/App";
 import { theme as them } from "../../styles/theme";
 import * as neolabTheme from '../../theme';
-import configureStore from "../../store/configureStore";
+import configureStore, {RootStore} from "../../store/configureStore";
 import { RootState } from '../../store/rootReducer';
 
 import GridaApp from "../../GridaApp";
@@ -29,7 +29,7 @@ import { showNoticeGestureDialog } from "../../store/reducers/listReducer";
 // const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 // export const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunk)));
 
-export const store = configureStore();
+export const store:RootStore = configureStore();
 
 // export const store = configureStore();
 const useStyle = makeStyles(theme=>({

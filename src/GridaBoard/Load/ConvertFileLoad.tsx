@@ -151,14 +151,14 @@ const ConvertFileLoad = (props: Props) => {
     }
     
     const fileType = fullFileName.substring(foundPosArr[foundPosArr.length - 1] + 1, fullFileName.length);
-    fullFileName = fullFileName.substring(0, foundPosArr[foundPosArr.length - 1]);
+    fullFileName = fullFileName.substring(0, foundPosArr[foundPosArr.length - 1]).normalize("NFC");
     if(isNewLoad){
       setDocName(fullFileName);
       setIsNewDoc(true);
     }
 
     if(!(fileType === "pdf" || fileType === "grida")) {
-      if(inputer.files[0].name[0] === "." || fullFileName.search(/[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥0-9.+_\- .]/g) !== -1){
+      if(inputer.files[0].name[0] === "." || fullFileName.search(/[^a-zA-Z0-9가-힇ㄱ-ㅎㅏ-ㅣぁ-ゔァ-ヴー々〆〤一-龥0-9.+_\- .(){}[]]/g) !== -1){
         if(isNewLoad){
           history.replace(`/list`);
         }
