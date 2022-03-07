@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { Login, BoardList, GridaBoard, LoginCheck } from "./pages"
 import { store } from '../client/pages/GridaBoard';
+import BeforeGrida from './pages/BeforeGrida';
 
 declare global {
   interface Window {
@@ -28,6 +29,7 @@ const App = ()=>{
             <Route exact path="/" component={Login}/>
             <Route exact path="/list" component={BoardList}/>
             <Route exact path="/app" component={GridaBoard}/>
+            <Route exact path="/before" component={BeforeGrida}/>
           </Provider>
           <Route exact path="/loginCheck" component={LoginCheck}/>
         </div>);
