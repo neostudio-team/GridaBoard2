@@ -6,6 +6,7 @@ import { IconButton, makeStyles, SvgIcon } from '@material-ui/core';
 import getText from "GridaBoard/language/language";
 import SimpleTooltip from "../SimpleTooltip";
 import { setHideCanvasMode } from "GridaBoard/store/reducers/gestureReducer";
+import { firebaseAnalytics } from "../../util/firebase_config";
 
 const useStyle = props => makeStyles((theme => ({
   hideCanvasStyle: {
@@ -22,7 +23,12 @@ const useStyle = props => makeStyles((theme => ({
 const HideCanvasButton = () => {
   const hideCanvasMode = useSelector((state: RootState) => state.gesture.hideCanvasMode)
   const classes = useStyle({hideCanvasMode: hideCanvasMode})();
-  const onToggleHideCanvas = () => setHideCanvasMode(!hideCanvasMode);
+  const onToggleHideCanvas = () => {
+    firebaseAnalytics.logEvent(`hide_mouse`, {
+      event_name: `hide_mouse`
+    });
+    setHideCanvasMode(!hideCanvasMode);
+  }
   
   return (
     <IconButton className={classes.hideCanvasStyle} onClick={() => onToggleHideCanvas()}>

@@ -11,6 +11,7 @@ import { makeNPageIdStr } from "nl-lib/common/util";
 import { PLAYSTATE, ZoomFitEnum } from "nl-lib/common/enums";
 import { nullNcode } from "nl-lib/common/constants";
 import { SvgIcon } from '@material-ui/core';
+import { firebaseAnalytics } from "../../util/firebase_config";
 
 const DEFAULT_THUMBNAIL_SIDE_MARGIN = 26;
 
@@ -127,6 +128,15 @@ const ThumbnailItem = (props: Props) => {
   }
   
   const handleMouseDown = (pageNo:number) => {
+    if(activePageNo + 1 === pageNo){ // 기존 페이지에서 한 페이지 앞으로 이동
+      firebaseAnalytics.logEvent(`next_page_mouse`, {
+      event_name: `next_page_mouse`
+      });
+    }else if(activePageNo - 1 === pageNo){ // 기존 페이지에서 한 페이지 뒤로 이동
+      firebaseAnalytics.logEvent(`prev_page_mouse`, {
+      event_name: `prev_page_mouse`
+      });
+    }
     setActivePageNo(pageNo);
     moveToThumbnailScroll(pageNo);
   };

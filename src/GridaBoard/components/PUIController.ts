@@ -11,6 +11,7 @@ import { InkStorage } from 'nl-lib/common/penstorage';
 import { onToggleRotate } from './buttons/RotateButton';
 import { setHideCanvasMode } from '../store/reducers/gestureReducer';
 import { scrollToThumbnail } from '../../nl-lib/common/util';
+import { firebaseAnalytics } from '../util/firebase_config';
 
 
 // 2020-12-09 현재 구현되어 있는 부분까지 PUI 완성(페이지 넘어가는 부분과 스트로크 찍히는 오류 수정할 것)
@@ -163,6 +164,11 @@ export default class PUIController {
    * @param {string} cmd
    */
   static executeCommand(cmd) {
+    if(!["previous","next","add_page","rotate_page","hide_stroke","erase_all"].includes(cmd)){
+      firebaseAnalytics.logEvent(`pui_${cmd}`, {
+        event_name: `pui_${cmd}`
+      });
+    }
     switch (cmd) {
       case "strokesize_up": {
         let thickness: number = PenManager.getInstance().getThickness();
@@ -268,6 +274,9 @@ export default class PUIController {
         const inkStorage = InkStorage.getInstance();
         inkStorage.dispatcher.dispatch(PageEventName.PAGE_CLEAR, pageInfo);
         inkStorage.removeStrokeFromPage(pageInfo);
+        firebaseAnalytics.logEvent(`delete_pui`, {
+          event_name: `delete_pui`
+        });
         break;
       }
       case "menu_grida":
@@ -308,6 +317,9 @@ export default class PUIController {
         }
         setActivePageNo(activePageNo-1);
         scrollToThumbnail(activePageNo-1);
+        firebaseAnalytics.logEvent(`prev_page_pui`, {
+          event_name: `prev_page_pui`
+        });
         break;
       }
       case "next": {
@@ -318,6 +330,9 @@ export default class PUIController {
         }
         setActivePageNo(activePageNo+1);
         scrollToThumbnail(activePageNo+1);
+        firebaseAnalytics.logEvent(`next_page_pui`, {
+          event_name: `next_page_pui`
+        });
         break;
       }
       case "add_page" : {
@@ -325,6 +340,9 @@ export default class PUIController {
         const doc = GridaDoc.getInstance();
         const currentPage = doc.getPage(activePageNo);
         const pageNo = doc.addBlankPage();
+        firebaseAnalytics.logEvent(`new_page_pui`, {
+        event_name: `new_page_pui`
+        });
 
         let currentRotation = 0;
         let pageMode = "portrait";
@@ -344,10 +362,16 @@ export default class PUIController {
       }
       case "rotate_page" : {
         onToggleRotate();
+        firebaseAnalytics.logEvent(`rotate_page_pui`, {
+          event_name: `rotate_page_pui`
+        });
         break;
       }
       case "hide_stroke" : {
         setHideCanvasMode(!store.getState().gesture.hideCanvasMode);
+        firebaseAnalytics.logEvent(`hide_pui`, {
+          event_name: `hide_pui`
+        });
         break;
       }
     }

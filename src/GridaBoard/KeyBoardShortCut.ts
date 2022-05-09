@@ -19,6 +19,7 @@ import { fileOpenHandler } from "./Layout/HeaderLayer";
 import { startPrint } from "../nl-lib/ncodepod/NcodePrint/PrintNcodedPdfButton";
 import { scrollToThumbnail } from "../nl-lib/common/util/functions";
 import { setGestureMode, setHideCanvasMode } from "./store/reducers/gestureReducer";
+import { firebaseAnalytics } from "./util/firebase_config";
 
 /* 
 let _isCtrl = false;
@@ -185,6 +186,9 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
       }
       case "Tab": {// <TAB>
         evt.preventDefault(); //web 기본 탭 기능 정지
+        firebaseAnalytics.logEvent(`rotate_page_mouse`, {
+          event_name: `rotate_page_mouse`
+        });
         onToggleRotate();
         break;
       }
@@ -202,6 +206,9 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
         }
         setActivePageNo(activePageNo-1);
         scrollToThumbnail(activePageNo-1, evt);
+        firebaseAnalytics.logEvent(`prev_page_mouse`, {
+          event_name: `prev_page_mouse`
+        });
         break;
       }
       // page down
@@ -218,6 +225,9 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
         }
         setActivePageNo(activePageNo+1);
         scrollToThumbnail(activePageNo+1, evt);
+        firebaseAnalytics.logEvent(`next_page_mouse`, {
+          event_name: `next_page_mouse`
+        });
         break;
       }
 

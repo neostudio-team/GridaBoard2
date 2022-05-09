@@ -9,6 +9,7 @@ import { InkStorage } from 'nl-lib/common/penstorage';
 import { useHistory } from 'react-router';
 import { scrollToBottom, sleep } from 'nl-lib/common/util';
 import { setDocName, setIsNewDoc } from '../store/reducers/docConfigReducer';
+import { firebaseAnalytics } from '../util/firebase_config';
 
 // import {fileConvert} from "./LoadGrida";
 
@@ -178,6 +179,9 @@ const ConvertFileLoad = (props: Props) => {
       result.file = inputer.files[0];
       result.url = URL.createObjectURL(result.file);
       if(fileType == "pdf"){
+        firebaseAnalytics.logEvent(`load_pdf`, {
+          event_name: `load_pdf`
+        });
         await handlePdfOpen(result as IFileBrowserReturn);
         setLoadingVisibility(false);
         checkPdfIsEncryptted(result as IFileBrowserReturn);
@@ -185,6 +189,21 @@ const ConvertFileLoad = (props: Props) => {
         fileConvert(result as IFileBrowserReturn);
       }
     }else{
+      let gaType = "";
+      if(["png","jpg","jpeg"].includes(fileType)){
+        gaType = "image";
+      }else if(["ppt","pptx"].includes(fileType)){
+        gaType = "ppt";
+      }else if(["doc","docx","hwp", "hwpx"].includes(fileType)){
+        gaType = "doc";
+      }else if(["xlsx", "xls"].includes(fileType)){
+        gaType = "xls";
+      }
+      if(gaType !== ""){
+        firebaseAnalytics.logEvent(`load_${gaType}`, {
+          event_name: `load_${gaType}`
+        });
+      }
       doFileConvert(inputer);
     }
   }

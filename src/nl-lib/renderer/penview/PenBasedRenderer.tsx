@@ -28,8 +28,9 @@ import getText from "GridaBoard/language/language";
 import { onClearPage } from "boardList/layout/component/dialog/detail/AlertDialog";
 import AddCircle from "@material-ui/icons/AddCircle";
 import { SvgIcon } from '@material-ui/core';
-import { theme } from "../../../GridaBoard/theme";
+import { theme } from "GridaBoard/theme";
 import { PenManager } from "../../neosmartpen";
+import { firebaseAnalytics } from "GridaBoard/util/firebase_config";
 
 
 
@@ -742,26 +743,41 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
   /** Top Control Zone - Page Up */
   topControlZone = () => {
+    firebaseAnalytics.logEvent(`prev_page_gesture`, {
+      event_name: `prev_page_gesture`
+    });
     this.prevChange();
   }
 
   /** Bottom Control Zone - Page Down */
   bottomControlZone = () => {
+    firebaseAnalytics.logEvent(`next_page_gesture`, {
+      event_name: `next_page_gesture`
+    });
     this.nextChange();
   }
 
   /** Left Control Zone - Rotate */
   leftControlZone = () => {
+    firebaseAnalytics.logEvent(`rotate_page_gesture`, {
+      event_name: `rotate_page_gesture`
+    });
     onToggleRotate();
   }
 
   /** Right Control Zone - Hide Canvas */
   rightControlZone = () => {
+    firebaseAnalytics.logEvent(`hide_gesture`, {
+      event_name: `hide_gesture`
+    });
     this.props.setHideCanvasMode(!this.props.hideCanvasMode);
   }
 
   /** Top Left Control Zone */
   plusControlZone = () => {
+    firebaseAnalytics.logEvent(`new_page_gesture`, {
+    event_name: `new_page_gesture`
+    });
     // Add Blank Page
     this.addBlankPage();
   }
@@ -810,6 +826,9 @@ class PenBasedRenderer extends React.Component<Props, State> {
     
     if (this.props.leftToRightDiagonal && this.props.rightToLeftDiagonal) {
       onClearPage();
+      firebaseAnalytics.logEvent(`delete_gesture`, {
+        event_name: `delete_gesture`
+      });
       this.props.initializeCrossLine();
     }
   }

@@ -1,5 +1,6 @@
 import { NeoDot } from "../../../nl-lib/common/structures";
 import { store } from "../../client/pages/GridaBoard";
+import { firebaseAnalytics } from "../../util/firebase_config";
 
 
 const DoubleTapActionGroup = "DOUBLE_TAP";
@@ -94,6 +95,13 @@ export const setGestureMode = (gestureMode: boolean) => {
   });
 };
 export const setGestureDisable = (mode: boolean) => {
+  let firebaseText = "";
+  if(mode) firebaseText = "plate";
+  else firebaseText = "page";
+  
+  firebaseAnalytics.logEvent(`mode_${firebaseText}`, {
+    event_name: `mode_${firebaseText}`
+  });
   store.dispatch({
     type: SET_GESTURE_DISABLE, 
     mode

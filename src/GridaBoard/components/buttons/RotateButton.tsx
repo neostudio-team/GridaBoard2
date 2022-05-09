@@ -10,6 +10,7 @@ import SimpleTooltip2 from "../SimpleTooltip2";
 import getText from 'GridaBoard/language/language';
 import { store } from "GridaBoard/client/pages/GridaBoard";
 import { setNotFirstPenDown } from "../../store/reducers/gestureReducer";
+import { firebaseAnalytics } from "../../util/firebase_config";
 
 export const onToggleRotate = () => {
   const activePageNo = store.getState().activePage.activePageNo;
@@ -64,7 +65,12 @@ const RotateButton = (props: IconButtonProps) => {
     //     tail: "TAB 가로쓰기/세로쓰기 전환"
     //   }} title={undefined}>
   return (
-    <IconButton onClick={onToggleRotate} {...props}>
+    <IconButton onClick={(e)=>{
+      firebaseAnalytics.logEvent(`rotate_page_mouse`, {
+        event_name: `rotate_page_mouse`
+      });
+      onToggleRotate();
+    }} {...props}>
       <SimpleTooltip2 title={getText('sideMenu_rotate')}>
         <RotateRight/>
       </SimpleTooltip2>

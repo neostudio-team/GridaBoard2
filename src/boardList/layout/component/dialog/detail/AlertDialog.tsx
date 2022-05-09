@@ -12,9 +12,10 @@ import { InkStorage } from "nl-lib/common/penstorage";
 import { PageEventName } from "nl-lib/common/enums";
 import { changeGroup, showSnackbar } from "GridaBoard/store/reducers/listReducer";
 import { setleftDrawerOpen, showMessageToast } from "GridaBoard/store/reducers/ui";
-import { showCalibrationDialog } from "../../../../../GridaBoard/store/reducers/calibrationReducer";
-import { makePdfUrl } from "../../../../../nl-lib/common/util";
+import { showCalibrationDialog } from "GridaBoard/store/reducers/calibrationReducer";
+import { makePdfUrl } from "nl-lib/common/util";
 import { store } from "GridaBoard/client/pages/GridaBoard";
+import { firebaseAnalytics } from "GridaBoard/util/firebase_config";
 
 const confirmText = getText('print_popup_yes');
 const cancelText = getText('print_popup_no');
@@ -160,6 +161,9 @@ const AlertDialog = (props : Props)=>{
         break;
       }
       case "clearPage" : {
+        firebaseAnalytics.logEvent(`delete_mouse`, {
+          event_name: `delete_mouse`
+        });
         onClearPage();
         break;
       }

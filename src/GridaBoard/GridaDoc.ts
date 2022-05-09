@@ -12,6 +12,7 @@ import { isPlatePage, isSamePage, makeNPageIdStr, scrollToThumbnail } from "nl-l
 import { InkStorage } from "nl-lib/common/penstorage";
 import { MappingStorageEventName, IMappingStorageEvent, MappingStorage } from "nl-lib/common/mapper";
 import getText from "./language/language";
+import { firebaseAnalytics } from "./util/firebase_config";
 
 
 let _doc_instance = undefined as GridaDoc;
@@ -472,5 +473,8 @@ export const addBlankPage = async () => {
   const pageNo = await doc.addBlankPage();
   setActivePageNo(pageNo);
 
+  firebaseAnalytics.logEvent(`new_page_mouse`, {
+    event_name: `new_page_mouse`
+  });
   return pageNo;
 }
