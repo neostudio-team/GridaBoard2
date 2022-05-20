@@ -34,6 +34,9 @@ Please give this new feature a try, and file any bugs at https://crbug.com using
 (*https://stackoverflow.com/questions/60604388/web-bluetooth-get-paired-devices-list)
 
 
+### deploy시
+1. index.html에서 "dev" 를 "live"로 바꾸어주어야 한다
+
 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
