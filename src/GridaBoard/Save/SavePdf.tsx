@@ -61,12 +61,25 @@ export async function makePdfDocument() {
         pdfDoc = await PDFDocument.create();
       }
       const pdfPage = await pdfDoc.addPage();
+      
+      // pdf page의 가로 세로를 맞춰준다
+      // sizePu는 회전각에 따라 가로 세로가 바뀌기 때문에
+      // 랜드스케이프에 맞춰 다시 바꿔준다.
+      const {width, height} = page.pageOverview.sizePu;
+      const long = (width > height) ? width : height;
+      const short = (width > height) ? height : width;
+      
+      if(page.pageOverview.landscape){
+        //가로가 긴거, 세로가 짧은거
+        pdfPage.setWidth(long);
+        pdfPage.setHeight(short);
+      }else{
+        //가로가 짧은거, 세로가 긴거
+        pdfPage.setWidth(short);
+        pdfPage.setHeight(long);
+      }
+      
       pdfPage.setRotation(degrees(page._rotation));
-      // if (page._rotation === 90 || page._rotation === 270) {
-      //   const tmpWidth = pdfPage.getWidth();
-        // pdfPage.setWidth(pdfPage.getHeight());
-        // pdfPage.setHeight(tmpWidth);
-      // }
     }
     else {
       //pdf인 경우
