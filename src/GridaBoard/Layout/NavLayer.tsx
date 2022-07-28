@@ -104,8 +104,8 @@ const NavLayer = (props: Props) => {
   const [num_pens, setNumPens] = useState(0);
   const [mapViewDetail, setMapViewDetail] = useState(0);
   const [docViewDetail, setDocViewDetail] = useState(0);
-  const [isCollapsed, setCollapsed] = useState(false);
-  
+
+  const isHeaderOpen = useSelector((state: RootState) => state.ui.simpleUiData.headerOpen);
   const gestureDisable = useSelector((state: RootState) => state.gesture.gestureDisable);
   const brZoom = useSelector((state: RootState) => state.ui.browser.zoom);
   const classes = useStyle({brZoom:brZoom, gestureDisable:gestureDisable})();
@@ -172,8 +172,8 @@ const NavLayer = (props: Props) => {
   const HeaderController = (props)=>{
     return (
     <div className={classes.headerViewBtn} onClick={props.hideHeader}> 
-      <IconButton aria-label="open drawer" onClick={() => { setCollapsed(prev => !prev) }} >
-        {!isCollapsed? (<ArrowDropUp />) : (<ArrowDropDown />)}
+      <IconButton aria-label="open drawer" >
+        {isHeaderOpen? (<ArrowDropUp />) : (<ArrowDropDown />)}
       </IconButton>
     </div>);
   }

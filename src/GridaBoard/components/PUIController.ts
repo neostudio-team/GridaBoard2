@@ -12,6 +12,7 @@ import { onToggleRotate } from './buttons/RotateButton';
 import { setHideCanvasMode } from '../store/reducers/gestureReducer';
 import { scrollToThumbnail } from '../../nl-lib/common/util';
 import { firebaseAnalytics } from '../util/firebase_config';
+import { setHeaderOpen } from '../store/reducers/ui';
 
 
 // 2020-12-09 현재 구현되어 있는 부분까지 PUI 완성(페이지 넘어가는 부분과 스트로크 찍히는 오류 수정할 것)
@@ -279,9 +280,11 @@ export default class PUIController {
         });
         break;
       }
-      case "menu_grida":
+      case "menu_grida":{
+        const headerOpen = store.getState().ui.simpleUiData.headerOpen;
+        setHeaderOpen(!headerOpen);
         break;
-      
+      }
       case "fit":
         setViewFit(ZoomFitEnum.WIDTH);
         break;

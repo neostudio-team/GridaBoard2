@@ -17,7 +17,7 @@ import RotateButton from "../components/buttons/RotateButton";
 import PageClearButton from "../components/buttons/PageClearButton";
 import PageDeleteButton from "../components/buttons/PageDeleteButton";
 import SimpleTooltip from "../components/SimpleTooltip";
-import { setleftDrawerOpen } from "../store/reducers/ui";
+import { setHeaderOpen, setleftDrawerOpen } from "../store/reducers/ui";
 
 /**
  *
@@ -102,9 +102,9 @@ const useStyles = makeStyles((theme) => {
 // style={{"--appBar-height":"0px"}}
 const ViewLayer = (props: Props) => {
   const classes = useStyles();
-  const [isView, setHeaderView] = useState(true); //헤더 뷰
   const [debugOpen, setDebugOpen] = useState(false);
   // const [drawerOpen, setDrawerOpen] = useState(true);
+  const isHeaderOpen = useSelector((state: RootState) => state.ui.simpleUiData.headerOpen);
   const drawerOpen = useSelector((state: RootState) => state.ui.simpleUiData.leftDrawerOpen);
 
   const activePageNo_store = useSelector((state: RootState) => state.activePage.activePageNo);
@@ -114,7 +114,7 @@ const ViewLayer = (props: Props) => {
   }
 
   const hideHeader = () => {
-    setHeaderView((prev)=>!prev);
+    setHeaderOpen(!isHeaderOpen);
   }
 
   const handleDrawerOpen = () => {
@@ -129,7 +129,7 @@ const ViewLayer = (props: Props) => {
     <div className={classes.wrap}>
       <HeadBanner />
       <AppBar position="relative" color="transparent" elevation={0}> 
-        <Collapse in={isView} className={classes.headerCollapse} timeout={0}>
+        <Collapse in={isHeaderOpen} className={classes.headerCollapse} timeout={0}>
           <HeaderLayer {...props} handlePenLogWindow={handlePenLogWindow} hidden={hiddenTest} />
         </Collapse>
           <NavLayer {...props} hideHeader={hideHeader}/>

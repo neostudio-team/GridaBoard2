@@ -29,6 +29,7 @@ export const UIActionTypes = Object.freeze({
   GET_THEME: `${ActionGroup}.GET_THEME`,
   SET_THEME: `${ActionGroup}.SET_THEME`,
   SET_LEFT_DRAWER_OPEN : `${ActionGroup}.SET_LEFT_DRAWER_OPEN`,
+  SET_HEADER_OPEN : `${ActionGroup}.SET_HEADER_OPEN`,
   SET_SAVE_OPEN : `${ActionGroup}.SET_SAVE_OPEN`,
 
 
@@ -189,6 +190,12 @@ export const setleftDrawerOpen = (show:boolean)=>{
     show : show
   });
 }
+export const setHeaderOpen = (headerOpen:boolean)=>{
+  store.dispatch({
+    type: UIActionTypes.SET_HEADER_OPEN,
+    headerOpen : headerOpen
+  });
+}
 //]
 export const setSaveOpen = (open:boolean)=>{
   store.dispatch({
@@ -251,6 +258,7 @@ const initialState = {
   },
   simpleUiData : {
     leftDrawerOpen : true,
+    headerOpen : true,
     saveOpen : false,
     print : {
       progressPercent : 0,
@@ -347,6 +355,15 @@ export default (state = initialState, action) => {
         simpleUiData : {
           ...state.simpleUiData,
           leftDrawerOpen : action.show
+        }
+      }
+    }
+    case UIActionTypes.SET_HEADER_OPEN : {
+      return {
+        ...state,
+        simpleUiData : {
+          ...state.simpleUiData,
+          headerOpen : action.headerOpen
         }
       }
     }
