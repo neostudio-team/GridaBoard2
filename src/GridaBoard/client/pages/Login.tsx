@@ -193,11 +193,11 @@ const Login = () => {
                 <Button onClick={signInWithApple}> <img src={appleLogo} alt="" />{getText("login_withApple")} </Button>
               </div>
               <div className={classes.terms}>
-                {termsText.map(el=>{
+                {termsText.map((el, idx)=>{
                   if(el === "signin_agree_term"){
-                    return <a href="https://www.neostudio.io/nlc_termofuse/" target="_blank" rel="noreferrer">{getText(el)}</a>;
+                    return <a key={idx} href="https://www.neostudio.io/nlc_termofuse/" target="_blank" rel="noreferrer">{getText(el)}</a>;
                   }else if(el === "signin_agree_policy"){
-                    return <a href="https://www.neostudio.io/nlc_privacy/" target="_blank" rel="noreferrer">{getText(el)}</a>;
+                    return <a key={idx} href="https://www.neostudio.io/nlc_privacy/" target="_blank" rel="noreferrer">{getText(el)}</a>;
                   }else{
                     return (el);
                   }
