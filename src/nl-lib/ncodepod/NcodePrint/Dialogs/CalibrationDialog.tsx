@@ -22,7 +22,7 @@ import { isWhiteBoard } from '../../../common/noteserver';
 import { setMappingState } from 'GridaBoard/store/reducers/appConfigReducer';
 import { store } from 'GridaBoard/client/pages/GridaBoard';
 import { showAlert } from 'GridaBoard/store/reducers/listReducer';
-import { firebaseAnalytics } from '../../../../GridaBoard/util/firebase_config';
+import { firebaseAnalytics } from 'GridaBoard/util/firebase_config';
 
 const _penImageUrl = "/icons/image_calibration.png";
 

@@ -22,7 +22,7 @@ import TestButton from '../components/buttons/TestButton';
 import { useHistory } from 'react-router';
 import SimpleTooltip from '../components/SimpleTooltip';
 import { KeyboardArrowDown } from '@material-ui/icons';
-import { auth, firebaseAnalytics } from 'GridaBoard/util/firebase_config';
+import { firebaseAnalytics } from 'GridaBoard/util/firebase_config';
 import ProfileButton from '../components/buttons/ProfileButton';
 import { showAlert } from '../store/reducers/listReducer';
 import { setSaveOpen } from '../store/reducers/ui';
