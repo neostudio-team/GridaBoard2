@@ -9,7 +9,7 @@ import Cookies from 'universal-cookie';
 import { degrees, PDFDocument, rgb } from 'pdf-lib';
 import { store } from 'GridaBoard/client/pages/GridaBoard';
 import * as PdfJs from 'pdfjs-dist';
-import { clearCanvas } from 'nl-lib/common/util';
+import { clearCanvas, sleep } from 'nl-lib/common/util';
 import { makeGridaBlob } from 'GridaBoard/Save/SaveGrida';
 import { forceUpdateBoardList } from 'GridaBoard/store/reducers/appConfigReducer';
 import { showSnackbar } from 'GridaBoard/store/reducers/listReducer';
@@ -43,6 +43,11 @@ export const startNewGridaPage = async () => {
 }
 
 export const deleteAllFromTrash = async () => {
+  /**
+   * DB에서 휴지통에 있는 모든 파일 완전 삭제
+   */
+  await sleep(100);
+  return 1;
   const docArr = [];
   const db = secondaryFirebase.firestore();
   const userId = firebase.auth().currentUser.email;
@@ -99,6 +104,11 @@ export const deleteAllFromTrash = async () => {
 }
 
 export const deleteBoardFromLive = async (docItems: IBoardData[]) => {
+  /**
+   * 선택한 보드 리스트를 휴지통으로 이동
+   */
+  await sleep(100);
+  return 1;
   const userId = firebase.auth().currentUser.email;
   const db = secondaryFirebase.firestore();
 
@@ -125,6 +135,11 @@ export const deleteBoardFromLive = async (docItems: IBoardData[]) => {
 }
 
 export const deleteBoardsFromTrash = async (docItems: IBoardData[]) => {
+  /**
+   * 휴지통에서 선택한 보드 리스트를 완전 삭제
+   */
+  await sleep(100);
+  return 1;
   const db = secondaryFirebase.firestore();
   const storageRef = secondaryFirebase.storage().ref();
 
@@ -170,6 +185,11 @@ export const deleteBoardsFromTrash = async (docItems: IBoardData[]) => {
 }
 
 export const restoreBoardsFromTrash = async (docItems: IBoardData[]) => {
+  /**
+   * 휴지통에서 선택한 보드 리스트를 복구
+   */
+  await sleep(100);
+  return 1;
   const db = secondaryFirebase.firestore();
   const userId = firebase.auth().currentUser.email;
 
@@ -195,6 +215,11 @@ export const restoreBoardsFromTrash = async (docItems: IBoardData[]) => {
 }
 
 export const copyBoard = async (docItem: IBoardData) => {
+  /**
+   * 선택한 보드 리스트를 복제
+   */
+  await sleep(100);
+  return ;
   setLoadingVisibility(true);
   const db = secondaryFirebase.firestore();
   const userId = firebase.auth().currentUser.email;
@@ -323,6 +348,10 @@ export const getTimeStamp = (created: {nanoseconds: number, seconds: number}) =>
 }
 
 export const fbLogout = () => {
+  /**
+   * 로그아웃
+   */
+  return 1;
   auth.signOut();
   secondaryFirebase.auth().signOut();
   const cookies = new Cookies();
@@ -506,6 +535,11 @@ export async function makeThumbnail() {
 }
 
 export async function saveGridaToDB(docName: string) {
+  /**
+   * 파일 업로드. 그리다 파일 올리고, 썸네일 올리고 디비를 올린다.
+   */
+  sleep(100);
+  return "grida.grida";
   setLoadingVisibility(true);
   const imageBlob = await makeThumbnail();
 
@@ -610,6 +644,11 @@ export async function saveGridaToDB(docName: string) {
 }
 
 export async function updateDB(docId: string, thumb_path: string, grida_path: string, date) {
+  /**
+   * 디비 데이터 업데이트
+   */
+  sleep(100);
+  return ;
   const doc = GridaDoc.getInstance();
 
   const db = secondaryFirebase.firestore();
@@ -636,6 +675,11 @@ export async function updateDB(docId: string, thumb_path: string, grida_path: st
 }
 
 export async function saveToDB(docName: string, thumb_path: string, grida_path: string, nowDate: Date, isCopyProcess: boolean, docNumPages?: number) {
+  /**
+   * 디비 데이터 생성
+   */
+  sleep(100);
+  return ;
   const doc = GridaDoc.getInstance();
   
   const db = secondaryFirebase.firestore();
@@ -689,6 +733,11 @@ export async function saveToDB(docName: string, thumb_path: string, grida_path: 
 
 export const getThumbNailPath = async (docsList)=>{
   console.log("!!!!!!!!!!!!!!!!!!!!!!!",docsList);
+  /**
+   * 독스 리스트를 통해 썸네일 uri 리스트 가져오기
+   */
+  sleep(100);
+  return [];
   const storage = secondaryFirebase.storage();
   const storageRef = storage.ref();
   const user = firebase.auth().currentUser;
@@ -717,6 +766,11 @@ export const getThumbNailPath = async (docsList)=>{
 
 export const overwrite = async () => {
   setLoadingVisibility(true);
+  /**
+   * 현재 보고 있는 페이지 덮어 쓰기
+   */
+  sleep(100);
+  return ;
 
   //1. 썸네일 새로 만들기
   const imageBlob = await makeThumbnail();
@@ -810,6 +864,10 @@ export const overwrite = async () => {
 
 
 export const routeChange = async (nowDocs) => {
+  /**
+   * 그리다 파일 열기
+   */
+
   await resetGridaBoard();
   if (nowDocs.dateDeleted !== 0) {
     return false;
@@ -834,7 +892,6 @@ export const routeChange = async (nowDocs) => {
   fetch(gridaPath)
   .then(response => response.json())
   .then(async data => {
-    console.log(data);
     const pdfRawData = data.pdf.pdfInfo.rawData;
     const neoStroke = data.stroke;
 
@@ -895,6 +952,8 @@ export const routeChange = async (nowDocs) => {
       setDate(m_sec);
   });
 };
+
+
 
 //div screenshot sample
 
