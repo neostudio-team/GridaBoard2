@@ -892,68 +892,72 @@ export const routeChange = async (nowDocs) => {
   fetch(gridaPath)
   .then(response => response.json())
   .then(async data => {
-    const pdfRawData = data.pdf.pdfInfo.rawData;
-    const neoStroke = data.stroke;
-
-    const pageInfos = data.pdf.pdfInfo.pageInfos;
-    const basePageInfos = data.pdf.pdfInfo.basePageInfos;
-
-    const rawDataBuf = new ArrayBuffer(pdfRawData.length * 2);
-    const rawDataBufView = new Uint8Array(rawDataBuf);
-    for (let i = 0; i < pdfRawData.length; i++) {
-      rawDataBufView[i] = pdfRawData.charCodeAt(i);
-    }
-    const blob = new Blob([rawDataBufView], { type: 'application/pdf' });
-    const url = await URL.createObjectURL(blob);
-
-    const completed = InkStorage.getInstance().completedOnPage;
-    completed.clear();
-
-    const gridaArr = [];
-    const pageId = [];
-
-    for (let i = 0; i < neoStroke.length; i++) {
-      pageId[i] = InkStorage.makeNPageIdStr(neoStroke[i][0]);
-      if (!completed.has(pageId[i])) {
-        completed.set(pageId[i], new Array(0));
-      }
-
-      gridaArr[i] = completed.get(pageId[i]);
-      for (let j = 0; j < neoStroke[i].length; j++) {
-        gridaArr[i].push(neoStroke[i][j]);
-      }
-    }
-
-    const doc = GridaDoc.getInstance();
-    doc.pages = [];
-
-    if (data.mapper !== undefined) {
-      const mapping = new PdfDocMapper(data.mapper.id, data.mapper.pagesPerSheet)
+    
+    await jsonToOpen(data, nowDocs.doc_name);
       
-      mapping._arrMapped = data.mapper.params;
+    setDocName(nowDocs.doc_name);
+    setDocId(nowDocs.docId);
+    setIsNewDoc(false);
 
-      const msi = MappingStorage.getInstance();
-      msi.registerTemporary(mapping);
-    }
-
-    await doc.openGridaFile(
-      { url: url, filename: nowDocs.doc_name },
-      pdfRawData,
-      neoStroke,
-      pageInfos,
-      basePageInfos
-      );
-      
-      setDocName(nowDocs.doc_name);
-      setDocId(nowDocs.docId);
-      setIsNewDoc(false);
-
-      const m_sec = getTimeStamp(nowDocs.created)
-      setDate(m_sec);
+    const m_sec = getTimeStamp(nowDocs.created)
+    setDate(m_sec);
   });
 };
 
+export const jsonToOpen = async (data, fileName:string)=>{
+  const pdfRawData = data.pdf.pdfInfo.rawData;
+  const neoStroke = data.stroke;
 
+  const pageInfos = data.pdf.pdfInfo.pageInfos;
+  const basePageInfos = data.pdf.pdfInfo.basePageInfos;
+
+  // pdf의 url을 만들어 주기 위해 rawData를 blob으로 만들어 createObjectURL을 한다
+  const rawDataBuf = new ArrayBuffer(pdfRawData.length*2);
+  const rawDataBufView = new Uint8Array(rawDataBuf);
+  for (let i = 0; i < pdfRawData.length; i++) {
+    rawDataBufView[i] = pdfRawData.charCodeAt(i);
+  }
+  const blob = new Blob([rawDataBufView], {type: 'application/pdf'});
+  const url = await URL.createObjectURL(blob);
+
+  const completed = InkStorage.getInstance().completedOnPage;
+  completed.clear();
+
+  const gridaArr = [];
+  const pageId = []
+
+  for (let i = 0; i < neoStroke.length; i++) {
+    pageId[i] = InkStorage.makeNPageIdStr(neoStroke[i][0]);
+    if (!completed.has(pageId[i])) {
+      completed.set(pageId[i], new Array(0));
+    }
+
+    gridaArr[i] = completed.get(pageId[i]);
+    for (let j = 0; j < neoStroke[i].length; j++){
+      gridaArr[i].push(neoStroke[i][j]);
+    }
+  }
+
+  const doc = GridaDoc.getInstance();
+  doc.pages = [];
+  
+  if (data.mapper !== undefined) {
+    const mapping = new PdfDocMapper(data.mapper.id, data.mapper.pagesPerSheet)
+    
+    mapping._arrMapped = data.mapper.params;
+
+    const msi = MappingStorage.getInstance();
+    msi.registerTemporary(mapping);
+  }
+
+  await doc.openGridaFile(
+    { url: url, filename: fileName },
+    pdfRawData,
+    neoStroke,
+    pageInfos,
+    basePageInfos
+  );
+}
 
 //div screenshot sample
 
