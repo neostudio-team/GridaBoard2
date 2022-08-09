@@ -873,6 +873,9 @@ export const routeChange = async (nowDocs) => {
     return false;
   }
   GridaDoc.getInstance()._pages = [];
+  
+  sleep(100);
+  return true;
 
   //firebase storage에 url로 json을 갖고 오기 위해서 CORS 구성이 선행되어야 함(gsutil 사용)\
   const uid =  firebase.auth().currentUser.uid;
@@ -892,7 +895,6 @@ export const routeChange = async (nowDocs) => {
   fetch(gridaPath)
   .then(response => response.json())
   .then(async data => {
-    
     await jsonToOpen(data, nowDocs.doc_name);
       
     setDocName(nowDocs.doc_name);
