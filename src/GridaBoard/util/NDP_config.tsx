@@ -2,10 +2,12 @@ import firebase from "firebase";
 import NDP from "NDP-lib";
 import React from "react";
 const ndp = new NDP({
-  // clientAutoConnect : true
+  appName : "GRIDABOARD",
+  clientAutoConnect : true
 });
 ndp.setShare();
 
+(window as any).ndp = ndp;
 
 type FirebaseConfig = {
   apiKey: string,
@@ -20,6 +22,7 @@ type FirebaseConfig = {
 let cloudfunctionsUrl = "";
 
 export const signInWithNDPC = async () => {
-  console.log(12312312);
+
+  NDP.getInstance().Client.getToken();
 }
 export default firebase;

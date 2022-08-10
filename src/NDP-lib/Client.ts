@@ -31,6 +31,9 @@ class Client {
         "iat":0,
         "jti":""
     }
+    get tokenExp():number{
+        return this.tokenUserData.exp * 1000;
+    }
     get resourceOwnerId():string{
         return this._resourceOwnerId;
     }
@@ -112,19 +115,22 @@ class Client {
         if(token.result){
             const data = token.data;
             const tokenData = data["token"];
-            this.accessToken = tokenData.access_token as string;
-            this._clientId = tokenData.client_id;
+            this.accessToken = tokenData.accessToken as string;
+            this._clientId = tokenData.clientID;
             this._resourceOwnerId = tokenData.resourceOwner;
             this.discomposeJWTToken(this.accessToken);
 
-            for(let i = 0; i < this.authStateChangeFunctions.length; i++){
+    
+            const changeFunction = this.authStateChangeFunctions.splice(0);
+            for(let i = 0; i < changeFunction.length; i++){
                 try{
-                    await this.authStateChangeFunctions[i](this._userId);
+                    await changeFunction[i](this._userId);
                 }catch(e){
                     console.log(e);
                 }
             }
-            return data["access_token"] as string;
+            this.authStateChangeFunctions = [];
+            return this.accessToken as string;
         }else{
             console.error(token.message);
             return ;
@@ -137,6 +143,7 @@ class Client {
         if(this.localClient){
             const getToken = await this.localClient.emitCmd("tokenInfo");
             const token = await this.tokenInfoCallback(getToken);
+            console.log(token);
 
             return token as string;
         }else{

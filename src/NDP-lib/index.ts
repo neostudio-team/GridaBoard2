@@ -40,7 +40,7 @@ class NDP {
     InkStore : InkStore = new InkStore();
     Paper: Paper = new Paper();
     
-    
+    loginType:"client" | "auth" | null = null;
     url:{[type:string]:string} = {};
     accessToken = "";
     clientId = "";
@@ -73,6 +73,7 @@ class NDP {
         })
         //client Login시
         this.Client.onAuthStateChanged(async (userId:string)=>{
+            console.log(this);
             this.clientId = this.Client.clientId;
             this.applicationId = this.Client.applicationId;
             this.accessToken = this.Client.accessToken;
@@ -111,6 +112,7 @@ class NDP {
             console.error("직접 로그인 사용을 원할 경우 init시 applicationId 가 필요합니다.");
         }
         this.userId = userId;
+        this.loginType = type;
         
         this.Relay.setInit({
             userId,
@@ -203,6 +205,16 @@ class NDP {
     unsetShare(){
         isShared = false;
         shared = undefined;
+    }
+
+    get tokenExpired():number{
+        if(this.loginType === "client"){
+            return this.Client.tokenExp;
+        }else if(this.loginType === "auth"){
+            return this.Auth.tokenExp;
+        }else{
+            return -1;
+        }
     }
 }
 

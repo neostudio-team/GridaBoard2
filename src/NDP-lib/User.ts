@@ -32,6 +32,9 @@ class User {
         return this.userData;
       }
 
+      console.log(`${this.url}/user/v2/users/${this.userId}/profile?clientId=${this.clientId}`);
+      console.log(this.accessToken);
+
       const res = await fetch(`${this.url}/user/v2/users/${this.userId}/profile?clientId=${this.clientId}`,{
         method : "GET",
         headers: {

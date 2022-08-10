@@ -102,6 +102,9 @@ class Auth {
         this.authStateChangeFunctions.push(callbackFunction);
     }
     
+    get tokenExp():number{
+        return this.tokenUserData.exp * 1000;
+    }
     get headerAuthorization():string {
         return this._headerAuthorization;
     }
@@ -130,14 +133,15 @@ class Auth {
     
             console.log(token);
     
-            for(let i = 0; i < this.authStateChangeFunctions.length; i++){
+            const changeFunction = this.authStateChangeFunctions.splice(0);
+            for(let i = 0; i < changeFunction.length; i++){
                 try{
-                    console.log(this.authStateChangeFunctions[i])
-                    await this.authStateChangeFunctions[i](this._userId);
+                    await changeFunction[i](this._userId);
                 }catch(e){
                     console.log(e);
                 }
             }
+            this.authStateChangeFunctions = [];
             // TODO : 유저 정보 불러오기 등등 필요함
             return token;
         }catch(e){

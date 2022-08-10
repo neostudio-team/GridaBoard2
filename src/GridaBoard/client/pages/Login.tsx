@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import { Redirect } from "react-router-dom";
 import Menu from "./Menu";
 import { Button, makeStyles, MuiThemeProvider, Theme, SvgIcon } from '@material-ui/core';
@@ -7,7 +7,6 @@ import { turnOnGlobalKeyShortCut } from "GridaBoard/GlobalFunctions";
 import Cookies from 'universal-cookie';
 import "firebase/firestore";
 import "firebase/auth";
-import { signInWithGoogle, signInWithApple, auth, secondaryAuth, signInWith} from "GridaBoard/util/firebase_config";
 import { signInWithNDPC } from "GridaBoard/util/NDP_config";
 import { useSelector } from 'react-redux';
 import { RootState } from 'GridaBoard/store/rootReducer';
@@ -17,6 +16,7 @@ import appleLogo from "GridaBoard/appleLogo.png";
 import { default as Slider, Settings, CustomArrowProps } from "react-slick";
 import getText from "GridaBoard/language/language";
 import OpenNoticePopup from "boardList/layout/OpenNoticePopup"
+import NDP from 'NDP-lib';
 
 const useStyle = (theme:Theme) => makeStyles(_theme=>({
   wrap : {
@@ -128,43 +128,35 @@ const Login = () => {
   turnOnGlobalKeyShortCut(false);
   const cookies = new Cookies();
   const [logined, setLogined] = useState(false);
-  const [logined2, setLogined2] = useState(false);
   
   const selectedTheme = useSelector((state: RootState) => state.ui.theme);
   const theme : Theme = neolabTheme[selectedTheme];
   const classes = useStyle(theme)();
   
-  // const userEmail = cookies.get("user_email");
 
-  auth.onAuthStateChanged(user => {
-    // user.email
-    if(user !== null){
-      //로그인 완료
-      console.log("logined", user);
-      user.getIdTokenResult().then(function(result){
-        const expirationTime = new Date(result.expirationTime)
+  useEffect(()=>{
+    NDP.getInstance().onAuthStateChanged(async userId => {
+      // user.email
+      if(userId !== null){
+        //로그인 완료
+        console.log("logined", userId);
+        const expirationTime = new Date(NDP.getInstance().tokenExpired);
         // const time = expirationTime.getTime() - 3540000; //새로운 expiration time 설정 필요할 때
         // const newExTime = new Date(time);
-        cookies.set("user_email", user.email, {
+        cookies.set("user_email", userId, {
           expires: expirationTime
         });
+        const user = await NDP.getInstance().User.getUserData();
         localStorage.GridaBoard_userData = JSON.stringify(user);
         
-        if(secondaryAuth.currentUser === null){
-          signInWith(user).then(()=>{
-            setLogined(true);
-          });
-        }else{
-          setLogined(true);
-        }
-      });
-    }
-  });
+        setLogined(true);
+      }
+    });
+  },[])
   
   
   if(logined){
-    console.log(auth.currentUser);
-    console.log(secondaryAuth.currentUser);
+    
     //로그인시 자동으로 넘기기
     return (<Redirect to="/list" />);
   }
@@ -190,8 +182,8 @@ const Login = () => {
               <div>{getText("login_title")}</div>
               <div>{getText("login_subtitle")}</div>
               <div className={classes.loginBtns}>
-                <Button onClick = {signInWithGoogle}> <img src={googleLogo} alt="" />{getText("login_withGoogle")}</Button>
-                <Button onClick={signInWithApple}> <img src={appleLogo} alt="" />{getText("login_withApple")} </Button>
+                {/* <Button onClick = {signInWithGoogle}> <img src={googleLogo} alt="" />{getText("login_withGoogle")}</Button>
+                <Button onClick={signInWithApple}> <img src={appleLogo} alt="" />{getText("login_withApple")} </Button> */}
                 <Button onClick={signInWithNDPC}> <img src={appleLogo} alt="" />{getText("login_withApple")} </Button>
               </div>
               <div className={classes.terms}>

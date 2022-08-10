@@ -3,9 +3,6 @@ import { Link, NavLink, Redirect, useHistory } from 'react-router-dom';
 import { AppBar, Button, makeStyles, MuiThemeProvider } from '@material-ui/core';
 import { turnOnGlobalKeyShortCut } from 'GridaBoard/GlobalFunctions';
 import Cookies from 'universal-cookie';
-import 'firebase/auth';
-import 'firebase/database';
-import firebase, { auth, secondaryAuth, secondaryFirebase, signInWith } from 'GridaBoard/util/firebase_config';
 import { useDispatch, useSelector } from 'react-redux';
 import GridaDoc from 'GridaBoard/GridaDoc';
 import { InkStorage } from 'nl-lib/common/penstorage';
@@ -27,6 +24,8 @@ import { languageType } from 'GridaBoard/language/language';
 import InformationButton from 'GridaBoard/components/buttons/InformationButton';
 import HelpMenu, { setHelpMenu } from "GridaBoard/components/CustomElement/HelpMenu";
 import { MappingStorage, PdfDocMapper } from '../nl-lib/common/mapper';
+import NDP from "NDP-lib";
+
 const useStyle = makeStyles(theme => ({
   mainBackground: {
     width: '100%',
@@ -150,26 +149,25 @@ const BoardList = () => {
   
   if (userId === undefined) {
     //로그인으로 자동으로 넘기기
-    auth.onAuthStateChanged(user => {
-      if(user !== null){
-        //로그인 완료
-        user.getIdTokenResult().then(function(result){
-          const expirationTime = new Date(result.expirationTime)
-          cookies.set("user_email", user.email, {
+    useEffect(()=>{
+      NDP.getInstance().onAuthStateChanged(async userId => {
+        // user.email
+        console.log(userId);
+        if(userId !== null){
+          //로그인 완료
+          console.log("logined", userId);
+          const expirationTime = new Date(NDP.getInstance().tokenExpired);
+          cookies.set("user_email", userId, {
             expires: expirationTime
           });
-          if(secondaryAuth.currentUser === null){
-            signInWith(user).then(()=>{
-              dispatch(forceUpdateBoardList());
-            });
-          }else{
-            dispatch(forceUpdateBoardList());
-          }
-        });
-      } else {
-        history.push("/");
-      }
-    })
+          const user = await NDP.getInstance().User.getUserData();
+          localStorage.GridaBoard_userData = JSON.stringify(user);
+          dispatch(forceUpdateBoardList());
+        } else {
+          history.push("/");
+        }
+      });
+    },[])
   }
   
   const firstHelp = cookies.get("firstHelp_2_1");
