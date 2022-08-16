@@ -25,26 +25,21 @@ export async function deviceSelectDlg(): Promise<BluetoothDevice> {
 
   let result = { device: null, type: "null" };
 
-  const isDevConnect = await devDeviceDlg();
-  if(isDevConnect){
-    result = { type: 'success', device:isDevConnect }
-  }else{
-    try {
-      // let mobileNavigatorObject: any = window.navigator;
-      const device = await navigator.bluetooth.requestDevice(options);
-      result = { type: 'success', device };
-    }
-    catch (error) {
-      if (error.code === 8) {
-        // User Cancelled or not found adapther
-        if(error.message.indexOf("adapter") !== -1){
-          //블루투스 어뎁터 없음
-          alert(getText("noBluetoothAdapter"));
-        }
-        result = { device: null, type: 'cancel' };
+  try {
+    // let mobileNavigatorObject: any = window.navigator;
+    const device = await navigator.bluetooth.requestDevice(options);
+    result = { type: 'success', device };
+  }
+  catch (error) {
+    if (error.code === 8) {
+      // User Cancelled or not found adapther
+      if(error.message.indexOf("adapter") !== -1){
+        //블루투스 어뎁터 없음
+        alert(getText("noBluetoothAdapter"));
       }
-      throw error;
+      result = { device: null, type: 'cancel' };
     }
+    throw error;
   }
 
   if (result.type === 'cancel') {
