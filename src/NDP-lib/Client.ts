@@ -19,6 +19,7 @@ class Client {
     _resourceOwnerId = "";
     _clientId = "";
     appName = "";
+    autoCallback:Array<{eventName:string, callback:(data: SocketReturnData) => any}> = [];
     tokenUserData:TokenUserData = {
         "sub":"",
         "aud":"",
@@ -81,6 +82,7 @@ class Client {
         const socket = new NSocket(this.serverUrl);
         socket.on("tokenInfo",this.tokenInfoCallback.bind(this))
         socket.on("penControlOwner",this.penControlCallback.bind(this))
+        this.runAutoOn();
         try{
             await socket.connect();
             await socket.emit("connect", {
@@ -91,6 +93,7 @@ class Client {
         }
 
         this.localClient = socket;
+
         return true;
     }
     async penControlCallback(res:SocketReturnData){
@@ -182,6 +185,23 @@ class Client {
         }
         this.localClient.off(eventName, offData);
     }
+    autoOn(eventName:string, callback: (data:SocketReturnData)=>any){
+        this.autoCallback.push({eventName, callback});
+
+        if(this.localClient){
+            this.on(eventName, callback);
+        }
+    }
+    runAutoOn(){
+        if(!this.localClient){
+            return "can't find client";
+        }
+        for(let i = 0; i < this.autoCallback.length; i++){
+            const nowObj = this.autoCallback[i];
+            this.on(nowObj.eventName, nowObj.callback);
+        }
+    }
+
 
 
     private discomposeJWTToken(token:string){

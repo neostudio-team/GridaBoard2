@@ -370,38 +370,6 @@ const makePdfJsDoc = async (loadingTask: any) => {
       }
     );
   });
-
-  return new Promise(resolve => {
-    loadingTask.promise.then(async function (pdfDocument) {
-      console.log('# PDF document loaded.');
-
-      // Get the first page.
-      pdfDocument.getPage(1).then(async function (page) {
-        // Render the page on a Node canvas with 100% scale.
-        const canvas: any = document.createElement('canvas');
-
-        const viewport = page.getViewport({ scale: 1, rotation: 0 });
-        const ctx = canvas.getContext('2d');
-
-        // const canvas = document.createElement("canvas");
-        canvas.id = `scratchCanvas`;
-        canvas.width = Math.floor(viewport.width);
-        canvas.height = Math.floor(viewport.height);
-
-        clearCanvas(canvas, ctx);
-
-        const renderContext = {
-          canvasContext: ctx,
-          transform: [1, 0, 0, 1, 0, 0],
-          viewport: viewport,
-        };
-
-        await page.render(renderContext).promise; //promise~~~~~~~~~~~~~~~~~~~~~~~SS
-
-        resolve(canvas);
-      });
-    });
-  });
 };
 
 export async function makeThumbnail() {

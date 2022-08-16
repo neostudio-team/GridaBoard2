@@ -17,6 +17,7 @@ import zoomReducer from './reducers/zoomReducer';
 import listReducer from './reducers/listReducer';
 import activePenReducer from './reducers/activePenReducer';
 import gestureReducer from "./reducers/gestureReducer";
+import ndpClient from './reducers/ndpClient';
 
 
 const rootReducer = combineReducers({
@@ -29,6 +30,7 @@ const rootReducer = combineReducers({
 
   auth: authorizationReducer,
   ui: uiReducer,
+  ndpClient: ndpClient,
   pointerTracer,
   rotate,
   loadingCircle,
