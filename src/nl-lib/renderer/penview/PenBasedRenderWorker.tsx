@@ -18,6 +18,8 @@ import { nullNcode, PU_TO_NU } from 'nl-lib/common/constants';
 import GridaDoc from 'GridaBoard/GridaDoc';
 import { setActivePageNo } from 'GridaBoard/store/reducers/activePageReducer';
 import { store } from "GridaBoard/client/pages/GridaBoard";
+import { setLassoModalPoint, setOnLassoGroup, setOnLassoShift } from '../../../GridaBoard/store/reducers/docConfigReducer';
+import { Height } from '@material-ui/icons';
 const NUM_HOVER_POINTERS = 6;
 const DFAULT_BRUSH_SIZE = 10;
 const REMOVE_HOVER_POINTS_INTERVAL = 50; // 50ms
@@ -25,6 +27,8 @@ const REMOVE_HOVER_POINTS_WAIT = 20; // 20 * 50ms = 1sec
 
 const STROKE_OBJECT_ID = 'ns';
 // const GRID_OBJECT_ID = "g";
+const LASSO_OBJECT_ID = "lasso";
+const LASSO_GROUP_ID = "lassoGroup"
 
 interface IPenHoverCursors {
   visibleHoverPoints: number;
@@ -47,7 +51,6 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
   livePaths: { [key: string]: { stroke: NeoStroke; pathObj: IExtendedPathType } } = {};
 
   storage = InkStorage.getInstance();
-
   visibleHoverPoints: number = NUM_HOVER_POINTERS;
 
   // pathHoverPoints: fabric.Circle[] = [];
@@ -56,6 +59,12 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
   _vpPenDownTime = 0;
   brushSize = DFAULT_BRUSH_SIZE;
   currentPageInfo: IPageSOBP; //hover point에서만 임시로 씀
+  onLassoGroup: boolean;
+  onLassoShift: boolean;
+  onLassoMovingByPen: boolean;
+  lassoShiftPoint: { x: number, y: number, pointX: number, pointY: number };
+
+  f;
   /**
    *
    * @param options
@@ -79,10 +88,16 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     penManager.addEventListener(PenEventName.ON_COLOR_CHANGED, this.changeDrawCursor);
     penManager.addEventListener(PenEventName.ON_PEN_TYPE_CHANGED, this.changeDrawCursor);
 
+    this.onLassoGroup = false;
+    // this.onLassoShift = false;
+    this.onLassoMovingByPen = false;
+
     this.changePage(this.pageInfo, options.pageSize, true);
     console.log(`PAGE CHANGE (worker constructor):                             ${makeNPageIdStr(this.pageInfo as IPageSOBP)}`);
 
     // this.resize({ width: options.width, height: options.height });
+
+    this.f = 0;
   }
 
   prepareUnmount = () => {
@@ -169,6 +184,10 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
         //https://iconify.design/icon-sets/?query=eraser
         break;
       }
+      case IBrushType.LASSO: {
+        cursor = `<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="1em" height="1em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path fill="currentColor" d="M9.703 2.265A10.026 10.026 0 0 1 12 2c.79 0 1.559.092 2.297.265a1 1 0 0 1-.458 1.947A8.025 8.025 0 0 0 12 4c-.634 0-1.25.074-1.84.212a1 1 0 1 1-.457-1.947Zm6.18 1.552a1 1 0 0 1 1.376-.324a10.047 10.047 0 0 1 3.248 3.248a1 1 0 1 1-1.7 1.053a8.046 8.046 0 0 0-2.6-2.6a1 1 0 0 1-.325-1.377Zm-7.766 0a1 1 0 0 1-.323 1.376a8.047 8.047 0 0 0-2.6 2.6a1 1 0 1 1-1.7-1.052A10.047 10.047 0 0 1 6.74 3.493a1 1 0 0 1 1.376.324Zm-4.65 5.141a1 1 0 0 1 .745 1.203A8.025 8.025 0 0 0 4 12c0 .634.074 1.25.212 1.84a1 1 0 0 1-1.947.457A10.026 10.026 0 0 1 2 12c0-.79.092-1.559.265-2.297a1 1 0 0 1 1.203-.745Zm17.065 0a1 1 0 0 1 1.203.745a10.068 10.068 0 0 1 0 4.594a1 1 0 0 1-1.947-.458a8.062 8.062 0 0 0 0-3.679a1 1 0 0 1 .744-1.202ZM3.817 15.883a1 1 0 0 1 1.376.323a8.046 8.046 0 0 0 2.6 2.6a1 1 0 0 1-1.052 1.7a10.046 10.046 0 0 1-3.248-3.247a1 1 0 0 1 .324-1.377Zm16.805 1.607a1 1 0 0 0-1.742-.983v.001l-.001.001l-.013.021a6.74 6.74 0 0 1-.338.495a8.41 8.41 0 0 1-.74.857C16.598 16.869 14.995 16 13 16c-2.267 0-4 1.2-4 3s1.733 3 4 3c1.91 0 3.459-.634 4.64-1.415a10.979 10.979 0 0 1 1.118 1.67l.07.136l.015.031l.003.005a1 1 0 0 0 1.809-.853c-.117-.231 0-.001 0-.001l-.002-.002l-.002-.006l-.008-.016a2.82 2.82 0 0 0-.015-.03l-.011-.022a11.486 11.486 0 0 0-.452-.803a12.974 12.974 0 0 0-.981-1.379c.4-.401.714-.783.944-1.09a8.788 8.788 0 0 0 .453-.666c.012-.018.02-.034.027-.045l.009-.015l.003-.005v-.002l.002-.002ZM13 18c1.226 0 2.286.476 3.169 1.145a6.268 6.268 0 0 1-3.17.855C11.268 20 11 19.2 11 19c0-.2.267-1 2-1Z"/></svg>`
+        break;
+      }
       default: break;
     } 
 
@@ -198,6 +217,7 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
    */
   pushLiveDot = (event: IPenToViewerEvent, rotation: number) => {
     const activePageNo = store.getState().activePage.activePageNo; 
+    // const onLassoGroup = store.getState().docConfig.onLassoGroup;
     if (activePageNo === -1) { //페이지가 생성 안된 시점에 필름에 펜을 쓸 경우를 위함. 기획 논의 필요
       return;
     }
@@ -250,11 +270,19 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
       if (!live.pathObj) {
         const new_pathObj = this.createFabricPath(live.stroke, false, pageInfo);
         live.pathObj = new_pathObj as IExtendedPathType;
-        this.canvasFb.add(new_pathObj);
+        if(this.onLassoGroup){
+        // if(onLassoGroup){
+          if(!this.lassoGroupBoundCheck(event)){
+            this.canvasFb.add(new_pathObj);
+          }
+        }else{
+          this.canvasFb.add(new_pathObj);
+        }
       } else {
         const pathData = this.createPathData_arr(live.stroke, pageInfo);
         const pathObj = live.pathObj as fabric.Path;
         pathObj.path = pathData as any;
+        this.f++;
       }
       this.focusToDot(dot);
     }
@@ -293,6 +321,7 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
    * @param {{strokeKey:string, mac:string, stroke, section:number, owner:number, book:number, page:number}} event
    */
   closeLiveStroke = (event: IPenToViewerEvent) => {
+    // const onLassoGroup = store.getState().docConfig.onLassoGroup;
     const cursor = this.penCursors[event.mac];
     cursor.eraserLastPoint = undefined;
 
@@ -312,7 +341,16 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     const pathObj = live.pathObj;
 
     if (pathObj) {
-      this.localPathArray.push(pathObj);
+      if(event.stroke.brushType === IBrushType.LASSO){
+        if(!this.onLassoGroup){
+        // if(!onLassoGroup){
+          const new_pathObj = this.createFabricPath(event.stroke, false, this.pageInfo) as IExtendedPathType;
+          this.activePathbyLasso(new_pathObj);
+          this.localPathArray.push(pathObj);
+        }
+      }else{
+        this.localPathArray.push(pathObj);
+      }
     }
 
     delete this.livePaths[event.strokeKey];
@@ -324,9 +362,17 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
    */
   closeLiveStroke_byStorage = (event: IPenToViewerEvent, pageInfo: IPageSOBP) => {
     const new_pathObj = this.createFabricPath(event.stroke, false, pageInfo) as IExtendedPathType;
+    // const onLassoGroup = store.getState().docConfig.onLassoGroup;
 
-    this.canvasFb.add(new_pathObj);
-    this.localPathArray.push(new_pathObj);
+    if(event.stroke.brushType === IBrushType.LASSO){
+      if(!this.onLassoGroup){
+      // if(!onLassoGroup){
+        this.activePathbyLasso(new_pathObj);
+      }
+    }else{
+      this.canvasFb.add(new_pathObj);
+      this.localPathArray.push(new_pathObj);
+    }
   };
 
   eraseOnLine(pdf_x0, pdf_y0, pdf_x1, pdf_y1, stroke, isPlate) {
@@ -516,7 +562,6 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
       newY += noteItem.margin.Xmax;
     }
 
-
     const pageWidth = currentPage.pageOverview.sizePu.width;
     const pageHeight =currentPage.pageOverview.sizePu.height;
     
@@ -689,7 +734,8 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
       this.resetPageDependentData();
 
       const strokesAll = this.storage.getPageStrokes(pageInfo);
-      const strokes = strokesAll.filter(stroke => stroke.brushType !== IBrushType.ERASER);
+      // const strokes = strokesAll.filter(stroke => stroke.brushType !== IBrushType.ERASER);
+      const strokes = strokesAll.filter(stroke => stroke.brushType !== IBrushType.ERASER && stroke.brushType !== IBrushType.LASSO);
 
       this.addStrokePaths(strokes, isMainView);
     }
@@ -738,7 +784,8 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
 
     // page에 있는 stroke를 가져온다
     const strokesAll = this.storage.getPageStrokes(pageInfo);
-    const strokes = strokesAll.filter(stroke => stroke.brushType !== IBrushType.ERASER);
+    // const strokes = strokesAll.filter(stroke => stroke.brushType !== IBrushType.ERASER);
+    const strokes = strokesAll.filter(stroke => stroke.brushType !== IBrushType.ERASER && stroke.brushType !== IBrushType.LASSO);
 
     //test
     // const testStroke = this.generateA4CornerStrokeForTest(pageInfo);
@@ -1021,21 +1068,34 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
         break;
     }
 
-    const pathOption = {
-      // stroke: color, //"rgba(0,0,0,255)"
-      fill: color,
-      color: color,
-      opacity: opacity,
-      // strokeWidth: 10,
-      originX: 'left',
-      originY: 'top',
-      selectable: false,
-
-      data: STROKE_OBJECT_ID, // neostroke
-      evented: true,
-      key: key,
-      objectCaching: cache,
-    };
+    const pathOption = 
+    (brushType !== IBrushType.LASSO) ? 
+      {
+        // stroke: color, //"rgba(0,0,0,255)"
+        fill: color,
+        color: color,
+        opacity: opacity,
+        // strokeWidth: 10,
+        originX: 'left',
+        originY: 'top',
+        selectable: false,
+        data: STROKE_OBJECT_ID, // neostroke
+        evented: true,
+        key: key,
+        objectCaching: cache,
+      } :
+      {
+        fill: "transparent", 
+        stroke:"black", 
+        strokeWidth: 1, 
+        strokeDashArray: [10, 5], 
+        hasControls: false, 
+        data: LASSO_OBJECT_ID, 
+        selectable: false, 
+        evented: true, 
+        objectCaching: cache,
+      };
+    
     const path = new fabric.Path(pathData, pathOption);
 
     return path;
@@ -1061,20 +1121,34 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
         break;
     }
 
-    const pathOption = {
-      // stroke: color, //"rgba(0,0,0,255)"
-      fill: color,
-      color: color,
-      opacity: opacity,
-      // strokeWidth: 10,
-      originX: 'left',
-      originY: 'top',
-      selectable: false,
-      data: STROKE_OBJECT_ID, // neostroke
-      evented: true,
-      key: key,
-      objectCaching: cache,
-    };
+    const pathOption = 
+    (brushType !== IBrushType.LASSO) ? 
+      {
+        // stroke: color, //"rgba(0,0,0,255)"
+        fill: color,
+        color: color,
+        opacity: opacity,
+        // strokeWidth: 10,
+        originX: 'left',
+        originY: 'top',
+        selectable: false,
+        data: STROKE_OBJECT_ID, // neostroke
+        evented: true,
+        key: key,
+        objectCaching: cache,
+      } :
+      {
+        fill: "transparent", 
+        stroke:"black", 
+        strokeWidth: 1, 
+        strokeDashArray: [10, 5], 
+        hasControls: false, 
+        data: LASSO_OBJECT_ID, 
+        selectable: false, 
+        evented: true, 
+        objectCaching: cache,
+      };
+    
     const path = new fabric.Path(pathData, pathOption);
 
     return path;
@@ -1178,4 +1252,379 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     // this.onViewSizeChanged(this._opt.viewSize);
     return true;
   };
+
+  removeLassoPath = () => {
+    const lassoPath = this.canvasFb.getObjects().filter(object => object.data === LASSO_OBJECT_ID);
+    lassoPath.forEach(object =>{
+      this.canvasFb.remove(object);
+    }) 
+  };
+  removeLassoObject = () => {
+    const lassoObject = this.canvasFb.getObjects().filter(object => object.data === LASSO_OBJECT_ID || object.data === LASSO_GROUP_ID);
+    lassoObject.forEach(object =>{
+      this.canvasFb.remove(object);
+    })
+  };
+
+  /**라쏘 오브젝트를 스토리지 등에서 제거하는 함수 */
+  removeLassoData = () => {    
+    for(let i = 0; i < this.localPathArray.length; i++){
+      if(this.localPathArray[i].data === LASSO_OBJECT_ID || this.localPathArray[i].data === LASSO_GROUP_ID){
+        this.localPathArray.splice(i, 1);
+        i--;
+      }
+    }
+
+    const activePageNo = store.getState().activePage.activePageNo;
+    const docPageInfo = GridaDoc.getInstance().getPage(activePageNo).pageInfos[0];
+
+    const pageId = InkStorage.makeNPageIdStr(docPageInfo);
+    const completed = this.storage.completedOnPage.get(pageId);
+    //completedOnPage 말고 completed 배열에서도 삭제해야하는 것 아닌가?
+    if(completed){
+      for(let i = 0; i < completed.length; i++){
+        if(completed[i].brushType === IBrushType.LASSO){
+          completed.splice(i, 1);
+          i--;
+        }
+      }
+    }
+    //썸네일 새로고침
+    this.storage.dispatcher.dispatch(PenEventName.ON_ERASER_MOVE, {
+      section: docPageInfo.section,
+      owner: docPageInfo.owner,
+      book: docPageInfo.book,
+      page: docPageInfo.page,
+    });
+  };
+
+  /**라쏘 그룹을 생성했을 때, 라쏘 옵션버튼이 모인 모달창의 위치를 반환하는 함수 */
+  lassoModalPopUp = (lassoGroup: fabric.Group) => {
+    const offset = this.offset;
+    const groupCooMT = lassoGroup.oCoords.mt;
+
+    const lassoModalPoint = { x: groupCooMT.x * offset.zoom - 48, y: groupCooMT.y * offset.zoom - 48};
+    setLassoModalPoint(lassoModalPoint);
+  }
+
+  /**fabricPath가 그려졌을 때, 기존 stroke와의 영역체크 후, 라쏘 그룹 생성하는 함수 */
+  activePathbyLasso = (lassoPath: fabric.Path) => {
+    const activePageNo = store.getState().activePage.activePageNo;
+    const docPageInfo = GridaDoc.getInstance().getPage(activePageNo).pageInfos[0];
+    this.redrawStrokes(docPageInfo);
+    
+    this.canvasFb.add(lassoPath);
+    
+    const pathGroup = new fabric.Group([], {data: LASSO_GROUP_ID, originX: "left", originY: "top", hasControls: false, borderDashArray: [10, 5], });
+    
+    const strokePath = this.canvasFb.getObjects().filter(object => object.data === STROKE_OBJECT_ID);
+    
+    for(let i = 0; i < strokePath.length; i++){
+      if(lassoPath.intersectsWithObject(strokePath[i])){
+        strokePath[i].setOptions({stroke: "blue", strokeWidth: 5, opacity: 0.2, name: (strokePath[i].opacity === 0.3) ? "marker" : null});
+        pathGroup.addWithUpdate(strokePath[i]);
+        this.canvasFb.remove(strokePath[i]);
+      }
+    }
+    
+    if(pathGroup.getObjects().length > 0){
+      this.lassoModalPopUp(pathGroup);
+    
+      this.onLassoGroup = true;
+      setOnLassoGroup(true);
+      // lassoPath.setOptions({visiblqe: false});
+      // strokeGroup.addWithUpdate(lassoPath);
+      this.removeLassoPath();
+      this.canvasFb.add(pathGroup);
+      this.canvasFb.setActiveObject(pathGroup);
+      this.canvasFb.requestRenderAll();
+    }else{
+      this.removeLassoPath();
+    }
+  };
+  
+  /**라쏘 그룹을 클릭해 이동 시 혹은 회전 시, 스토리지 등에 보관된 stroke의 좌표값 업데이트하는 함수*/
+  updatePathData = (updatePath: IExtendedPathType, event: IPenToViewerEvent, rotation: number, centerPoint: fabric.Point) => {
+    const { section, owner, book, page } = event.stroke;
+    let pageInfo = {
+      section: section,
+      book: book,
+      owner: owner,
+      page: page,
+    };
+    
+    let isPlate = false;
+    if (isPlatePage(pageInfo)) {
+      const activePageNo = store.getState().activePage.activePageNo;
+      const docPageInfo = GridaDoc.getInstance().getPage(activePageNo).pageInfos[0];
+      pageInfo = docPageInfo;
+      isPlate = true;
+    }
+
+    const pageId = InkStorage.makeNPageIdStr(pageInfo);
+    const completed = this.storage.completedOnPage.get(pageId);
+    
+    let shiftX;
+    let shiftY;
+    let shiftPointX;
+    let shiftPointY;
+    
+    if(this.lassoShiftPoint){
+      shiftX = this.lassoShiftPoint.x;
+      shiftY = this.lassoShiftPoint.y;
+      shiftPointX = this.lassoShiftPoint.pointX;
+      shiftPointY = this.lassoShiftPoint.pointY;
+    }
+      
+    for(let i = 0; i < this.localPathArray.length; i++){
+      if(updatePath.key === this.localPathArray[i].key){
+        this.localPathArray.splice(i, 1, updatePath);
+      }
+    }
+
+    if(completed){
+      for(let i = 0; i < completed.length; i++){
+        if(updatePath.key === completed[i].key){
+          completed[i].dotArray.forEach(dot => {
+            if(this.lassoShiftPoint){
+              dot.x += shiftX;
+              dot.y += shiftY;
+              dot.point.x += shiftPointX;
+              dot.point.y += shiftPointY;
+              if(isPlate && !completed[i].isPlate){
+                console.log("여길 어떻게 처리해야하나");
+              }
+            }
+            if(rotation !== 0){
+              this.rotateDotPoint(dot, rotation, centerPoint);
+            }
+          })
+        }
+      }
+    }
+    this.canvasFb.add(updatePath);
+    updatePath.setCoords();
+  };
+
+  /**라쏘 그룹 영역 밖을 클릭 시, 생성된 라쏘 그룹을 해체하는 함수 */
+  unGroupPath = (group: fabric.Group, event: IPenToViewerEvent) => {
+    const currentLassoRotation = group.angle;
+    const centerPoint = group.getCenterPoint();
+
+    group.forEachObject((object: IExtendedPathType) => {
+      if (object.data === STROKE_OBJECT_ID){
+        group.removeWithUpdate(object);
+        object.setOptions({stroke: null, strokeWidth: null, opacity: object.name !== "marker" ? 1 : 0.3});
+        if(this.lassoShiftPoint || currentLassoRotation !== 0){
+          object.rotate(currentLassoRotation);
+          this.updatePathData(object, event, currentLassoRotation, centerPoint);
+        }else{
+          this.canvasFb.add(object);
+        }
+      }
+    });
+    this.onLassoGroup = false;
+    setOnLassoGroup(false);
+    setLassoModalPoint({x:0, y:0});
+    this.onLassoMovingByPen = false;
+    delete this.lassoShiftPoint;
+  };
+
+  /**라쏘 그룹을 클릭해 이동 시, 이동 좌표 값을 보관하는 함수 */
+  lassoShiftCheck = (event: IPenToViewerEvent) => {
+    const onLassoShift = store.getState().docConfig.onLassoShift;
+    if(onLassoShift){
+    // if (this.onLassoShift) {
+      const firstDot = event.stroke.dotArray[0];
+      const lastDot = event.stroke.dotArray[event.stroke.dotArray.length-1];
+
+      const shiftX = lastDot.x - firstDot.x;
+      const shiftY = lastDot.y - firstDot.y;
+      const shiftPointX = lastDot.point.x - firstDot.point.x;
+      const shiftPointY = lastDot.point.y - firstDot.point.y;
+
+      //종이, 플레이트, 마우스 간의 ncodeXY 이동 좌표의 문제
+      //플레이트의 회전 문제
+      //현재 플레이트를 이용하고, 플레이트에서 작성된 스트로크가 아닐 경우
+      if(event.stroke.isPlate){
+        //ncodeToPdfXy_plate에서 하는 것처럼 추가각도와 현페이지각도를 구하고
+        //현페이지 WH, 플레이트 WH로 비율을 구한다음에
+        //플레이트용 XY를 노트용 XY로 비율에 맞춰 변환시키고,
+        //플레이트용 XY가 90도가 더해진상황에서 나오는 것이니, 
+        //노트용 XY에 90도를 뺀 값을 대입시키면 된다?
+        console.log("여기서 처리하는 게 정답인가");
+      }
+      
+      //연속적으로 동일 라쏘그룹을 두 번 이동할 경우
+      if(this.lassoShiftPoint){
+        this.lassoShiftPoint.x += shiftX;
+        this.lassoShiftPoint.y += shiftY;
+        this.lassoShiftPoint.pointX += shiftPointX;
+        this.lassoShiftPoint.pointY += shiftPointY;
+      }else{
+        this.lassoShiftPoint = { x: shiftX, y: shiftY, pointX: shiftPointX, pointY: shiftPointY };
+      }
+      // this.onLassoShift = false;
+      setOnLassoShift(false);
+    }
+  };
+
+  /**mouse down-move-up로 동작하도록 설계된 fabric(_setupCurrentTransform)에서는
+   * pen down-move에 대응하지 못하므로, 라쏘 그룹을 펜으로 움직이기 위해, 
+   * 펜의 좌표값에 따라 라쏘 그룹의 위치를 변환하는 함수  */
+  movingLassobyPen = (event: IPenToViewerEvent) => {
+    if(this.onLassoMovingByPen){
+      const lassoGroup = this.canvasFb.getObjects().filter(object => object.data === LASSO_GROUP_ID)[0];
+  
+      const penDownPointX = event.dot.point.x;
+      const penDownPointY = event.dot.point.y;
+  
+      if(lassoGroup && penDownPointX !== 0 && penDownPointY !== 0){
+        lassoGroup.setPositionByOrigin(new fabric.Point(penDownPointX, penDownPointY), "center", "center");
+        // lassoGroup.setCoords();
+      }
+    }
+  }
+
+  /**라쏘 그룹 이후에 들어오는 fabricPath가 그룹 영역 안인지, 밖인지 확인하는 함수 */
+  lassoGroupBoundCheck = (event: IPenToViewerEvent) => {
+    const lassoGroup = this.canvasFb.getObjects().filter(object => object.data === LASSO_GROUP_ID)[0];
+        
+    if(lassoGroup){
+      const penDownPointX = event.dot.point.x;
+      const penDownPointY = event.dot.point.y;
+      
+      if(!(penDownPointX >= lassoGroup.left 
+        && penDownPointX <= lassoGroup.left + lassoGroup.width
+        && penDownPointY >= lassoGroup.top
+        && penDownPointY <= lassoGroup.top + lassoGroup.height)){
+        this.unGroupPath(lassoGroup as fabric.Group, event);
+        this.removeLassoObject();
+        this.removeLassoData();
+        this.canvasFb.requestRenderAll();
+        return false;
+      }else{
+        //라쏘로 만든 그룹 오브젝트가 있고, 라쏘펜 포인트가 그 안쪽에 찍힐 경우
+        if(event.mac !== PenManager.getInstance().virtualPen.mac){
+          //가상펜(마우스)이 아닐 경우
+          this.onLassoMovingByPen = true;
+
+          const originPointX = lassoGroup.left;
+          const originPointY = lassoGroup.top;
+          const originXY = this.pdfToNcodeXy({ x: originPointX, y: originPointY });
+
+          lassoGroup.setPositionByOrigin(new fabric.Point(penDownPointX, penDownPointY), "center", "center");
+
+          const shiftPointX = lassoGroup.left;
+          const shiftPointY = lassoGroup.top;
+          const shiftXY = this.pdfToNcodeXy({ x: shiftPointX, y: shiftPointY });
+    
+          this.lassoShiftPoint = {
+            x: shiftXY.x - originXY.x,
+            y: shiftXY.y - originXY.y,
+            pointX: shiftPointX - originPointX,
+            pointY: shiftPointY - originPointY
+          }
+        }
+        // this.onLassoShift = true;
+        setOnLassoShift(true);
+        return true; 
+      }
+    }
+    this.onLassoGroup = false;
+    setOnLassoGroup(false);
+    return false;
+  };
+
+  /**라쏘 옵션 중 회전버튼을 눌렀을 때의, 회전 종료시 회전변환을 위한 함수 */
+  rotateDotPoint = (dot: NeoDot, degree: number, centerPoint: fabric.Point) => {
+    const radians = fabric.util.degreesToRadians(degree);
+    
+    const groupObjectCenterPoint = centerPoint;
+
+    dot.point.x -= groupObjectCenterPoint.x;
+    dot.point.y -= groupObjectCenterPoint.y;
+
+    const v = fabric.util.rotateVector(dot.point, radians);
+
+    v.x += groupObjectCenterPoint.x;
+    v.y += groupObjectCenterPoint.y;
+
+    dot.point.x = v.x;
+    dot.point.y = v.y;
+
+    const newXY = this.pdfToNcodeXy({x: dot.point.x, y: dot.point.y})
+    dot.x = newXY.x;
+    dot.y = newXY.y;
+  }
+
+
+  /**라쏘 옵션 중 회전버튼을 눌렀을 때의, 회전 종료 전까지 회전을 위한 함수 */
+  rotateLasso = () => {
+    const lassoGroup = this.canvasFb.getObjects().filter(object => object.data === LASSO_GROUP_ID)[0] as fabric.Group;
+    const groupAngle = (lassoGroup.angle + 90) % 360;
+    lassoGroup.rotate(groupAngle);    
+  
+    this.canvasFb.requestRenderAll();
+  };
+
+  
+  /**라쏘 옵션 중 삭제버튼을 눌렀을 때의, 삭제를 위한 함수 */
+  deleteLasso = () => {
+    const lassoGroup = this.canvasFb.getObjects().filter(object => object.data === LASSO_GROUP_ID)[0] as fabric.Group;
+    
+    const activePageNo = store.getState().activePage.activePageNo;
+    const docPageInfo = GridaDoc.getInstance().getPage(activePageNo).pageInfos[0];
+    const pageId = InkStorage.makeNPageIdStr(docPageInfo);
+    const completed = this.storage.completedOnPage.get(pageId);
+    
+    lassoGroup.forEachObject((object: IExtendedPathType) => {
+      const idxlocal = this.localPathArray.findIndex(ns => ns.key === object.key);
+      const idxstorage = completed.findIndex(ns => ns.key === object.key);
+
+      this.localPathArray.splice(idxlocal, 1);
+      completed.splice(idxstorage, 1);
+    })
+    this.canvasFb.remove(lassoGroup);
+    this.removeLassoData();
+
+    this.storage.dispatcher.dispatch(PenEventName.ON_ERASER_MOVE, {
+      section: docPageInfo.section,
+      owner: docPageInfo.owner,
+      book: docPageInfo.book,
+      page: docPageInfo.page,
+    });
+    this.onLassoGroup = false;
+    setOnLassoGroup(false);
+    this.onLassoMovingByPen = false;
+    delete this.lassoShiftPoint;
+  }
+
+
+  lassoPaste = (event) => {
+    const cbData = event.clipboardData;
+    for(let i = 0; i < cbData.items.length; i++){
+      const cbDataItem = cbData.items[i];
+      const type = cbDataItem.type;
+
+      if (type.indexOf("image") != -1) {
+        const imageData = cbDataItem.getAsFile();
+        const imageURL = window.webkitURL.createObjectURL(imageData);
+
+        const img = document.createElement("img");
+        img.src = imageURL;
+        document.getElementById("drawer_content").appendChild(img);
+
+        console.log("create", imageURL);
+
+        // window.webkitURL.revokeObjectURL(imageURL);
+
+        console.log("revoke", imageURL);
+      }
+    }
+  }
+  clipCanvasbyLasso = (path) => {
+    const clipPath = new fabric.Polygon(path);
+    this.canvasFb.clipPath = clipPath;
+  }
 }

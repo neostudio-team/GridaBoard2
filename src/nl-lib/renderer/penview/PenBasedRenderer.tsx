@@ -1,7 +1,7 @@
 import React from "react";
 import {connect} from "react-redux";
 import {CSSProperties} from "@material-ui/core/styles/withStyles";
-import {Typography} from "@material-ui/core";
+import {IconButton, Typography} from "@material-ui/core";
 
 import {IRenderWorkerOption} from "./RenderWorkerBase";
 import PenBasedRenderWorker from "./PenBasedRenderWorker";
@@ -30,6 +30,9 @@ import AddCircle from "@material-ui/icons/AddCircle";
 import { SvgIcon } from '@material-ui/core';
 import { theme } from "../../../GridaBoard/theme";
 import { PenManager } from "../../neosmartpen";
+import SimpleTooltip2 from "GridaBoard/components/SimpleTooltip2";
+import { DeleteForeverOutlined, RotateRight } from "@material-ui/icons";
+import { setOnLassoGroup, setOnLassoShift } from "../../../GridaBoard/store/reducers/docConfigReducer";
 
 
 
@@ -109,6 +112,9 @@ interface Props { // extends MixedViewProps {
   setNotFirstPenDown: any;
   showSymbol: any;
   hideSymbol: any;
+  onLassoGroup: boolean;
+  onLassoShift: boolean;
+  lassoModalPoint: any;
 
   gestureDisable: boolean;
   setGestureDisable: any;
@@ -335,6 +341,8 @@ class PenBasedRenderer extends React.Component<Props, State> {
     if (this.renderer && !this.props.calibrationMode) {
       this.inkStorage.addEventListener(PageEventName.PAGE_CLEAR, this.removeAllCanvasObjectOnActivePage, null);
       this.inkStorage.addEventListener(PenEventName.ON_ERASER_MOVE, this.renderer.redrawStrokes, null);
+
+      window.addEventListener("paste", this.renderer.lassoPaste);
     }
   }
 
@@ -458,6 +466,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
         this.props.setNotFirstPenDown(false);
         this.props.initializeCrossLine();
         this.props.initializeTap();
+        setOnLassoGroup(false);
         hideToastMessage();
       }
 
@@ -559,6 +568,8 @@ class PenBasedRenderer extends React.Component<Props, State> {
 
       this.inkStorage.removeEventListener(PageEventName.PAGE_CLEAR, this.removeAllCanvasObjectOnActivePage);
       this.inkStorage.removeEventListener(PenEventName.ON_ERASER_MOVE, this.renderer.redrawStrokes);
+
+      // window.removeEventListener("paste", this.renderer.lassoPaste);
     }
     this.props.initializeCrossLine();
     this.props.initializeTap();
@@ -655,6 +666,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
         }
       }
       this.renderer.pushLiveDot(event, this.props.rotation);
+      this.renderer.movingLassobyPen(event);
     }
   }
 
@@ -788,6 +800,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
       this.onCalibrationUp(event);
     }
     else if (this.renderer) {
+      this.renderer.lassoShiftCheck(event);
       this.renderer.closeLiveStroke(event);
     }
   }
@@ -1172,6 +1185,13 @@ class PenBasedRenderer extends React.Component<Props, State> {
     hideToastMessage();
   }
 
+  onDeleteLasso = () => {
+    this.renderer.deleteLasso();
+  }
+  onRotateLasso = () => {
+    this.renderer.rotateLasso();
+  }
+
   render() {
     let { zoom } = this.props.position;
 
@@ -1249,6 +1269,14 @@ class PenBasedRenderer extends React.Component<Props, State> {
       color: theme.palette.secondary.contrastText
     }
 
+    const lassoModalDiv: CSSProperties = {
+      visibility: this.props.onLassoGroup && !this.props.onLassoShift && this.props.isMainView ? "visible" : "hidden",
+      position: "absolute",
+      left: this.props.lassoModalPoint.x,
+      top: this.props.lassoModalPoint.y,
+      zIndex: 11,
+    }
+
     return (
       <div id="pen-based-renderer" ref={this.setMainDivRef} style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}>
         {/* <Paper style={{ height: this.size.height, width: this.size.width }}> */}
@@ -1257,6 +1285,18 @@ class PenBasedRenderer extends React.Component<Props, State> {
           <canvas id={this.canvasId} style={inkCanvas} ref={this.setCanvasRef} />
           <div style={symbolDiv}>
             <AddCircle style={symbolSize} />
+          </div>
+          <div id="lassoModal" style={lassoModalDiv}>
+            <IconButton id="deleteButton" onClick={this.onDeleteLasso}>
+              <SimpleTooltip2 title={getText('sideMenu_deletePage')}>
+                <DeleteForeverOutlined />
+              </SimpleTooltip2>
+            </IconButton>
+            <IconButton id="rotateButton" onClick={this.onRotateLasso}>
+              <SimpleTooltip2 title={getText('sideMenu_rotate')}>
+                <RotateRight />
+              </SimpleTooltip2>
+            </IconButton>
           </div>
         </div >
 
@@ -1313,7 +1353,10 @@ const mapStateToProps = (state) => ({
   hideCanvasMode: state.gesture.hideCanvasMode,
   gestureMode: state.gesture.gestureMode,
   gestureDisable: state.gesture.gestureDisable,
-  activePageNo: state.activePage.activePageNo
+  activePageNo: state.activePage.activePageNo,
+  onLassoGroup: state.docConfig.onLassoGroup,
+  onLassoShift: state.docConfig.onLassoShift,
+  lassoModalPoint: state.docConfig.lassoModalPoint,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -1329,7 +1372,9 @@ const mapDispatchToProps = (dispatch) => ({
   hideSymbol: () => hideSymbol(),
   setGestureDisable: (bool) => setGestureDisable(bool),
   setHideCanvasMode: (bool) => setHideCanvasMode(bool),
-  setActivePageNo: no => setActivePageNo(no)
+  setActivePageNo: no => setActivePageNo(no),
+  setOnLassoGroup: (bool) => setOnLassoGroup(bool),
+  setOnLassoShift: (bool) => setOnLassoShift(bool),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(PenBasedRenderer);

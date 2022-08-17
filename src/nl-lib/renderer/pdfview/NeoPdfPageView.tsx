@@ -398,7 +398,7 @@ export default class NeoPdfPageView extends Component<PageProps, PageState> {
 
       <div style={pageCanvas} id={`pdf-page ${status}`} >
         <div style={pageCanvas}  >
-          <canvas ref={this.setCanvasRef} />
+          <canvas ref={this.setCanvasRef} id = "pdfCanvas"/>
         </div>
 
         {!this.props.noInfo ?

@@ -82,6 +82,8 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
 
       case "KeyA": // a
         // setPenThickness(1);
+        // setPenType(PenType.LASSO);
+        PenManager.getInstance().setPenRendererType(IBrushType.LASSO);
         break;
 
       case "KeyB": // b

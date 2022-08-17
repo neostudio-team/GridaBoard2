@@ -46,12 +46,36 @@ export const setIsPdfEdited = async (isEdited: boolean) => {
     value: { isPdfEdited: isEdited } as ActionValue,
   });
 };
+
+export const setOnLassoShift = async (onLassoShift: boolean) => {
+  store.dispatch({
+    type: ACTION_TYPE.SET,
+    value: { onLassoShift: onLassoShift } as ActionValue,
+  });
+}
+
+export const setOnLassoGroup = async (onLassoGroup: boolean) => {
+  store.dispatch({
+    type: ACTION_TYPE.SET,
+    value: { onLassoGroup: onLassoGroup } as ActionValue,
+  });
+}
+
+export const setLassoModalPoint = async (lassoPoint: {x:number, y:number}) => {
+  store.dispatch({
+    type: ACTION_TYPE.SET,
+    value: { lassoModalPoint: lassoPoint } as ActionValue,
+  });
+}
 type ActionValue = {
   docName: string,
   isNewDoc: boolean,
   date: string,
   docId : string,
   isPdfEdited: boolean,
+  onLassoShift: boolean,
+  onLassoGroup: boolean,
+  lassoModalPoint: {x: number, y: number},
 }
 //]
 
@@ -61,7 +85,10 @@ const initialState = {
   isNewDoc: true,
   isPdfEdited: false,
   date: '',
-  docId : "undefined"
+  docId : "undefined",
+  onLassoShift: false,
+  onLassoGroup: false,
+  lassoModalPoint: { x: 0, y: 0 },
 };
 
 export default (state = initialState, action) => {

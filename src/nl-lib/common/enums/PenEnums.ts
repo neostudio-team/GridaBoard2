@@ -6,6 +6,7 @@ export enum DeviceTypeEnum {
   STYLUS = "stylus",
   FSIR = "fsir",
   NONE = "none",
+  LASSO = "lasso",
 }
 
 
@@ -84,5 +85,6 @@ export enum IBrushType {
   ERASER = 3,
   BRUSH = 4,
   FOUNTAINPEN = 5,
+  LASSO = 6, 
 }
 

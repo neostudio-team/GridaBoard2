@@ -159,6 +159,10 @@ export function addStroke(page: PDFPage, NeoStrokes: NeoStroke[], isPdf: boolean
     const stroke_h_origin = NeoStrokes[j].h_origin;
     // const { a, b, c, d, e, f, g, h } = stroke_h;
     // const { a: a0, b: b0, c: c0, d: d0, e: e0, f: f0, g: g0, h: h0 } = stroke_h_origin;
+
+    if(brushType === 6){
+      continue; //현재 라쏘 기능이 penDown이 아니라 penMove에 걸려있다 보니, 라쏘해제를 위해 넣은 stroke가 들어가게 되므로, 라쏘만 제외
+    }
     let opacity = 1;
     if (NeoStrokes[j].brushType === 1) {
       opacity = 0.3;

@@ -266,18 +266,27 @@ export default class PenManager {
     if (type == IBrushType.MARKER) {
       $elem.removeClass("state_0");
       $elem.removeClass("state_2");
+      $elem.removeClass("state_6");
 
       $elem.addClass("state_1");
     } else if (type == IBrushType.ERASER) {
       $elem.removeClass("state_0");
       $elem.removeClass("state_1");
+      $elem.removeClass("state_6");
 
       $elem.addClass("state_2");
     } else if (type == IBrushType.PEN) {
       $elem.removeClass("state_1");
       $elem.removeClass("state_2");
+      $elem.removeClass("state_6");
 
       $elem.addClass("state_0");
+    } else if (type == IBrushType.LASSO){
+      $elem.removeClass("state_0");
+      $elem.removeClass("state_1");
+      $elem.removeClass("state_2");
+
+      $elem.addClass("state_6");
     }
   }
 
