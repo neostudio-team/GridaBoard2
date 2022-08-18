@@ -13,6 +13,7 @@ import { getNPaperSize_pu } from "nl-lib/common/noteserver";
 import { PLAYSTATE, ZoomFitEnum } from "nl-lib/common/enums";
 import { INeoSmartpen } from "nl-lib/common/neopen";
 import { setZoomStore } from "GridaBoard/store/reducers/zoomReducer";
+import { store } from "GridaBoard/client/pages/GridaBoard";
 
 
 export const ZINDEX_INK_LAYER = 3;
@@ -566,7 +567,9 @@ class MixedPageView_module extends React.Component<MixedViewProps, State>  {
       this._internal.viewPos.offsetY = 0;
     }
     if (this.props.isMainView) {
-      document.querySelector(`#main`).scroll(moveX, moveY);
+      if(store.getState().gesture.isPenMode && store.getState().gesture.isPageMode){
+        document.querySelector(`#grida-main-view`).scroll(moveX, moveY);
+      }
     }
     
     if(beforeViewPos.offsetX !== this._internal.viewPos.offsetX || beforeViewPos.offsetY !== this._internal.viewPos.offsetY || beforeViewPos.zoom !== this._internal.viewPos.zoom){

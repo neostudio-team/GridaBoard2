@@ -73,7 +73,7 @@ const useStyle = props => makeStyles(theme => ({
     width: "8px",
     height: "8px",
     borderRadius: "8px",
-    backgroundColor: props.gestureDisable ? "#4EE4A5" : theme.palette.primary.main
+    backgroundColor: props.isPageMode ? "#4EE4A5" : theme.palette.primary.main
   },
   caption: {
     padding: "4px",
@@ -106,9 +106,9 @@ const NavLayer = (props: Props) => {
   const [docViewDetail, setDocViewDetail] = useState(0);
 
   const isHeaderOpen = useSelector((state: RootState) => state.ui.simpleUiData.headerOpen);
-  const gestureDisable = useSelector((state: RootState) => state.gesture.gestureDisable);
+  const isPageMode = useSelector((state: RootState) => state.gesture.isPageMode);
   const brZoom = useSelector((state: RootState) => state.ui.browser.zoom);
-  const classes = useStyle({brZoom:brZoom, gestureDisable:gestureDisable})();
+  const classes = useStyle({brZoom:brZoom, isPageMode:isPageMode})();
   const badgeInVisible = !useSelector((state: RootState) => state.ui.shotcut.show);
 
   let mapJson = {} as any;
@@ -202,7 +202,7 @@ const NavLayer = (props: Props) => {
           </CustomBadge>
 
           <div className={classes.headerButtonLiner} style={{marginLeft: '16px'}} />
-          {gestureDisable ? "" : 
+          {isPageMode ? "" : 
             (<CustomBadge badgeContent={`Shift-G`}>
               <GestureButton />
             </CustomBadge>)
@@ -218,7 +218,7 @@ const NavLayer = (props: Props) => {
             <div className={classes.shapeCircle}></div>
           </div>
           <Typography className={classes.caption}>
-            {gestureDisable ? getText("nav_page_mode") : getText("nav_plate_mode")}
+            {isPageMode ? getText("nav_page_mode") : getText("nav_plate_mode")}
           </Typography>
           <div className={classes.headerButtonLiner} style={{marginLeft: '16px'}} />
           <FitButton />

@@ -160,16 +160,16 @@ const GridaBoard = () => {
     })
   }
 
-
+ 
   
-  const gestureDisable = useSelector((state: RootState) => state.gesture.gestureDisable);
+  const isPageMode = useSelector((state: RootState) => state.gesture.isPageMode);
   useEffect(()=>{
     const cookies = new Cookies();
     const openNoticeCookie = cookies.get("openNoticeGesture");
-    if(openNoticeCookie !== "true" && !gestureDisable){
+    if(openNoticeCookie !== "true" && !isPageMode){
       showNoticeGestureDialog("noticeGesture");
     }
-  },[gestureDisable])
+  },[isPageMode])
   
 
 

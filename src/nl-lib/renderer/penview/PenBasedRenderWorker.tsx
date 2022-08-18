@@ -472,6 +472,70 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     const noteItem = getNPaperInfo(pageInfo); //plate의 item
     adjustNoteItemMarginForFilm(noteItem, pageInfo);
 
+    //Ncode
+    const npaperWidth = noteItem.margin.Xmax - noteItem.margin.Xmin;
+    const npaperHeight = noteItem.margin.Ymax - noteItem.margin.Ymin;
+    
+    const viewWidth = document.querySelector("#grida-main-view").clientWidth;
+    const viewHeight = document.querySelector("#grida-main-view").clientHeight;
+    const viewScrollTop = document.querySelector("#grida-main-view").scrollTop;
+    const viewScrollLeft = document.querySelector("#grida-main-view").scrollLeft;
+    
+    const nowPageWidth = document.querySelector("#grida-main-home-fabric_container").clientWidth;
+    const nowPageHeight = document.querySelector("#grida-main-home-fabric_container").clientHeight;
+
+    
+    const wRatio = viewWidth / npaperWidth;
+    const hRatio = viewHeight / npaperHeight;
+    
+    let nCodeRatio = wRatio;
+    if (hRatio > wRatio){
+      nCodeRatio = hRatio;
+    }
+    console.log(viewWidth, hRatio, nowPageWidth, npaperWidth );
+
+
+
+    //좌표 변환 먼저(화면에 보이는 px 계산)
+    const { x, y } = dot;
+    let newX = x * nCodeRatio + viewScrollLeft;
+    let newY = y * nCodeRatio + viewScrollTop;
+
+    if(nowPageWidth < viewWidth){
+      // 좌우 여백 생김
+      // viewScrollLeft 는 0일것
+      const leftMargin = (viewWidth - nowPageWidth)/2;
+      newX -= leftMargin;
+    }
+    if(nowPageHeight < viewHeight){
+      // 상하 여백 생김
+      // viewScrollTop 는 0일것
+      const TopMargin = (viewHeight - nowPageHeight)/2;
+      newY -= TopMargin;
+    } 
+
+
+    //zoom 적용(실제 px로 만듬)
+    const zoom = store.getState().zoomReducer.zoom;
+    newX /= zoom;
+    newY /= zoom;
+
+
+    // const currentPage = GridaDoc.getInstance().getPage(store.getState().activePage.activePageNo);
+    
+    // const pageWidth = currentPage.pageOverview.sizePu.width;
+    // const pageHeight = currentPage.pageOverview.sizePu.height;
+    
+
+    // const pdf_x = newX * platePdfRatio;
+    // const pdf_y = newY * platePdfRatio;
+
+    return {x: newX, y: newY, f: dot.f};
+  }
+  ncodeToPdfXy_plate_temp = (dot: {x, y, f?}, pageInfo: IPageSOBP) => {
+    const noteItem = getNPaperInfo(pageInfo); //plate의 item
+    adjustNoteItemMarginForFilm(noteItem, pageInfo);
+
     let npaperWidth = noteItem.margin.Xmax - noteItem.margin.Xmin;
     let npaperHeight = noteItem.margin.Ymax - noteItem.margin.Ymin;
     let plateMode = ""; //landscape(가로 모드), portrait(세로 모드)

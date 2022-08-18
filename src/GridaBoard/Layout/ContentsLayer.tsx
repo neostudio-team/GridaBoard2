@@ -137,7 +137,7 @@ const ContentsLayer = (props: Props) => {
 
 
   return (
-    <div id="main" className={`${classes.root}`}>
+    <div id="grida-main-view" className={`${classes.root}`}>
       {(languageType === "ko") ? <InformationButton className={classes.information} tutorialMain={1} tutorialSub={1} /> : ""}
       <div id="mixed-viewer-layer" style={{
         position: "relative",

@@ -6,6 +6,7 @@ import { firebaseAnalytics } from "../../util/firebase_config";
 const DoubleTapActionGroup = "DOUBLE_TAP";
 const CrossLineActionGroup = "CROSS_LINE";
 const SymbolActionGroup = "SYMBOL";
+const GestureActionGroup = "GESTURE";
 
 
 const DoubleTapActionType = Object.freeze({
@@ -26,9 +27,12 @@ const SymbolActionType = Object.freeze({
   HIDE: `${SymbolActionGroup}.HIDE`
 });
 
-const SET_HIDE_CANVAS_MODE = "SET_HIDE_CANVAS_MODE";
-const SET_GESTURE_MODE = "SET_GESTURE_MODE";
-const SET_GESTURE_DISABLE = "SET_GESTURE_DISABLE";
+const GestureAction = Object.freeze({
+  SET_HIDE_CANVAS_MODE: `${GestureActionGroup}.SET_HIDE_CANVAS_MODE`,
+  SET_GESTURE_MODE: `${GestureActionGroup}.SET_GESTURE_MODE`,
+  SET_GESTURE_DISABLE: `${GestureActionGroup}.SET_GESTURE_DISABLE`,
+  SET_PEN_MODE: `${GestureActionGroup}.SET_PEN_MODE`
+});
 
 // Double Tap Action Function
 export const initializeTap = () => {
@@ -84,17 +88,17 @@ export const hideSymbol = () => {
 // Hide Canvas Action Function
 export const setHideCanvasMode = (hideCanvasMode: boolean) => {
   store.dispatch({
-    type: SET_HIDE_CANVAS_MODE, hideCanvasMode
+    type: GestureAction.SET_HIDE_CANVAS_MODE, hideCanvasMode
   });
 };
 
 // Gesture Action Function
 export const setGestureMode = (gestureMode: boolean) => {
   store.dispatch({
-    type: SET_GESTURE_MODE, gestureMode
+    type: GestureAction.SET_GESTURE_MODE, gestureMode
   });
 };
-export const setGestureDisable = (mode: boolean) => {
+export const setIsPageMode = (mode: boolean) => {
   let firebaseText = "";
   if(mode) firebaseText = "plate";
   else firebaseText = "page";
@@ -103,7 +107,13 @@ export const setGestureDisable = (mode: boolean) => {
     event_name: `mode_${firebaseText}`
   });
   store.dispatch({
-    type: SET_GESTURE_DISABLE, 
+    type: GestureAction.SET_GESTURE_DISABLE, 
+    mode
+  });
+};
+export const setIsPenMode = (mode: boolean) => {
+  store.dispatch({
+    type: GestureAction.SET_PEN_MODE, 
     mode
   });
 };
@@ -123,8 +133,9 @@ const initialState = {
     show: false,
   },
   hideCanvasMode: false,
-  gestureMode: true,
-  gestureDisable : true
+  gestureMode: true, // 제스쳐 온오프
+  isPageMode : true, // 페이지 모드(true), 플레이트 모드(false)
+  isPenMode : true // 펜 모드(true), 마우스 모드(false) (마지막에 쓴 펜 기중)
 };
 
 // 리듀서
@@ -202,21 +213,26 @@ export default function gestureReducer(state = initialState, action) {
           show: false
         }
       }  
-    case SET_HIDE_CANVAS_MODE:
+    case GestureAction.SET_HIDE_CANVAS_MODE:
       return {
         ...state,
         hideCanvasMode: action.hideCanvasMode
       }
-    case SET_GESTURE_MODE:
+    case GestureAction.SET_GESTURE_MODE:
       return {
         ...state,
         gestureMode: action.gestureMode
       }
-      case SET_GESTURE_DISABLE : 
-        return {
-          ...state,
-          gestureDisable : action.mode 
-        }
+    case GestureAction.SET_GESTURE_DISABLE : 
+      return {
+        ...state,
+        isPageMode : action.mode 
+      }
+    case GestureAction.SET_PEN_MODE : 
+      return {
+        ...state,
+        isPenMode : action.mode 
+      }
     default:
       return state;
   }

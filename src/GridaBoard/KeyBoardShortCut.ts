@@ -196,7 +196,7 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
       // page up
       // case "Keypageup":
       case "ArrowLeft": {// 키보드 ←  
-        if(document.querySelector("#main").clientHeight < (document.querySelector("#main") as HTMLElement).offsetHeight){
+        if(document.querySelector("#grida-main-view").clientHeight < (document.querySelector("#grida-main-view") as HTMLElement).offsetHeight){
           //하단 스크롤 존재
           return ;
         }
@@ -214,7 +214,7 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
       // page down
       // case "pagedown":
       case "ArrowRight": {// →  
-        if(document.querySelector("#main").clientHeight < (document.querySelector("#main") as HTMLElement).offsetHeight){
+        if(document.querySelector("#grida-main-view").clientHeight < (document.querySelector("#grida-main-view") as HTMLElement).offsetHeight){
           //하단 스크롤 존재
           return ;
         }
