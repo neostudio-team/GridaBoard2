@@ -199,14 +199,13 @@ export function addStroke(page: PDFPage, NeoStrokes: NeoStroke[], isPdf: boolean
           viewHeight = pageHeight;
         }
         
-        const rotateCount = (360 - pageRotation)/90;
-
+        const rotateCount = ((360 - pageRotation)/90)%4;
+        
         let v2 = {
           x : dot.point.x,
           y : dot.point.y
         }
 
-        console.log(rotateCount);
         for(let l = 0; l < rotateCount; l++){
           v2 = platePointRotate90({
             pageWidth: viewWidth,
