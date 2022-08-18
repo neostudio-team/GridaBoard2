@@ -995,24 +995,15 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
       });
     } else { //plate인 경우. 이미 변환된 dot.point
       if (isMainView) {
+        //여기 들어오는 경우는 isMainView가 parameter로 들어오는 경우니까 PenBasedRenderer에서 회전 버튼을 눌러 redrawStrokes가 호출되는 경우 뿐. 90으로 고정해놔도 문제없을듯
+        
         dotArray.forEach(dot => {
-          const radians = fabric.util.degreesToRadians(90) 
-          //여기 들어오는 경우는 isMainView가 parameter로 들어오는 경우니까 PenBasedRenderer에서 회전 버튼을 눌러 redrawStrokes가 호출되는 경우 뿐. 90으로 고정해놔도 문제없을듯
-          
-          //180, 0도로 갈 때는 src, dst를 바꿔줘야하지 않나? 일단 정상동작하니 이대로
-          const canvasCenterSrc = new fabric.Point(this._opt.pageSize.width/2, this._opt.pageSize.height/2)
-          const canvasCenterDst = new fabric.Point(this._opt.pageSize.height/2, this._opt.pageSize.width/2)
-
-          // 1. subtractEquals
-          dot.point.x -= canvasCenterSrc.x;
-          dot.point.y -= canvasCenterSrc.y;
-
-          // 2. rotateVector
-          const v = fabric.util.rotateVector(dot.point, radians);
-
-          // 3. addEquals
-          v.x += canvasCenterDst.x;
-          v.y += canvasCenterDst.y;
+          const v = platePointRotate90({
+            pageWidth : this._opt.pageSize.width,
+            pageHeight : this._opt.pageSize.height,
+            pointX : dot.point.x,
+            pointY : dot.point.y
+          })
 
           dot.point.x = v.x;
           dot.point.y = v.y;
@@ -1242,4 +1233,36 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     // this.onViewSizeChanged(this._opt.viewSize);
     return true;
   };
+}
+
+
+export const platePointRotate90 = (opt : {
+  pageWidth : number;
+  pageHeight : number;
+  pointX : number;
+  pointY : number;
+})=>{
+  const radians = fabric.util.degreesToRadians(90);
+  const point = {
+    x : opt.pointX,
+    y : opt.pointY
+  };
+
+  console.log(opt.pageWidth, opt.pageHeight)
+
+  const canvasCenterSrc = new fabric.Point(opt.pageWidth/2, opt.pageHeight/2)
+  const canvasCenterDst = new fabric.Point(opt.pageHeight/2, opt.pageWidth/2)
+
+  // 1. subtractEquals
+  point.x -= canvasCenterSrc.x;
+  point.y -= canvasCenterSrc.y;
+
+  // 2. rotateVector
+  const v = fabric.util.rotateVector(point, radians);
+
+  // 3. addEquals
+  v.x += canvasCenterDst.x;
+  v.y += canvasCenterDst.y;
+
+  return v;
 }

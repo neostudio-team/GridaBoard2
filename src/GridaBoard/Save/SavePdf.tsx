@@ -9,6 +9,7 @@ import { adjustNoteItemMarginForFilm, getNPaperInfo } from "../../nl-lib/common/
 import { store } from "../client/pages/GridaBoard";
 import { NeoStroke } from "../../nl-lib/common/structures";
 import { firebaseAnalytics } from "../util/firebase_config";
+import { platePointRotate90 } from "../../nl-lib/renderer/penview/PenBasedRenderWorker";
 
 const PDF_TO_SCREEN_SCALE = 6.72; // (56/600)*72
 
@@ -183,89 +184,43 @@ export function addStroke(page: PDFPage, NeoStrokes: NeoStroke[], isPdf: boolean
       pageInfo = { section: NeoStrokes[j].plateSection, owner: NeoStrokes[j].plateOwner, book: NeoStrokes[j].plateBook, page: NeoStrokes[j].platePage }
       for (let k = 0; k < dotArr.length; k++) {
         const dot = dotArr[k];
-        const noteItem = getNPaperInfo(pageInfo); //plate의 item
-        adjustNoteItemMarginForFilm(noteItem, pageInfo);
-    
-        let npaperWidth = noteItem.margin.Xmax - noteItem.margin.Xmin;
-        let npaperHeight = noteItem.margin.Ymax - noteItem.margin.Ymin;
-        let plateMode = ""; //landscape(가로 모드), portrait(세로 모드)
-    
-        if(npaperWidth > npaperHeight){
-          plateMode = "landscape";
-        }else{
-          plateMode = "portrait";
+        
+        const pageRotation = page.getRotation().angle % 360;
+        const pageWidth = page.getWidth();
+        const pageHeight = page.getHeight();
+
+        let viewWidth = 0, viewHeight = 0;
+        
+        if(pageRotation === 90 || pageRotation === 270){
+          viewWidth = pageHeight;
+          viewHeight = pageWidth;
+        }else if(pageRotation === 0 || pageRotation === 180){
+          viewWidth = pageWidth;
+          viewHeight = pageHeight;
         }
-    
-        const pageSize = page.getSize()
-    
-        let pageMode = ""; //page 기본값의 모드
-    
-        if(pageSize.width > pageSize.height){
-          pageMode = "landscape";
-        }else{
-          pageMode = "portrait";
-        }
-    
-        let addedRotation = 0;
-        if(plateMode === pageMode){
-          //둘다 같은 모드면 각도 조절이 필요 없음
-          addedRotation = 0;
-        }else{
-          addedRotation = 90;
+        
+        const rotateCount = (360 - pageRotation)/90;
+
+        let v2 = {
+          x : dot.point.x,
+          y : dot.point.y
         }
 
-        let { x, y } = dot;
-
-        const finalRotation = (addedRotation + 0) % 360;
-        
-        let pageRate = pageSize.width/pageSize.height;
-        const plateRate = npaperWidth/npaperHeight;
-        
-        if(addedRotation === 90) pageRate = 1/pageRate;
-        
-        // plate에 그렸을때 회전각에 따라 버려지는 좌표가 생김. 그 조정을 해줘야 함
-        let addedX = 0, addedY = 0;
-        if(plateRate > pageRate){
-          // 가로 남음
-          addedX = -(npaperWidth - pageRate * npaperHeight);
-        }else{
-          // 세로 남음
-          addedY = -(npaperHeight - npaperWidth / pageRate);
+        console.log(rotateCount);
+        for(let l = 0; l < rotateCount; l++){
+          v2 = platePointRotate90({
+            pageWidth: viewWidth,
+            pageHeight: viewHeight,
+            pointX: v2.x,
+            pointY: v2.y
+          });
+          // 90도 돌때마다 width, height를 바꿔줘야한다.
+          const temp = viewWidth;
+          viewWidth = viewHeight;
+          viewHeight = temp;
         }
         
-        if(dot.point.finalRotation === 90){
-          y += addedY;
-        }else if(dot.point.finalRotation === 180){
-          x += addedX;
-          y += addedY;
-        }else if(dot.point.finalRotation === 270){
-          x += addedX;
-        }
-    
-        //좌표 변환 먼저
-        let newX = Math.cos(Math.PI/180 * finalRotation) * x - Math.sin(Math.PI/180 * finalRotation) * y;
-        const newY = Math.sin(Math.PI/180 * finalRotation) * x + Math.cos(Math.PI/180 * finalRotation) * y;
-        if(finalRotation === 90){
-          newX += noteItem.margin.Ymax;
-        }
-    
-        const pageWidth = pageSize.width;
-        const pageHeight = pageSize.height;
-        
-        if(finalRotation === 90 || finalRotation === 270){
-          npaperHeight = noteItem.margin.Xmax - noteItem.margin.Xmin;
-          npaperWidth = noteItem.margin.Ymax - noteItem.margin.Ymin;
-        }
-    
-        const wRatio = pageWidth / npaperWidth;
-        const hRatio = pageHeight / npaperHeight;
-        let platePdfRatio = wRatio;
-        if (hRatio > wRatio) platePdfRatio = hRatio;
-        
-        const pdf_x = newX * platePdfRatio;
-        const pdf_y = newY * platePdfRatio;
-    
-        pointArray.push({ x: pdf_x, y: pdf_y, f: dot.f });
+        pointArray.push({ x: v2.x, y: v2.y, f: dot.f });
       }
     } else {
       if (isPdf) {

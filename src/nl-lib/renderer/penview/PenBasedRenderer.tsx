@@ -401,8 +401,6 @@ class PenBasedRenderer extends React.Component<Props, State> {
       this.renderer.onPageSizeChanged(nextProps.pdfSize);
       this.pdfSize = { ...nextProps.pdfSize, scale: this.pdfSize.scale };
 
-      //회전 후 symbol(toast포함)의 display 상태 초기화(안보이도록 처리)
-      hideToastMessage();
       ret_val = true;
     }
 
