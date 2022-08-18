@@ -181,7 +181,6 @@ export default class InkStorage {
         if (isPlatePaper(pageInfo)) {
           const doc = GridaDoc.getInstance();
           const pageNo = doc.addBlankPage();
-          doc._pages[pageNo]._rotation = 270;
           setActivePageNo(pageNo);
         }
       return;
