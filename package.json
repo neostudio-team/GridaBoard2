@@ -73,13 +73,14 @@
     "https": "set HTTPS=true&&react-scripts start",
     "build": "set GENERATE_SOURCEMAP=true && react-scripts build",
     "versionConfig": "node util/versionUpdate.js",
+    "textPack" : "node ./src/GridaBoard/util/exceltojson.js",
     "test": "react-scripts test",
     "react-eject": "react-scripts eject",
     "react-start": "react-scripts start",
     "e:start": "concurrently \"cross-env NODE_ENV=development BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron .\"",
     "e:build": "npm run build && electron-builder",
-    "test-deploy": "yarn versionConfig && node ./src/GridaBoard/util/exceltojson.js && npm run build && firebase use test && firebase deploy",
-    "deploy": "node ./src/GridaBoard/util/exceltojson.js && npm run build && firebase use live && firebase deploy"
+    "test-deploy": "yarn versionConfig && yarn textPack && npm run build && firebase use test && firebase deploy",
+    "deploy": "yarn textPack && npm run build && firebase use live && firebase deploy"
   },
   "eslintConfig": {
     "extends": [

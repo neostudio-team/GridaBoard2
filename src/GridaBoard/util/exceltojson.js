@@ -44,7 +44,7 @@ for(let i = startI; i < table.length; i++){
   }
 }
 
-fs.writeFileSync(url + "textData.json", JSON.stringify(data));
+fs.writeFileSync(url + "textData.json", JSON.stringify(data, null, 4));
 
 
 const helpExcel = excelToJson({
@@ -103,6 +103,6 @@ for(let key in helpExcel){
 }
 
 let helpUrl = "./src/GridaBoard/components/helpMenu/"
-fs.writeFileSync(helpUrl + "textData.json", JSON.stringify(data));
+fs.writeFileSync(helpUrl + "textData.json", JSON.stringify(data, null, 4));
 
 console.log("transform text xlsx to text json");
