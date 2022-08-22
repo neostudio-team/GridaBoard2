@@ -1,6 +1,6 @@
 {
   "name": "gridaboard.v2",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "private": true,
   "dependencies": {
     "@material-ui/core": "4.11.3",
@@ -72,12 +72,13 @@
     "start": "node ./src/GridaBoard/util/exceltojson.js && react-scripts start",
     "https": "set HTTPS=true&&react-scripts start",
     "build": "set GENERATE_SOURCEMAP=true && react-scripts build",
+    "versionConfig": "node util/versionUpdate.js",
     "test": "react-scripts test",
     "react-eject": "react-scripts eject",
     "react-start": "react-scripts start",
     "e:start": "concurrently \"cross-env NODE_ENV=development BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron .\"",
     "e:build": "npm run build && electron-builder",
-    "test-deploy": "node ./src/GridaBoard/util/exceltojson.js && npm run build && firebase use test && firebase deploy",
+    "test-deploy": "yarn versionConfig && node ./src/GridaBoard/util/exceltojson.js && npm run build && firebase use test && firebase deploy",
     "deploy": "node ./src/GridaBoard/util/exceltojson.js && npm run build && firebase use live && firebase deploy"
   },
   "eslintConfig": {
