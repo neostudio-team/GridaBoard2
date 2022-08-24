@@ -216,7 +216,10 @@ const SavePdfDialog = (props: Props) => {
     if(selectedName == ""){
       rtTrue = false;
     }
-    if(selectedName.length > 20){
+    if(saveType == "grida" && selectedName.length > 26){
+      setWarn2Open(true);
+      rtTrue = false;
+    }else if(saveType !== "grida" && selectedName.length > 20){
       setWarn2Open(true);
       rtTrue = false;
     }else{
