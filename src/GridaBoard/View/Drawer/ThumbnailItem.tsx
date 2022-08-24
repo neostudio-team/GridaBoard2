@@ -76,7 +76,6 @@ const useStyle = makeStyles(theme => ({
 }));
 interface Props {
   pageNo: number,
-  key: string | number,
 
   active: boolean,
 
@@ -153,7 +152,7 @@ const ThumbnailItem = (props: Props) => {
     <React.Fragment>
     <div id="thumbnail"> 
       <div className={classes.pageNumber}>{pn+1}</div>
-      <Paper key={props.key} className={classes.paper} onClick={e => handleMouseDown(pn)} elevation={3} style={{ width: width, height: height }} >
+      <Paper className={classes.paper} onClick={e => handleMouseDown(pn)} elevation={3} style={{ width: width, height: height }} >
         <div className={`${classes.mixedViewer} ${(activePageNo === pn? classes.selected:"")}`}>
           <MixedPageView  
             pdf={pdf}
