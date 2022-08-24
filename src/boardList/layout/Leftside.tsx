@@ -55,7 +55,7 @@ const useStyle = makeStyles(theme=>({
     display: "flex",
     alignItems : "center",
     flexDirection: "column",
-    maxHeight: "calc(100% - 250px)",
+    maxHeight: "calc(100% - 370px)",
     "& > div:first-child" : {
       paddingRight: "24px",
       paddingLeft: "32px",
