@@ -230,7 +230,9 @@
         "notice_gesture_success": "더 알아보기",
         "alert_wrongFileName": "읽을 수 없는 파일입니다. 파일명을 확인해주세요.",
         "nav_plate_mode": "PLATE MODE",
-        "nav_page_mode": "PAGE MODE"
+        "nav_page_mode": "PAGE MODE",
+        "deleteTrash_title": "선택한 보드를 완전히 삭제합니다.",
+        "deleteTras_warn": "이 동작은 취소할 수 없습니다."
     },
     "en": {
         "save_file": "Save",
@@ -463,7 +465,9 @@
         "notice_gesture_success": "Learn More",
         "alert_wrongFileName": "This file cannot be read. Please check the file name again.",
         "nav_plate_mode": "PLATE MODE",
-        "nav_page_mode": "PAGE MODE"
+        "nav_page_mode": "PAGE MODE",
+        "deleteTrash_title": "This board will be deleted.",
+        "deleteTras_warn": "This action cannot be undone."
     },
     "ja": {
         "save_file": "保存",
@@ -683,20 +687,22 @@
         "check_calibration": "The order of print pages is already registered on this board. \\n If you register again, it may be difficult to use existing printed pages and saved PDF files. Would you like to re-register the order of print pages?",
         "pw_is_four_digits": "The password is four digits",
         "reset_penData": "The handwritten data is reset because you have entered the wrong password 10 times.",
-        "no_more_page": "There are no more pages to move.",
-        "check_symbol_position": "Please write after checking the +symbol position.",
-        "hide_canvas": "It is 'Hide Writing' mode. Please write after turning off 'Hide Writing' mode.",
-        "initial_page_guide": "Please touch the paper or plate after connecting the pen.",
-        "pen_gesture_guide": "ペンジェスチャーガイド",
-        "nav_gesture": "Gesture",
-        "nav_hideCanvas": "Hide Writing",
-        "notice_gesture_title": "Smart gesture functions are added!",
-        "notice_gesture_explain": "Try the smart gesture at papers or boogie boards after turning on the smart gesture functions.",
-        "notice_gesture_cancel": "Skip",
-        "notice_gesture_success": "Learn More",
-        "alert_wrongFileName": "This file cannot be read. Please check the file name again.",
-        "nav_plate_mode": "PLATE MODE",
-        "nav_page_mode": "PAGE MODE"
+        "no_more_page": "最後のページです",
+        "check_symbol_position": "プレートの「+」マークを画面と同じ位置にして筆記してください",
+        "hide_canvas": "非表示モードを解除して筆記してください",
+        "initial_page_guide": "ペンを接続し、Ncodeが印刷されたノート(紙)またはプレートにタッチしてください",
+        "pen_gesture_guide": "スマートジェスチャーのチュートリアル",
+        "nav_gesture": "スマートジェスチャー",
+        "nav_hideCanvas": "非表示モード",
+        "notice_gesture_title": "スマートジェスチャーが追加されました",
+        "notice_gesture_explain": "スマートジェスチャーボタンを押し、紙やブギーボードでスマートジェスチャーをご利用ください",
+        "notice_gesture_cancel": "スキップ",
+        "notice_gesture_success": "詳細を見る",
+        "alert_wrongFileName": "ファイルが読み込めません。ファイル名をご確認ください",
+        "nav_plate_mode": "プレートモード",
+        "nav_page_mode": "ノートモード",
+        "deleteTrash_title": "このボードは削除されます。",
+        "deleteTras_warn": "この操作は取り消せません。"
     },
     "tw": {
         "save_file": "保存",
@@ -929,7 +935,9 @@
         "notice_gesture_success": "了解更多",
         "alert_wrongFileName": "文件無法讀取，請確認文件名稱。",
         "nav_plate_mode": "手寫板模式",
-        "nav_page_mode": "紙張模式"
+        "nav_page_mode": "紙張模式",
+        "deleteTrash_title": "此记事板将被删除。",
+        "deleteTras_warn": "该操作不能撤销。"
     },
     "de": {},
     "es": {}

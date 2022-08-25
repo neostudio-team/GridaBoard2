@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Button, Dialog, DialogProps } from "@material-ui/core";
 import {createCategory, changeCategoryName, deleteCategory} from "boardList/BoardListPageFunc2";
 import { RootState } from "GridaBoard/store/rootReducer";
-import { deleteBoardFromLive, fbLogout } from "boardList/BoardListPageFunc";
+import { deleteAllFromTrash, deleteBoardFromLive, fbLogout } from "boardList/BoardListPageFunc";
 import { forceUpdateBoardList } from "GridaBoard/store/reducers/appConfigReducer";
 import { useHistory } from "react-router-dom";
 import GridaDoc from "GridaBoard/GridaDoc";
@@ -25,6 +25,12 @@ const dialogTypes = {
     title : getText('deleteBoard_title'),
     sub : getText('deleteBoard_sub'),
     cancel : cancelText,
+    success : confirmText
+  },
+  "deleteTrash" : {
+    title: getText("deleteTrash_title"),
+    sub : getText("deleteTras_warn"),
+    cancel: cancelText,
     success : confirmText
   },
   "logout" : {
@@ -122,6 +128,13 @@ const AlertDialog = (props : Props)=>{
             categoryData : "trash"
           })
         }
+        break;
+      }
+      case "deleteTrash" : {
+        const result = await deleteAllFromTrash();
+        if (result === 1) {
+          dispatch(forceUpdateBoardList()); 
+        } 
         break;
       }
       case "logout" : {

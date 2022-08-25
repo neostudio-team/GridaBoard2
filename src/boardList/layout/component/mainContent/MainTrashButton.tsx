@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { forceUpdateBoardList } from '../../../../GridaBoard/store/reducers/appConfigReducer';
 import { deleteAllFromTrash } from '../../../BoardListPageFunc';
 import getText from 'GridaBoard/language/language';
+import { showAlert } from 'GridaBoard/store/reducers/listReducer';
 
 const menuStyle = makeStyles(theme => ({
   headerButton: {
@@ -54,13 +55,15 @@ const MainTrashButton  = () => {
   const dispatch = useDispatch();
 
   const clearTrash = async () => {
-    const result = await deleteAllFromTrash();
-
-    if (result === 1) {
-      dispatch(forceUpdateBoardList()); 
+    // const result = await deleteAllFromTrash();
+    showAlert({
+      type:"deleteTrash"
+    });
+    // if (result === 1) {
+      // dispatch(forceUpdateBoardList()); 
       //useDispatch를 functional component에서만 쓸 수 있어서 deleteAllFromTrash와 합치지 못함
       //useDispatch로 dispatch 하지 않으면(ex. store.dispatch) BoardList에서 useSelector가 동작안함
-    }
+    // } 
   }
   return (
     <React.Fragment>
