@@ -163,7 +163,10 @@ export default function PersistentDrawerRight(props: Props) {
       {/* <Toolbar className={classes.customizeToolbar} /> */}
         <div id="drawer_content" className={classes.drawerContainer}>
           {numDocPages === 0 ? 
-          <div className={classes.newPage} onClick={(e) => addBlankPage()}>
+          <div className={classes.newPage} onClick={(e) => {
+              console.log("%cADD PAGE : Drawer", "color:red;font-size:25px");
+              addBlankPage()
+            }}>
             <AddIcon />
           </div> 
           : null}

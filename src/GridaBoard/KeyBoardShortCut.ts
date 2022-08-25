@@ -296,6 +296,7 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
       }
       case "KeyN" : { // shift + N 새 페이지
         evt.preventDefault(); //web 기본 오픈 기능 강제 스탑
+        console.log("%cADD PAGE : 키보드 숏컷", "color:red;font-size:25px")
         addBlankPage();
         break ;
       }

@@ -87,6 +87,7 @@ const BoardNewButton = () => {
 
   const addBlankPageAndSub = async (event) => {
     const pageNo = await addBlankPage();
+    console.log("%cADD PAGE : Nav", "color:red;font-size:25px")
     scrollToThumbnail(pageNo);
     setOpen(false);
 

@@ -182,6 +182,7 @@ export default class InkStorage {
           const doc = GridaDoc.getInstance();
           const pageNo = doc.addBlankPage();
           doc._pages[pageNo]._rotation = 270;
+          console.log("%cADD PAGE : plate down", "color:red;font-size:25px");
           setActivePageNo(pageNo);
         }
       return;

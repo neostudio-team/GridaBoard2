@@ -342,6 +342,7 @@ export default class PUIController {
         const activePageNo = store.getState().activePage.activePageNo;
         const doc = GridaDoc.getInstance();
         const currentPage = doc.getPage(activePageNo);
+        console.log("%cADD PAGE : PUI", "color:red;font-size:25px")
         const pageNo = doc.addBlankPage();
         firebaseAnalytics.logEvent(`new_page_pui`, {
         event_name: `new_page_pui`

@@ -779,6 +779,7 @@ class PenBasedRenderer extends React.Component<Props, State> {
     });
     // Add Blank Page
     this.addBlankPage();
+    console.log("%cADD PAGE : plus button", "color:red;font-size:25px");
   }
 
   onLivePenMove_byStorage = (event: IPenToViewerEvent) => {
