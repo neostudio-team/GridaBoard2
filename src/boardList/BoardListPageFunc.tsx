@@ -391,21 +391,31 @@ export async function makeThumbnail() {
       pdfDoc = await PDFDocument.create();
     }
     const pdfPage = await pdfDoc.addPage();
-    if (docPage._rotation === 90 || docPage._rotation === 270) {
-      const tmpWidth = pdfPage.getWidth();
-      pdfPage.setWidth(pdfPage.getHeight());
-      pdfPage.setHeight(tmpWidth);
+    const {width, height} = docPage.pageOverview.sizePu;
+    const long = (width > height) ? width : height;
+    const short = (width > height) ? height : width;
+    
+    if(docPage.pageOverview.landscape){
+      //가로가 긴거, 세로가 짧은거
+      pdfPage.setWidth(long);
+      pdfPage.setHeight(short);
+    }else{
+      //가로가 짧은거, 세로가 긴거
+      pdfPage.setWidth(short);
+      pdfPage.setHeight(long);
     }
+    
+    pdfPage.setRotation(degrees(docPage._rotation));
   } else {
     const existingPdfBytes = await fetch(docPage.pdf.url).then(res => res.arrayBuffer());
     pdfDoc = await PDFDocument.load(existingPdfBytes);
 
     docPage.pdf.removedPage.forEach(el => {
       pdfDoc.removePage(el);
-      (pdfDoc as any).pageCache.value = (pdfDoc as any).pageCache.populate();
     });
-    
-    pdfDoc.getPages()[0].setRotation(degrees(docPage._rotation));
+    (pdfDoc as any).pageCache.value = (pdfDoc as any).pageCache.populate();
+
+    pdfDoc.getPages()[0].setRotation(degrees((docPage._rotation)%360));
   }
 
   /** Add strokes on the first page
@@ -445,7 +455,7 @@ export async function makeThumbnail() {
 
   const canvas: any = await document.createElement('canvas');
 
-  const viewport = PDF_PAGE.getViewport({ scale: 1, rotation: 0 });
+  const viewport = PDF_PAGE.getViewport({ scale: 1 });
   const ctx = canvas.getContext('2d');
 
   canvas.width = Math.floor(viewport.width);

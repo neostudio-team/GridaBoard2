@@ -492,7 +492,6 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
     if (hRatio > wRatio){
       nCodeRatio = hRatio;
     }
-    console.log(viewWidth, hRatio, nowPageWidth, npaperWidth );
 
 
 
@@ -1154,6 +1153,7 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
 
     if (this.pageInfo === undefined) {
       const pageNo = await GridaDoc.getInstance().addBlankPage();
+      console.log("%cADD PAGE : 마우스 클릭..?", "color:red;font-size:25px");
       setActivePageNo(pageNo);
     }
     const { section, owner, book, page } = this.pageInfo;
@@ -1218,11 +1218,12 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
   };
 
   onPageSizeChanged = (pageSize: { width: number; height: number }) => {
+    
     this._opt.pageSize = { ...pageSize };
     if (this.pageInfo === undefined || this.pageInfo.section === undefined) return false;
 
     console.log(
-      `VIEW SIZE${callstackDepth()} onPageSizeChanged ${makeNPageIdStr(this.pageInfo)}: ${pageSize.width}, ${pageSize.height} = ${pageSize.width / pageSize.height
+      `VIEW SIZE${callstackDepth()} onPageSizeChanged canvas-${this._opt.canvasId} ${makeNPageIdStr(this.pageInfo)}: ${pageSize.width}, ${pageSize.height} = ${pageSize.width / pageSize.height
       }`
     );
     const zoom = this.calcScaleFactor(this._opt.viewFit, this.offset.zoom);
