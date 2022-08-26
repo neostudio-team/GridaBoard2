@@ -560,6 +560,11 @@ export default class NeoSmartpen implements INeoSmartpen {
     console.log("onPasscodeRequired" + event);
     const retryCount = event.retryCount === undefined ? 0 : event.retryCount;
     let guide = "";
+    if(retryCount >= 10) {
+      alert(getText('reset_penData'));
+      return ;
+    }
+
     if (retryCount > 0) {
       guide = "\n" + getText("bluetooth_needPw_wrong").replace("%d", retryCount.toString());
     }
@@ -568,10 +573,6 @@ export default class NeoSmartpen implements INeoSmartpen {
     
     if (passcode.length !== 4) {
       alert(getText("pw_is_four_digits"))
-    }
-    
-    if (retryCount >= 10) {
-      alert(getText('reset_penData'));
     }
 
     this.protocolHandler.sendPasscode(passcode);
