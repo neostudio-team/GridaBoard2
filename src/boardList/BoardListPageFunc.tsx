@@ -21,9 +21,9 @@ import { addStroke } from '../GridaBoard/Save/SavePdf';
 
 export const resetGridaBoard = async () => {
   const doc = GridaDoc.getInstance();
+  setActivePageNo(-1);
   doc.pages = [];
   doc._pdfd = [];
-  setActivePageNo(-1);
   setDocNumPages(0);
   setUrlAndFilename(undefined, undefined);
   

@@ -84,6 +84,9 @@ export default class NeoPdfPageView extends Component<PageProps, PageState> {
     // dumpDiffPropsAndState(`State PageView ${this.props.pdfPageNo}:`, this.props, nextProps, this.state, nextState);
     const retVal = false;
 
+    if((window as any).debuggggggg)
+      debugger;
+
     let pdfChanged = nextProps.pdf !== this.state.pdf;
     if ((!!nextProps.pdf) && (!!this.state.pdf)) pdfChanged = pdfChanged || (nextProps.pdf.fingerprint !== this.state.pdf.fingerprint);
     const pdfPageNoChanged = nextProps.pdfPageNo !== this.state.pdfPageNo;
@@ -117,8 +120,9 @@ export default class NeoPdfPageView extends Component<PageProps, PageState> {
       this.renderPage(nextState.page, nextState.zoom, nextState.pdfPageNo, nextProps.pdf.fingerprint, rotationChanged);
     }
 
-    if (rotationChanged && nextState.page && nextState.page.pageNo !== -1) { 
+    if (rotationChanged && nextState.page && nextState.page.pageNo !== -1 && nextProps.pdf) { 
       nextState.page.viewport.rotation = nextProps.rotation;
+      console.log(nextState);
       this.renderPage(nextState.page, nextState.zoom, nextState.pdfPageNo, nextProps.pdf.fingerprint, rotationChanged);
     }
 

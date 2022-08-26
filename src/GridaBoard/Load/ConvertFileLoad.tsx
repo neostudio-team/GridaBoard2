@@ -10,6 +10,7 @@ import { useHistory } from 'react-router';
 import { scrollToBottom, sleep } from 'nl-lib/common/util';
 import { setDocName, setIsNewDoc } from '../store/reducers/docConfigReducer';
 import { firebaseAnalytics } from '../util/firebase_config';
+import { resetGridaBoard } from '../../boardList/BoardListPageFunc';
 
 // import {fileConvert} from "./LoadGrida";
 
@@ -46,6 +47,8 @@ async function fileConvert(selectedFile){
       if(!confirm(getText("toBoardList_sub"))){
         setLoadingVisibility(false);
         return ;
+      }else{
+        resetGridaBoard();
       }
     }
 
