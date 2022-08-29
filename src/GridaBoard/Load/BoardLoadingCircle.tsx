@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-const BoardLoadingCircle = (props) => { 
+const BoardLoadingCircle = (props:{checked:boolean}) => { 
   const isVisible = useSelector((state: RootState) => state.loadingCircle.visible);
   const classes = useStyles();
 

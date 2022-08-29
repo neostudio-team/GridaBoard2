@@ -103,8 +103,8 @@ export const signInWith = async (user: firebase.User) => {
   const url = cloudfunctionsUrl;
 
 
-  let res = await fetch(`${url}/login?uid=${user.uid}&email=${user.email}&name=${user.displayName}`);
-  var token = await res.text();
+  const res = await fetch(`${url}/login?uid=${user.uid}&email=${user.email}&name=${user.displayName}`);
+  const token = await res.text();
 
 
   const loginData = await secondaryAuth.signInWithCustomToken(token);
