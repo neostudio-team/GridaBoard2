@@ -108,8 +108,7 @@ const useStyle = makeStyles(theme=>({
   }
 }))
 
-const UserInfo = (props)=>{
-  const { forwardedRef } = props;
+const UserInfo = ()=>{
   const userData = JSON.parse(localStorage.GridaBoard_userData);
   const classes = useStyle();
   // default_user_img
@@ -123,7 +122,7 @@ const UserInfo = (props)=>{
   };
   // getText('profile_logout')
   return (
-  <div className={classes.wrap} ref={forwardedRef}>
+  <div className={classes.wrap}>
     <div className={classes.userInfo}>
       <div style={{backgroundImage:"url('"+userImg+"')"}} />
       <div>{userData.name}</div>
@@ -145,7 +144,7 @@ const UserInfo = (props)=>{
 }
 
 
-export default React.forwardRef((props, ref) => <UserInfo {...props} forwardedRef={ref} />);
+export default UserInfo;
 
 
 const ActionLinkLine = ()=>{
