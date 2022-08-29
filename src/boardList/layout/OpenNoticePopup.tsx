@@ -97,9 +97,8 @@ const useStyle = makeStyles(theme=>({
 
       letterSpacing: "0.25px",
 
-      /* White/text/secondary */
 
-      color: "#666666",
+      color: theme.palette.text.secondary,
 
     }
 

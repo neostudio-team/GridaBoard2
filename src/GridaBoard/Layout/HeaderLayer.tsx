@@ -65,7 +65,7 @@ const useStyles = props =>
       fontSize: '14px',
       textAlign: 'right',
       letterSpacing: '0.25px',
-      color: '#666666',
+      color: theme.palette.text.secondary,
       '&:hover': {
         color: theme.palette.action.hover,
         fontWeight: 700,

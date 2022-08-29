@@ -82,7 +82,7 @@ class Client {
         const socket = new NSocket(this.serverUrl);
         socket.on("tokenInfo",this.tokenInfoCallback.bind(this))
         socket.on("penControlOwner",this.penControlCallback.bind(this))
-        this.runAutoOn();
+        this.runAutoOn(socket);
         try{
             await socket.connect();
             await socket.emit("connect", {
@@ -173,11 +173,15 @@ class Client {
         this.authStateChangeFunctions.push(callbackFunction);
     }
     
-    on(eventName : string, callback : (data:SocketReturnData)=>any){
-        if(!this.localClient){
+    on(eventName : string, callback : (data:SocketReturnData)=>any, client ?: NSocket){
+        if(!this.localClient && !client){
             return "can't find client";
         }
-        this.localClient.on(eventName, callback);
+        if(client){
+            client.on(eventName, callback);
+        }else{
+            this.localClient.on(eventName, callback);
+        }
     }
     off(eventName : string, offData ?: Function | number){ // string, Function | number
         if(!this.localClient){
@@ -192,13 +196,10 @@ class Client {
             this.on(eventName, callback);
         }
     }
-    runAutoOn(){
-        if(!this.localClient){
-            return "can't find client";
-        }
+    runAutoOn(client ?: NSocket){
         for(let i = 0; i < this.autoCallback.length; i++){
             const nowObj = this.autoCallback[i];
-            this.on(nowObj.eventName, nowObj.callback);
+            this.on(nowObj.eventName, nowObj.callback, client);
         }
     }
 

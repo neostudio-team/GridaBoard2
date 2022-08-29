@@ -4,8 +4,7 @@ import React from "react";
 import { SocketReturnData } from "NDP-lib/NSocket";
 import { setIsPenControlOwner } from "../store/reducers/ndpClient";
 const ndp = new NDP({
-  appName : "GRIDABOARD",
-  clientAutoConnect : true
+  appName : "GRIDABOARD"
 });
 ndp.setShare();
 
@@ -23,6 +22,7 @@ ndp.Client.autoOn("penListUpdate",(data: SocketReturnData)=>{
   }
 })
 
+ndp.Client.autoConnectStart();
 
 export const signInWithNDPC = async () => {
 
