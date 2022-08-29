@@ -10,6 +10,8 @@ import { INeoSmartpen } from 'nl-lib/common/neopen';
 
 import { RootState } from 'GridaBoard/store/rootReducer';
 import getText from 'GridaBoard/language/language';
+import NDP from 'NDP-lib';
+import { setPenListOpen } from '../../store/reducers/ui';
 
 type Props = {
   onPenLinkChanged: (e) => void;
@@ -19,7 +21,10 @@ type Props = {
 const ConnectButton = (props: Props) => {
   const [numPens, setNumPens] = useState(0);
   const numPens_store = useSelector((state: RootState) => state.appConfig.num_pens);
-
+  const penListOpen = useSelector((state: RootState) => state.ui.simpleUiData.penListOpen);
+  const penList = useSelector((state: RootState) => state.ndpClient.penList);
+  const isPenControlOwner = useSelector((state: RootState) => state.ndpClient.isPenControlOwner);
+  
 
   const useStyles = makeStyles(theme => ({
     connectBtn: {
@@ -48,27 +53,40 @@ const ConnectButton = (props: Props) => {
     props.onPenLinkChanged(e);
   };
 
-  const handleConnectPen = () => {
-    const penManager = PenManager.getInstance();
-    const new_pen: INeoSmartpen = penManager.createPen();
+  const handleConnectPen = async () => {
+    // const penManager = PenManager.getInstance();
+    // const new_pen: INeoSmartpen = penManager.createPen();
 
-    if (new_pen.connect()) {
-      new_pen.addEventListener(PenEventName.ON_CONNECTED, onPenLinkChanged);
-      new_pen.addEventListener(PenEventName.ON_DISCONNECTED, onPenLinkChanged);
-    }
+    // if (new_pen.connect()) {
+    //   new_pen.addEventListener(PenEventName.ON_CONNECTED, onPenLinkChanged);
+    //   new_pen.addEventListener(PenEventName.ON_DISCONNECTED, onPenLinkChanged);
+    // }
+    // if(!penListOpen){
+    //   const getRes = await NDP.getInstance().Client.localClient.emitCmd("getPenList");
+  
+    //   if(getRes.result){
+    //     const penList = getRes.data.penList;
+    //     setPenList(penList);
+
+    //     console.log(penList);
+    //   }else{
+    //     setPenList([]);
+    //   }
+    // }
+    setPenListOpen(!penListOpen);
   };
 
   const classes = useStyles();
 
   return (
     <React.Fragment>
-      {numPens < 1 ? (
+      {!isPenControlOwner || penList.length < 1 ? (
         <Button className={classes.connectBtn} variant="outlined" color="primary" onClick={() => handleConnectPen()}>
           + {getText("pen_connect")}
         </Button>
       ) : (
         <Button className={classes.connectBtn} variant="contained" color="primary" onClick={() => handleConnectPen()}>
-        {getText("pen_connect_count")} ({numPens})
+        {getText("pen_connect_count")} ({penList.length})
         </Button>
       )}
     </React.Fragment>

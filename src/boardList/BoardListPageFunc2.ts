@@ -31,10 +31,14 @@ const arrayToObject = (array)=>{
 }
 
 const saveCategory = async (categoryData)=>{
+  /**
+   * 카테고리 저장
+   */
   const userId = cookies.get('user_email');
   if(userId === undefined){
     return false;
   }
+  return true;
 
   await db
   .collection(userId)
@@ -43,6 +47,9 @@ const saveCategory = async (categoryData)=>{
 }
 
 export const setDefaultCategory = async ()=>{
+  /**
+   * 카테고리 기본값으로 초기화
+   */
   const userId = cookies.get('user_email');
   if(userId === undefined){
     return false;
@@ -59,10 +66,14 @@ export const setDefaultCategory = async ()=>{
 
 
 export const getCategoryArray = async () => {
+  /**
+   * 카테고리 가져오기
+   */
   const userId = cookies.get('user_email');
   if(userId === undefined){
     return [];
   }
+  return [];
   
   const res = await db.collection(userId).doc('categoryData').get();
 
@@ -70,10 +81,14 @@ export const getCategoryArray = async () => {
 }
 
 export const createCategory = async (categoryName:string)=>{
+  /**
+   * 카테고리 생성
+   */
   const userId = cookies.get('user_email');
   if(userId === undefined){
     return false;
   }
+  return categoryName;
   
   const dataArr = await getCategoryArray();
   if(dataArr.some((el)=>el[0]===categoryName)){
@@ -95,10 +110,16 @@ export const createCategory = async (categoryName:string)=>{
  * (category name) => new categoryList
  */
  export const deleteCategory = async (selected) => {
+  /**
+   * 카테고리 삭제
+   */
   const userId = cookies.get('user_email');
   if(userId === undefined){
     return false;
   }
+  
+  return [];
+
   const selectedIdx = selected[3];
   
   const dataArr = await getCategoryArray();
@@ -113,25 +134,29 @@ export const createCategory = async (categoryName:string)=>{
   }
 
 
-  const docsData = await getDatabase();
-  if(docsData !== false){
-    docsData.docs.forEach(async el=>{
-      if(el.category == selectedIdx){
-        await docCategoryChange(el, "0");
-      }
-    });
-  }
+  // const docsData = await getDatabase();
+  // if(docsData !== false){
+  //   docsData.docs.forEach(async el=>{
+  //     if(el.category == selectedIdx){
+  //       await docCategoryChange(el, "0");
+  //     }
+  //   });
+  // }
 
-  await saveCategory(dataArr);
-  return dataArr;
+  // await saveCategory(dataArr);
+  // return dataArr;
 }
 
 
 export const changeCategoryName = async (prevName:any[], nextName:string) => {
+  /**
+   * 카테고리 이름 변경
+   */
   const userId = cookies.get('user_email');
   if(userId === undefined){
     return false;
   }
+  return [];
   
   const dataArr = await getCategoryArray();
   console.log(prevName, nextName);
@@ -146,6 +171,7 @@ export const changeCategorySort = async (selected, type:"up"|"down", alpha:numbe
   if(userId === undefined){
     return false;
   }
+  return true;
   
 
   const dataArr = await getCategoryArray();
@@ -186,6 +212,7 @@ export const docCategoryChange = async (doc, categoryKey)=>{
   if(userId === undefined){
     return false;
   }
+  return ;
 
 
   await db
@@ -201,6 +228,7 @@ export const changeDocName = async (doc, changeName)=>{
   if(userId === undefined){
     return false;
   }
+  return ;
   console.log(doc);
 
   await db
@@ -219,6 +247,10 @@ export const getDatabase = async ()=>{
   const userId = cookies.get('user_email');
   if(userId === undefined){
     return false;
+  }
+  return {
+    docs : [],
+    category : []
   }
 
 

@@ -10,7 +10,8 @@ import { useHistory } from 'react-router';
 import { scrollToBottom, sleep } from 'nl-lib/common/util';
 import { setDocName, setIsNewDoc } from '../store/reducers/docConfigReducer';
 import { firebaseAnalytics } from '../util/firebase_config';
-import { resetGridaBoard } from '../../boardList/BoardListPageFunc';
+import { MappingStorage, PdfDocMapper } from '../../nl-lib/common/mapper';
+import { jsonToOpen } from '../../boardList/BoardListPageFunc';
 
 // import {fileConvert} from "./LoadGrida";
 
@@ -47,55 +48,19 @@ async function fileConvert(selectedFile){
       if(!confirm(getText("toBoardList_sub"))){
         setLoadingVisibility(false);
         return ;
-      }else{
-        resetGridaBoard();
       }
     }
 
-    let url = selectedFile.url;
     let jsonFile = null;
 
     reader.readAsText(file);
     reader.onload = async function(e) {
       jsonFile = e.target.result;
 
-      const gridaInfo = JSON.parse(jsonFile);
-      const pdfRawData = gridaInfo.pdf.pdfInfo.rawData;
-      const neoStroke = gridaInfo.stroke;
+      const data = JSON.parse(jsonFile);
 
-      const pageInfos = gridaInfo.pdf.pdfInfo.pageInfos;
-      const basePageInfos = gridaInfo.pdf.pdfInfo.basePageInfos;
+      await jsonToOpen(data, file.name);
 
-      // pdf의 url을 만들어 주기 위해 rawData를 blob으로 만들어 createObjectURL을 한다
-      const rawDataBuf = new ArrayBuffer(pdfRawData.length*2);
-      const rawDataBufView = new Uint8Array(rawDataBuf);
-      for (let i = 0; i < pdfRawData.length; i++) {
-        rawDataBufView[i] = pdfRawData.charCodeAt(i);
-      }
-      const blob = new Blob([rawDataBufView], {type: 'application/pdf'});
-      url = await URL.createObjectURL(blob);
-
-      const completed = InkStorage.getInstance().completedOnPage;
-      completed.clear();
-
-      const gridaArr = [];
-      const pageId = []
-
-      for (let i = 0; i < neoStroke.length; i++) {
-
-        pageId[i] = InkStorage.makeNPageIdStr(neoStroke[i][0]);
-        if (!completed.has(pageId[i])) {
-          completed.set(pageId[i], new Array(0));
-        }
-
-        gridaArr[i] = completed.get(pageId[i]);
-        for (let j = 0; j < neoStroke[i].length; j++){
-          gridaArr[i].push(neoStroke[i][j]);
-        }
-      }
-
-      const doc = GridaDoc.getInstance();
-      await doc.openGridaFile({ url: url, filename: file.name }, pdfRawData, neoStroke, pageInfos, basePageInfos);
       setLoadingVisibility(false);
       scrollToBottom("drawer_content");
       

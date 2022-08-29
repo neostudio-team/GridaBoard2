@@ -31,6 +31,8 @@ export const UIActionTypes = Object.freeze({
   SET_LEFT_DRAWER_OPEN : `${ActionGroup}.SET_LEFT_DRAWER_OPEN`,
   SET_HEADER_OPEN : `${ActionGroup}.SET_HEADER_OPEN`,
   SET_SAVE_OPEN : `${ActionGroup}.SET_SAVE_OPEN`,
+  SET_PENLIST_OPEN : `${ActionGroup}.SET_PENLIST_OPEN`,
+  SET_PENLIST_SEARCHON : `${ActionGroup}.SET_PENLIST_SEARCHON`,
 
 
   SET_PRINT_progressPercent : `${ActionGroup}.SET_PRINT_progressPercent`,
@@ -203,6 +205,18 @@ export const setSaveOpen = (open:boolean)=>{
     open : open
   });
 }
+export const setPenListOpen = (open:boolean)=>{
+  store.dispatch({
+    type: UIActionTypes.SET_PENLIST_OPEN,
+    open : open
+  });
+}
+export const setPenListSearchOn = (open:boolean)=>{
+  store.dispatch({
+    type: UIActionTypes.SET_PENLIST_SEARCHON,
+    open : open
+  });
+}
 export const setPrintOption = (types:string, data)=>{
   store.dispatch({
     type : UIActionTypes["SET_PRINT_" + types],
@@ -260,6 +274,8 @@ const initialState = {
     leftDrawerOpen : true,
     headerOpen : true,
     saveOpen : false,
+    penListOpen : false,
+    penListSearchOn : false,
     print : {
       progressPercent : 0,
       status : "N/A",
@@ -346,6 +362,24 @@ export default (state = initialState, action) => {
         simpleUiData : {
           ...state.simpleUiData,
           saveOpen : action.open
+        }
+      }
+    }
+    case UIActionTypes.SET_PENLIST_OPEN : {
+      return {
+        ...state,
+        simpleUiData : {
+          ...state.simpleUiData,
+          penListOpen : action.open
+        }
+      }
+    }
+    case UIActionTypes.SET_PENLIST_SEARCHON : {
+      return {
+        ...state,
+        simpleUiData : {
+          ...state.simpleUiData,
+          penListSearchOn : action.open
         }
       }
     }

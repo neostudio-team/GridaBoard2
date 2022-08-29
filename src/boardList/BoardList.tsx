@@ -3,9 +3,6 @@ import { Link, NavLink, Redirect, useHistory } from 'react-router-dom';
 import { AppBar, Button, makeStyles, MuiThemeProvider } from '@material-ui/core';
 import { turnOnGlobalKeyShortCut } from 'GridaBoard/GlobalFunctions';
 import Cookies from 'universal-cookie';
-import 'firebase/auth';
-import 'firebase/database';
-import firebase, { auth, secondaryAuth, secondaryFirebase, signInWith } from 'GridaBoard/util/firebase_config';
 import { useDispatch, useSelector } from 'react-redux';
 import GridaDoc from 'GridaBoard/GridaDoc';
 import { InkStorage } from 'nl-lib/common/penstorage';
@@ -20,7 +17,6 @@ import CombineDialog from './layout/component/dialog/CombineDialog';
 import { getCategoryArray } from "./BoardListPageFunc2";
 import GlobalDropdown from './layout/component/GlobalDropdown';
 import { setDefaultCategory, getDatabase } from "./BoardListPageFunc2"
-import { getTimeStamp, resetGridaBoard } from './BoardListPageFunc';
 import LoadingCircle from "GridaBoard/Load/LoadingCircle";
 import { setLoadingVisibility } from 'GridaBoard/store/reducers/loadingCircle'
 import { forceUpdateBoardList } from '../GridaBoard/store/reducers/appConfigReducer';
@@ -28,6 +24,8 @@ import { languageType } from 'GridaBoard/language/language';
 import InformationButton from 'GridaBoard/components/buttons/InformationButton';
 import HelpMenu, { setHelpMenu } from "GridaBoard/components/CustomElement/HelpMenu";
 import { MappingStorage, PdfDocMapper } from '../nl-lib/common/mapper';
+import NDP from "NDP-lib";
+
 const useStyle = makeStyles(theme => ({
   mainBackground: {
     width: '100%',
@@ -110,8 +108,6 @@ const BoardList = () => {
 
   turnOnGlobalKeyShortCut(false);
 
-  const db = secondaryFirebase.firestore();
-  
   useEffect(() => {
     const getDb = async ()=>{
       const data = await getDatabase();
@@ -146,97 +142,6 @@ const BoardList = () => {
   }
  
 
-  const routeChange = async idx => {
-    await resetGridaBoard();
-    const nowDocs = docsObj.docs[idx];
-    if (nowDocs.dateDeleted !== 0) {
-      return;
-    }
-    const path = `/app`;
-    await history.push(path);
-
-    GridaDoc.getInstance()._pages = [];
-
-    //firebase storage에 url로 json을 갖고 오기 위해서 CORS 구성이 선행되어야 함(gsutil 사용)\
-    const uid =  firebase.auth().currentUser.uid;
-
-    const storage = secondaryFirebase.storage();
-    const storageRef = storage.ref();
-    console.log(`grida/${uid}/${nowDocs.docId}`);
-
-    let gridaPath = "";
-
-    try{
-      gridaPath = await storageRef.child(`grida/${uid}/${nowDocs.docId}.grida`).getDownloadURL();
-    }catch(e){
-     gridaPath = await storageRef.child(`grida/${nowDocs.docId}.grida`).getDownloadURL();
-    }
-
-    fetch(gridaPath)
-    .then(response => response.json())
-    .then(async data => {
-      console.log(data);
-      const pdfRawData = data.pdf.pdfInfo.rawData;
-      const neoStroke = data.stroke;
-
-      const pageInfos = data.pdf.pdfInfo.pageInfos;
-      const basePageInfos = data.pdf.pdfInfo.basePageInfos;
-
-      const rawDataBuf = new ArrayBuffer(pdfRawData.length * 2);
-      const rawDataBufView = new Uint8Array(rawDataBuf);
-      for (let i = 0; i < pdfRawData.length; i++) {
-        rawDataBufView[i] = pdfRawData.charCodeAt(i);
-      }
-      const blob = new Blob([rawDataBufView], { type: 'application/pdf' });
-      const url = await URL.createObjectURL(blob);
-
-      const completed = InkStorage.getInstance().completedOnPage;
-      completed.clear();
-
-      const gridaArr = [];
-      const pageId = [];
-
-      for (let i = 0; i < neoStroke.length; i++) {
-        pageId[i] = InkStorage.makeNPageIdStr(neoStroke[i][0]);
-        if (!completed.has(pageId[i])) {
-          completed.set(pageId[i], new Array(0));
-        }
-
-        gridaArr[i] = completed.get(pageId[i]);
-        for (let j = 0; j < neoStroke[i].length; j++) {
-          gridaArr[i].push(neoStroke[i][j]);
-        }
-      }
-
-      const doc = GridaDoc.getInstance();
-      doc.pages = [];
-
-      if (data.mapper !== undefined) {
-        const mapping = new PdfDocMapper(data.mapper.id, data.mapper.pagesPerSheet)
-        
-        mapping._arrMapped = data.mapper.params;
-
-        const msi = MappingStorage.getInstance();
-        msi.registerTemporary(mapping);
-      }
-
-      await doc.openGridaFile(
-        { url: url, filename: nowDocs.doc_name },
-        pdfRawData,
-        neoStroke,
-        pageInfos,
-        basePageInfos
-        );
-        
-        setDocName(nowDocs.doc_name);
-        setDocId(nowDocs.docId);
-        setIsNewDoc(false);
-
-        const m_sec = getTimeStamp(nowDocs.created)
-        setDate(m_sec);
-    });
-  };
-
   const selectCategory = (select: string) => {
     setCategory(select);
   };
@@ -244,26 +149,25 @@ const BoardList = () => {
   
   if (userId === undefined) {
     //로그인으로 자동으로 넘기기
-    auth.onAuthStateChanged(user => {
-      if(user !== null){
-        //로그인 완료
-        user.getIdTokenResult().then(function(result){
-          const expirationTime = new Date(result.expirationTime)
-          cookies.set("user_email", user.email, {
+    useEffect(()=>{
+      NDP.getInstance().onAuthStateChanged(async userId => {
+        // user.email
+        console.log(userId);
+        if(userId !== null){
+          //로그인 완료
+          console.log("logined", userId);
+          const expirationTime = new Date(NDP.getInstance().tokenExpired);
+          cookies.set("user_email", userId, {
             expires: expirationTime
           });
-          if(secondaryAuth.currentUser === null){
-            signInWith(user).then(()=>{
-              dispatch(forceUpdateBoardList());
-            });
-          }else{
-            dispatch(forceUpdateBoardList());
-          }
-        });
-      } else {
-        history.push("/");
-      }
-    })
+          const user = await NDP.getInstance().User.getUserData();
+          localStorage.GridaBoard_userData = JSON.stringify(user);
+          dispatch(forceUpdateBoardList());
+        } else {
+          history.push("/");
+        }
+      });
+    },[])
   }
   
   const firstHelp = cookies.get("firstHelp_2_1");
@@ -284,12 +188,12 @@ const BoardList = () => {
         <div className={classes.main}>
           {(languageType === "ko") ? <InformationButton className={classes.information} tutorialMain={2} tutorialSub={1} /> : ""}
           <Leftside selected={category} category={docsObj.category} selectCategory={selectCategory} />
-          <MainContent selected={category} category={docsObj.category} docs={docsObj.docs} selectCategory={selectCategory}  routeChange={routeChange} />
+          <MainContent selected={category} category={docsObj.category} docs={docsObj.docs} selectCategory={selectCategory}  />
         </div>
       </div>
       <LoadingCircle />
       <CombineDialog open={isShowDialog} docsObj={docsObj} />
-      <GlobalDropdown open={isShowDropdown} category={docsObj.category} routeChange={routeChange}/>
+      <GlobalDropdown open={isShowDropdown} category={docsObj.category} />
     </MuiThemeProvider>
   );
 };

@@ -22,10 +22,11 @@ import TestButton from '../components/buttons/TestButton';
 import { useHistory } from 'react-router';
 import SimpleTooltip from '../components/SimpleTooltip';
 import { KeyboardArrowDown } from '@material-ui/icons';
-import { auth, firebaseAnalytics } from 'GridaBoard/util/firebase_config';
+import { firebaseAnalytics } from 'GridaBoard/util/firebase_config';
 import ProfileButton from '../components/buttons/ProfileButton';
 import { showAlert } from '../store/reducers/listReducer';
 import { setSaveOpen } from '../store/reducers/ui';
+import PenList from '../components/CustomElement/PenList';
 
 const useStyles = props =>
   makeStyles(theme => ({
@@ -64,7 +65,7 @@ const useStyles = props =>
       fontSize: '14px',
       textAlign: 'right',
       letterSpacing: '0.25px',
-      color: '#666666',
+      color: theme.palette.text.secondary,
       '&:hover': {
         color: theme.palette.action.hover,
         fontWeight: 700,
@@ -165,6 +166,10 @@ const useStyles = props =>
     badge: {
       background: theme.custom.icon.mono[1],
       color: theme.custom.icon.mono[4],
+    },
+    penListDropdownStyle: {
+      position: 'relative',
+      zIndex: 10000
     },
   }));
 
@@ -299,6 +304,7 @@ const HeaderLayer = (props: Props) => {
   // const [isSaveOpen, setIsSaveOpen] = useState(false);
   const [isExportOpen, setIsExportOpen] = useState(false);
   const isSaveOpen = useSelector((state: RootState) => state.ui.simpleUiData.saveOpen);
+  const penListOpen = useSelector((state: RootState) => state.ui.simpleUiData.penListOpen);
 
   const handleClickSave = () => {
     setSaveOpen(true);
@@ -422,6 +428,11 @@ const HeaderLayer = (props: Props) => {
         <div>
           <div>
             <ConnectButton className={`${classes.buttonStyle}`} onPenLinkChanged={e => onPenLinkChanged(e)} />
+            {penListOpen ? (
+              <div className={`${classes.penListDropdownStyle}`}>
+                <PenList />
+              </div>
+            ) : null}
           </div>
           {/* <HeaderLine />
           

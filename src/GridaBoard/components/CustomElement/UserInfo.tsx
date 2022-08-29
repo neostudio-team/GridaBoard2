@@ -113,7 +113,7 @@ const UserInfo = (props)=>{
   const userData = JSON.parse(localStorage.GridaBoard_userData);
   const classes = useStyle();
   // default_user_img
-  const userImg = userData.photoURL === null ? "/default_user_img.png" : userData.photoURL;
+  const userImg = userData.pictureUrl === null ? "/default_user_img.png" : userData.pictureUrl;
   const logout = () => {
     showAlert({
       type:"logout",
@@ -126,8 +126,8 @@ const UserInfo = (props)=>{
   <div className={classes.wrap} ref={forwardedRef}>
     <div className={classes.userInfo}>
       <div style={{backgroundImage:"url('"+userImg+"')"}} />
-      <div>{userData.displayName}</div>
-      <div>{userData.email}</div>
+      <div>{userData.name}</div>
+      <div>{userData.id}</div>
     </div>
     <Button className={classes.logout} onClick={logout}>
       {getText('profile_logout')}

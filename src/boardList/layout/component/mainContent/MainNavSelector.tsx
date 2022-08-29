@@ -4,7 +4,8 @@ import getText from "GridaBoard/language/language";
 import { IBoardData } from "../../../structures/BoardStructures";
 import { OpenInBrowser, DeleteOutline, Restore } from '@material-ui/icons';
 import { showAlert, showGroupDialog } from 'GridaBoard/store/reducers/listReducer';
-import { copyBoard } from '../../../BoardListPageFunc';
+import { copyBoard, routeChange } from '../../../BoardListPageFunc';
+import { useHistory } from 'react-router-dom';
 
 const BootstrapInput = withStyles((theme) =>
   createStyles({
@@ -51,13 +52,12 @@ interface Props extends  React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivEle
   orderBy ?: number,
   selectedItems ?: Array<IBoardData>,
   selected ?: string,
-  routeChange ?: (idx: number) => void,
   deleteForeverBtnClick ?: () => void,
   restoreBtnClick ?: () => void,
 }
 
 const MainNavSelector = (props : Props)=>{
-  const {listOrderChange, listViewType, routeChange, deleteForeverBtnClick, restoreBtnClick, orderBy, selectedItems, selected, ...rest } = props;
+  const {listOrderChange, listViewType, deleteForeverBtnClick, restoreBtnClick, orderBy, selectedItems, selected, ...rest } = props;
 
   
   let viewType = 0;
@@ -74,7 +74,7 @@ const MainNavSelector = (props : Props)=>{
       : (
         viewType === 3? <TrashNav deleteForeverBtnClick={deleteForeverBtnClick} restoreBtnClick={restoreBtnClick} /> : 
         viewType === 4? ("") :
-        <CheckedNav viewType={viewType} selectedItems={selectedItems} routeChange={routeChange}/>
+        <CheckedNav viewType={viewType} selectedItems={selectedItems} />
       )
       }
     </React.Fragment>)
@@ -151,7 +151,6 @@ const ListSelectType = (props:listSelectProps)=>{
 type checkedNavProp = {
   viewType ?: number
   selectedItems ?: Array<IBoardData>
-  routeChange ?: (idx: number) => void
 }
 
 const langtype = {
@@ -162,7 +161,8 @@ const langtype = {
   "move" : getText("boardList_gridView_menu_move")
 }
 const CheckedNav = (props: checkedNavProp)=>{
-  const {viewType, selectedItems, routeChange, ...rest} = props;
+  const {viewType, selectedItems, ...rest} = props;
+  const history = useHistory();
   console.log(selectedItems);
 
   const clickEvent = async (e, title)=>{
@@ -175,7 +175,9 @@ const CheckedNav = (props: checkedNavProp)=>{
         }
       });
     }else if(title === "open"){
-      routeChange(selectedItems[0].key);
+      await routeChange(selectedItems[0]);
+      const path = `/app`;
+      await history.push(path);
     }else if(title === "nameChange"){
       showGroupDialog({
         type:"changeDocName",

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { auth } from "GridaBoard/util/firebase_config";
 import { Button, ClickAwayListener, Grow, makeStyles, MenuItem, MenuList, Paper, Popper } from '@material-ui/core';
 import { KeyboardArrowDown } from "@material-ui/icons";
 import { useHistory } from 'react-router-dom';

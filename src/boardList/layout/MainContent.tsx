@@ -212,12 +212,11 @@ interface Props extends React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElem
   category?: Object;
   docs?: Array<any>;
 
-  routeChange?: (idx: number) => void;
   selectCategory ?: (select:string|number)=>void,
 }
 
 const MainContent = (props: Props) => {
-  const { category, selected, docs, routeChange, selectCategory, ...rest } = props;
+  const { category, selected, docs, selectCategory, ...rest } = props;
   const [orderBy, setOrderBy] = useState(0);
   const [listType, setListType] = useState('grid' as 'grid' | 'list');
   const [selectedItems, setSelectedItems] = useState([]);
@@ -270,7 +269,7 @@ const MainContent = (props: Props) => {
         break;
       }
       case "copyDoc" : {
-        let text = getText('copyDoc_msg').replace("%NAME" , store.getState().list.snackbar.selectedDocName[0]);
+        const text = getText('copyDoc_msg').replace("%NAME" , store.getState().list.snackbar.selectedDocName[0]);
         console.log(getText('copyDoc_msg'));
         setSnackbarMsg(text);
         setSnackbarMsgSuffix("");
@@ -438,7 +437,6 @@ const MainContent = (props: Props) => {
           listViewType={listViewType}
           selectedItems={selectedItems}
           selected={selected}
-          routeChange={routeChange}
           deleteForeverBtnClick={deleteForeverBtnClick}
           restoreBtnClick={restoreBtnClick}
         />
@@ -453,7 +451,6 @@ const MainContent = (props: Props) => {
           docsList={nowDocs}
           updateSelectedItems={updateSelectedItems}
           selectedClass={classes.selected}
-          routeChange={routeChange}
         />
       ) : (
         <ListView docsList={nowDocs} selectedClass={classes.selected} />

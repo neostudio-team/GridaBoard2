@@ -15,7 +15,7 @@ import { IPdfToNcodeMapItem } from "nl-lib/common/structures";
 import { NcodePdfScaleMode } from "nl-lib/common/enums";
 import { NeoPdfDocument, NeoPdfManager } from "nl-lib/common/neopdf";
 import { g_nullNcode } from "nl-lib/common/constants";
-import { firebaseAnalytics } from "../../../GridaBoard/util/firebase_config";
+import { firebaseAnalytics } from "GridaBoard/util/firebase_config";
 
 
 // https://stackoverflow.com/questions/9616426/javascript-print-iframe-contents-only/9616706

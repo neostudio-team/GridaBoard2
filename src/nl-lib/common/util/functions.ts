@@ -512,7 +512,6 @@ const fixZoomRatio = function (ratio: number) {
 
 
 export function getBrowserZoomFactor() {
-
   // https://codepen.io/reinis/pen/RooGOE
   const ratio = Math.round((window.outerWidth / window.innerWidth) * 100) / 100;
   const BrowserZoom = fixZoomRatio(ratio);
