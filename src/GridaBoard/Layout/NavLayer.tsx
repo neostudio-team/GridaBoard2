@@ -77,7 +77,7 @@ const useStyle = props => makeStyles(theme => ({
   },
   caption: {
     padding: "4px",
-    color: "#121212",
+    color: theme.palette.text.primary,
     fontFamily: "Noto Sans CJK KR",
     fontStyle: "normal",
     fontWeight: "bold",

@@ -55,7 +55,7 @@ const useStyle = makeStyles(theme=>({
     "& > .noWarnTitle" : {
       marginBottom: "34px",
       marginTop: "70px !important"
-    },
+    }
   },
  
   gestureDialog: {
@@ -97,13 +97,10 @@ const useStyle = makeStyles(theme=>({
       display: "flex",
       justifyContent: "flex-end",
       "& > button" : {
-        height: "40px",
+        height: "40px", 
         marginRight: "16px",
         padding: "8px",
-        "&:first-child" : {
-          border: "1px solid" + theme.custom.icon.mono[2],
-        }
-      }
+      },
     },
   },
   paper : {
@@ -155,8 +152,13 @@ const useStyle = makeStyles(theme=>({
         borderRadius: "60px",
         "&:first-child" : {
           border: "1px solid" + theme.custom.icon.mono[2],
+        },
+      },
+      "&.singleButton" : {
+        "& > button" : {
+          width : "312px",
         }
-      }
+      },
     }
   }
 }))
@@ -195,7 +197,7 @@ const CombineDialog = (props : Props)=>{
   }else if(["moveDoc"].includes(diaType)){
     groupProps.classes.paper += `  ${classes.groupDialog}`;
     returnDialog = (<MoveDialog {...groupProps} docsObj={docsObj}/>);
-  }else if(["deleteDoc", "logout", "toBoardList", "deletePage", "clearPage", "deleteGroup", "checkCalibration", "deleteTrash"].includes(diaType)){
+  }else if(["deleteDoc", "logout", "toBoardList", "deletePage", "clearPage", "deleteGroup", "checkCalibration", "deleteTrash", "getPenOwner", "lostPenOwner"].includes(diaType)){
     groupProps.classes.paper += `  ${classes.alertDialog}`;
     returnDialog = (<AlertDialog {...groupProps} />);
   }else if(["noticeGesture"].includes(diaType)){

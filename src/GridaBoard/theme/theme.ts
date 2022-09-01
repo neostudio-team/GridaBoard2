@@ -45,7 +45,8 @@ export const theme = createMuiTheme({
       "#E5E5E5",
       "#E7E7E7",
       "#E9E9E9",
-      "#828282"
+      "#828282",
+      "#C4C4C4"
     ],
     icon:{
       blue : ["#313747","#58627D","#CED3E2","#E8ECF5", "#F5F5F9"],

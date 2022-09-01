@@ -200,7 +200,16 @@ export interface PaperGroupAttachmentResponseTransfer {
 }
 
 
+export interface PenListData {
+    battery: number,
+    mac: string,
+    name: string
+}
 
+export interface penControlOwner {
+    ownerName : "GRIDABOARD" | "NEOSTUDIOWEB", 
+    owned : boolean
+}
 /**
  * Relay enum
  */

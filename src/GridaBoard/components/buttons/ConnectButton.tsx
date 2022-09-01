@@ -24,6 +24,9 @@ const ConnectButton = (props: Props) => {
   const penListOpen = useSelector((state: RootState) => state.ui.simpleUiData.penListOpen);
   const penList = useSelector((state: RootState) => state.ndpClient.penList);
   const isPenControlOwner = useSelector((state: RootState) => state.ndpClient.isPenControlOwner);
+
+  const bluetoothOn = useSelector((state: RootState) => state.ndpClient.bluetoothOn);
+  const searchOn = useSelector((state: RootState) => state.ui.simpleUiData.penListSearchOn);
   
 
   const useStyles = makeStyles(theme => ({
@@ -80,7 +83,7 @@ const ConnectButton = (props: Props) => {
 
   return (
     <React.Fragment>
-      {!isPenControlOwner || penList.length < 1 ? (
+      {!searchOn || !bluetoothOn || !isPenControlOwner || penList.length < 1 ? (
         <Button className={classes.connectBtn} variant="outlined" color="primary" onClick={() => handleConnectPen()}>
           + {getText("pen_connect")}
         </Button>

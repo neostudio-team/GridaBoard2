@@ -16,6 +16,7 @@ import { showCalibrationDialog } from "GridaBoard/store/reducers/calibrationRedu
 import { makePdfUrl } from "nl-lib/common/util";
 import { store } from "GridaBoard/client/pages/GridaBoard";
 import { firebaseAnalytics } from "GridaBoard/util/firebase_config";
+import NDP from "NDP-lib";
 
 const confirmText = getText('print_popup_yes');
 const cancelText = getText('print_popup_no');
@@ -64,9 +65,20 @@ const dialogTypes = {
     title: getText("check_calibration"),
     cancel: cancelText,
     success : confirmText
+  },
+  "getPenOwner" : {
+    title : getText('bluetooth_connectDevice'),
+    sub: getText('bluetooth_hookPermission'),
+    cancel: cancelText,
+    success : confirmText
+  },
+  "lostPenOwner" : {
+    title : getText('bluetooth_deviceOff_title'),
+    sub: getText('bluetooth_deviceOff_sub'),
+    cancel: getText('print_popup_yes'),
+    success : null
   }
 }
-
 export const onClearPage = () => {
   const doc = GridaDoc.getInstance();
   const activePageNo = store.getState().activePage.activePageNo;
@@ -92,7 +104,8 @@ const AlertDialog = (props : Props)=>{
   const selectedData = dialogTypes[type];
   console.log(selectedData);
 
-  const subText = selectedData.sub;
+  let subText = selectedData.sub;
+
 
   if(type == "deleteDoc"){
     let count = 1;
@@ -101,6 +114,15 @@ const AlertDialog = (props : Props)=>{
       count = subData.data.length;
     }
     selectedData.title = selectedData.title.replace("%d", count);
+  }else if(type === "getPenOwner"){
+    
+    let projectName = "";
+    if(store.getState().ndpClient.penControlOwnerData.ownerName === "NEOSTUDIOWEB"){
+      projectName = getText("NEOSTUDIO_WEB");
+    }else{
+      projectName = getText("GRIDABOARD");
+    }
+    subText = subText.replace("[%NAME]", projectName);
   }
 
 
@@ -186,6 +208,10 @@ const AlertDialog = (props : Props)=>{
         changeGroup(true);
         break;
       }
+      case "getPenOwner" : {
+        NDP.getInstance().Client.localClient.emitCmd("getPenControl");
+        break;
+      }
       default: break;
     }
     
@@ -221,9 +247,9 @@ const AlertDialog = (props : Props)=>{
     >
       <div className={`title ${isWarn?"" : "noWarnTitle" }`}>{selectedData.title}</div>
       {isWarn ? (<div className="warn">{subText}</div>) : ""}      
-      <div className="footer">
+      <div className={`footer ${selectedData.success ? "" : "singleButton"}`}>
         <Button variant="contained" disableElevation color="secondary" onClick={()=>{closeEvent(false)}} >{selectedData.cancel}</Button>
-        <Button variant="contained" disableElevation color="primary" onClick={()=>{success()}}>{selectedData.success}</Button>
+        {selectedData.success ? <Button variant="contained" disableElevation color="primary" onClick={()=>{success()}}>{selectedData.success}</Button> : ""}
       </div>
     </Dialog>);
 }

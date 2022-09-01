@@ -106,7 +106,7 @@
         "alert_needPage": "PDF를 등록하거나 펜을 사용해서 페이지를 생성해주세요",
         "pen_connect_count": "연결된 펜",
         "pen_connect": "펜 연결하기",
-        "undefined": "네오스튜디오(WEB)",
+        "undefined": "gridaboard.io에서 페어링하려고 함",
         "dont_show_day": "하루동안 보지 않기",
         "go_to_neolab": "고객센터",
         "go_to_guide": "사용 방법 안내",
@@ -241,7 +241,12 @@
         "bluetooth_turnOnSwich": "디바이스를 연결하시려면\\n스위치를 켜주세요.",
         "bluetooth_checkBluetooth": "블루투스 연결 상태를\\n확인해주세요.",
         "bluetooth_disconnect": "연결해제",
-        "bluetooth_hookPermission": "‘[%NAME]’에서\\n디바이스 권한을 이동하시겠습니까?"
+        "bluetooth_hookPermission": "‘[%NAME]’에서\\n디바이스 권한을 이동하시겠습니까?",
+        "NEOSTUDIO_WEB": "네오스튜디오(WEB)",
+        "GRIDABOARD": "그리다보드",
+        "bluetooth_chargeBattery": "충전중",
+        "bluetooth_deviceOff_title": "디바이스 비활성화",
+        "bluetooth_deviceOff_sub": "새 창이 감지되었습니다.\n디바이스가 비활성화 됩니다."
     },
     "en": {
         "save_file": "Save",

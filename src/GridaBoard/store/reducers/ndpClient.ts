@@ -1,4 +1,5 @@
 import { store } from "../../client/pages/GridaBoard";
+import {penControlOwner, PenListData} from "NDP-lib/enum";
 
 //[Define Action Types
 const ActionGroup = "NDP_CLIENT";
@@ -13,16 +14,17 @@ const UrlActionType = Object.freeze({
 });
 //]
 
-export const setPenList = (penList) => {
+export const setPenList = (penList:Array<PenListData>) => {
   store.dispatch({
     type: UrlActionType.PEN_LIST,
     penList,
   });
 }
-export const setIsPenControlOwner = (isOwner:boolean) => {
+export const setIsPenControlOwner = (penOwner:penControlOwner) => {
   store.dispatch({
     type: UrlActionType.PEN_CONTROL_OWNER,
-    isOwner
+    isOwner : penOwner.owned,
+    penOwner
   });
 }
 export const setBluetoothOn = (isOn:boolean) => {
@@ -38,7 +40,11 @@ export const setBluetoothOn = (isOn:boolean) => {
 
 const initialState = {
   isPenControlOwner : false,
-  penList : [],
+  penControlOwnerData : {
+    ownerName : "GRIDABOARD",
+    owned : false
+  } as penControlOwner,
+  penList : [] as Array<PenListData>,
   bluetoothOn : true
 };
 
@@ -53,19 +59,20 @@ export default (state = initialState, action) => {
     case UrlActionType.PEN_CONTROL_OWNER: {
       return {
         ...state,
-        isPenControlOwner: action.isOwner,
+        isPenControlOwner: action.isOwner as boolean,
+        penControlOwnerData: action.penOwner as penControlOwner,
       };
     }
     case UrlActionType.PEN_LIST: {
       return {
         ...state,
-        penList: action.penList,
+        penList: action.penList as Array<PenListData>,
       };
     }
     case UrlActionType.BLUETOOTH_ON: {
       return {
         ...state,
-        bluetoothOn: action.isOn,
+        bluetoothOn: action.isOn as boolean,
       };
     }
     default: {
