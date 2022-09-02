@@ -166,6 +166,7 @@ export const drawPath_arr = (points: IPointForce[], strokeThickness: number) => 
   if (points.length < 2) {
     return [];
   }
+  console.log(strokeThickness, points);
 
   const bezier = [];
   const scaled_pen_thickness = strokeThickness;
@@ -182,6 +183,7 @@ export const drawPath_arr = (points: IPointForce[], strokeThickness: number) => 
   const endPoint = { x: 0, y: 0 };
   const controlPoint1 = { x: 0, y: 0 };
   const controlPoint2 = { x: 0, y: 0 };
+  console.log(points[0].f, points[1].f)
   // the first actual points is treated as a midpoint
   x0 = points[0].x + 0.1;
   y0 = points[0].y;
@@ -221,6 +223,7 @@ export const drawPath_arr = (points: IPointForce[], strokeThickness: number) => 
   // drawing setting
   bezier.push(pointBegin_arr(temp));
   for (let i = 2; i < points.length - 1; i++) {
+    console.log(points[i].f);
     x3 = points[i].x;
     // + 0.1f;
     y3 = points[i].y;

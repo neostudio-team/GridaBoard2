@@ -1,6 +1,6 @@
 import { EventDispatcher, EventCallbackType } from "../event";
 import { IBrushState,  IPenEvent, NeoDot, NeoStroke, TransformParameters } from "../structures";
-import { IBrushType, PEN_STATE, PenEventName } from "../enums";
+import { IBrushType, PEN_STATE, PenEventName, DeviceTypeEnum } from "../enums";
 
 
 export type IPenToViewerEvent = {
@@ -54,13 +54,27 @@ export interface INeoSmartpen {
 
   h: TransformParameters;
   h_origin: TransformParameters;
+  
+  penDownTime: number;
+
+  deviceType : DeviceTypeEnum;
+  
+  hoverSOBP:{
+    isHover : boolean,
+    section : number,
+    owner : number,
+    book : number,
+    page : number,
+    time : number
+  }
 
   getMac(): string;
   getBtDevice(): BluetoothDevice;
   getPenName(): string;
   getThickness(): number;
 
-  connect(): Promise<boolean>;
+  connect(opt?:any): boolean;
+  disConnect(): void;
   connectByWebBtDevice(device: BluetoothDevice): Promise<boolean>;
   connectByMacAddress(mac: string): Promise<boolean>;
 

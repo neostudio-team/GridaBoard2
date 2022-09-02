@@ -243,10 +243,7 @@
         "bluetooth_disconnect": "연결해제",
         "bluetooth_hookPermission": "‘[%NAME]’에서\\n디바이스 권한을 이동하시겠습니까?",
         "NEOSTUDIO_WEB": "네오스튜디오(WEB)",
-        "GRIDABOARD": "그리다보드",
-        "bluetooth_chargeBattery": "충전중",
-        "bluetooth_deviceOff_title": "디바이스 비활성화",
-        "bluetooth_deviceOff_sub": "새 창이 감지되었습니다.\n디바이스가 비활성화 됩니다."
+        "bluetooth_chargeBattery": "충전중"
     },
     "en": {
         "save_file": "Save",

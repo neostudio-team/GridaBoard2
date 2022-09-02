@@ -8,7 +8,6 @@ import { DefaultPlateNcode, DefaultPUINcode } from "nl-lib/common/constants";
 import { isSameNcode } from "nl-lib/common/util";
 import GridaDoc from "./GridaDoc";
 import PenManager from "nl-lib/neosmartpen/PenManager";
-import $ from "jquery";
 import { isPUI } from "nl-lib/common/noteserver";
 
 let _app_instance = undefined as GridaApp;
@@ -93,6 +92,7 @@ export default class GridaApp {
 
 
   onPenLinkChanged = (e) => {
+    console.log("EEEEEEEEEEEEEEEEEEEEEE");
     const state = store.getState();
     this._pens = state.appConfig.pens;
 

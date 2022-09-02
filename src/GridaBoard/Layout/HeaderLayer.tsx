@@ -25,7 +25,7 @@ import { KeyboardArrowDown } from '@material-ui/icons';
 import { firebaseAnalytics } from 'GridaBoard/util/firebase_config';
 import ProfileButton from '../components/buttons/ProfileButton';
 import { showAlert } from '../store/reducers/listReducer';
-import { setSaveOpen } from '../store/reducers/ui';
+import { setPenListOpen, setSaveOpen } from '../store/reducers/ui';
 import PenList from '../components/CustomElement/PenList';
 
 const useStyles = props =>
@@ -317,6 +317,9 @@ const HeaderLayer = (props: Props) => {
   const handleClickSaveAway = () => {
     setSaveOpen(false);
   };
+  const handleClickPenListAway = () => {
+    setPenListOpen(false);
+  };
 
   const handleClickExportAway = () => {
     setIsExportOpen(false);
@@ -426,14 +429,16 @@ const HeaderLayer = (props: Props) => {
         </div>
 
         <div>
-          <div>
-            <ConnectButton className={`${classes.buttonStyle}`} onPenLinkChanged={e => onPenLinkChanged(e)} />
-            {penListOpen ? (
-              <div className={`${classes.penListDropdownStyle}`}>
-                <PenList />
-              </div>
-            ) : null}
-          </div>
+          <ClickAwayListener onClickAway={handleClickPenListAway}>
+            <div>
+              <ConnectButton className={`${classes.buttonStyle}`} onPenLinkChanged={e => onPenLinkChanged(e)} />
+              {penListOpen ? (
+                <div className={`${classes.penListDropdownStyle}`}>
+                  <PenList />
+                </div>
+              ) : null}
+            </div>
+            </ClickAwayListener>
           {/* <HeaderLine />
           
           <InformationBtn /> */}

@@ -2,7 +2,7 @@ import { EventDispatcher, EventCallbackType } from "nl-lib/common/event";
 import PenManager from "./PenManager";
 import PUIController from "GridaBoard/components/PUIController";
 import { IBrushState, IPenEvent, NeoDot, NeoStroke, TransformParameters } from "nl-lib/common/structures";
-import { IBrushType, PEN_STATE, PenEventName, PEN_THICKNESS } from "nl-lib/common/enums";
+import { IBrushType, PEN_STATE, PenEventName, PEN_THICKNESS, DeviceTypeEnum } from "nl-lib/common/enums";
 import { InkStorage, IOpenStrokeArg } from "nl-lib/common/penstorage";
 import { IPenToViewerEvent, INeoSmartpen } from "nl-lib/common/neopen/INeoSmartpen";
 import { sprintf } from "sprintf-js";
@@ -48,7 +48,25 @@ export default class VirtualPen implements INeoSmartpen {
 
   h: TransformParameters;
   h_origin: TransformParameters;
-
+  penDownTime: number;
+  
+  deviceType : DeviceTypeEnum;
+  
+  hoverSOBP:{
+    isHover : boolean,
+    section : number,
+    owner : number,
+    book : number,
+    page : number,
+    time : number
+  } = {
+    isHover : false,
+    section : -1,
+    owner : -1,
+    book : -1,
+    page : -1,
+    time : -1
+  }
   /**
    *
    * @param customStorage
@@ -86,13 +104,14 @@ export default class VirtualPen implements INeoSmartpen {
       hex.substr(10, 2));
 
     this.id = this.mac;
+    this.deviceType = DeviceTypeEnum.PEN;
   }
 
   /**
    *
    */
   getMac = (): string => {
-    return "this.mac";
+    return this.mac;
   }
 
   getPenName = (): string => {
@@ -112,10 +131,12 @@ export default class VirtualPen implements INeoSmartpen {
   /**
    *
    */
-  async connect(): Promise<boolean> {
+  connect(opt?:any): boolean {
     return true;
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  disConnect():void { }
 
   /**
    *

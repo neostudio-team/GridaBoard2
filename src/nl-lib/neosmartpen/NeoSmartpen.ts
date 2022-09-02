@@ -2,7 +2,7 @@ import PenComm, { deviceSelectDlg } from "./pencomm/pencomm";
 import PenManager, {DEFAULT_PEN_THICKNESS} from "./PenManager";
 import { EventDispatcher, EventCallbackType } from "nl-lib/common/event";
 import { IBrushState, IPenEvent, NeoDot, NeoStroke, StrokePageAttr, TransformParameters } from "nl-lib/common/structures";
-import { IBrushType, PEN_STATE, PenEventName } from "nl-lib/common/enums";
+import { IBrushType, PEN_STATE, PenEventName, DeviceTypeEnum } from "nl-lib/common/enums";
 import { InkStorage, IOpenStrokeArg } from "nl-lib/common/penstorage";
 import { IPenToViewerEvent, INeoSmartpen } from "nl-lib/common/neopen/INeoSmartpen";
 import { DefaultPUINcode } from "nl-lib/common/constants";
@@ -12,6 +12,7 @@ import { isPUI } from "nl-lib/common/noteserver";
 import getText from "GridaBoard/language/language";
 import PUIController from "GridaBoard/components/PUIController";
 import { store } from "GridaBoard/client/pages/GridaBoard";
+import { makePenEvent, PenCommEventEnum } from "./pencomm/pencomm_event";
 
 interface IPenMovement {
   downEvent: IPenEvent,
@@ -67,6 +68,24 @@ export default class NeoSmartpen implements INeoSmartpen {
   h: TransformParameters;
   h_origin: TransformParameters;
   
+  penDownTime: number;
+  deviceType : DeviceTypeEnum;
+  
+  hoverSOBP:{
+    isHover : boolean,
+    section : number,
+    owner : number,
+    book : number,
+    page : number,
+    time : number
+  } = {
+    isHover : false,
+    section : -1,
+    owner : -1,
+    book : -1,
+    page : -1,
+    time : -1
+  }
   /**
    *
    * @param customStorage
@@ -109,7 +128,7 @@ export default class NeoSmartpen implements INeoSmartpen {
    *
    */
   getBtDevice = (): BluetoothDevice => {
-    return this.protocolHandler.getBtDevice();
+    return undefined;
   }
   getThickness = (): number => {
     return this.penState[this.penRendererType].thickness;
@@ -119,40 +138,35 @@ export default class NeoSmartpen implements INeoSmartpen {
   /**
    *
    */
-  async connect(): Promise<boolean> {
-    let device = null;
-    try {
-      device = await deviceSelectDlg();
-    }
-    catch (e) {
-      console.log(e);
-      return false;
-    }
+  connect(opt?:any): boolean{
+    const event = makePenEvent(opt.penType, PenCommEventEnum.ON_CONNECTED, { errorCode:0, infoMessage:"", timeStamp: Date.now() });
+    this.deviceType = opt.penType;
+    this.mac = opt.mac;
+    this.id = this.name;
+    
+    this.manager.add(this, {
+      id: this.id,
+      name : this.id
+    });
 
-    if (this.manager.isAlreadyConnected(device)) {
-      console.error(`bluetooth device(id:${device.id}) already connectged or connecting process is being processed`);
-      return false;
-    }
-
-    if (device) {
-      this.protocolHandler.connect(device);
-      this.manager.add(this, device);
-    }
-    else {
-      console.error("Device NULL");
-      return false;
-    }
-
+    this.onConnected(event);
     return true;
   }
 
+  /**
+   *
+   */
+  disConnect(): void {
+    const event = makePenEvent(DeviceTypeEnum.PEN, PenCommEventEnum.ON_DISCONNECTED, { timeStamp: Date.now() });
+    this.onDisconnected(event);
+  }
 
   /**
    *
    * @param device
    */
   async connectByWebBtDevice(device: BluetoothDevice) {
-    return this.protocolHandler.connect(device);
+    return true;
   }
 
 
@@ -216,8 +230,9 @@ export default class NeoSmartpen implements INeoSmartpen {
     }
     
     const penDownStrokeInfo = this.processPenDown(event);
+    console.log(penDownStrokeInfo);
 
-    this.manager.setActivePen(event.penId);
+    this.manager.setActivePen(this.mac);
 
     console.log(`NeoSmartpen dispatch event ON_PEN_DOWN`);
     this.dispatcher.dispatch(PenEventName.ON_PEN_DOWN, penDownStrokeInfo);
@@ -442,6 +457,7 @@ export default class NeoSmartpen implements INeoSmartpen {
     const strokeKey = stroke.key;
     const pen = this;
 
+    console.log(dot);
     // hand the event
     this.storage.appendDot(strokeKey, dot);
     this.dispatcher.dispatch(PenEventName.ON_PEN_MOVE, { strokeKey, mac: stroke.mac, stroke, dot, pen, event } as IPenToViewerEvent);
@@ -556,34 +572,7 @@ export default class NeoSmartpen implements INeoSmartpen {
    *
    * @param event
    */
-  onPasscodeRequired = (event: IPenEvent) => {
-    console.log("onPasscodeRequired" + event);
-    const retryCount = event.retryCount === undefined ? 0 : event.retryCount;
-    let guide = "";
-    if(retryCount >= 10) {
-      alert(getText('reset_penData'));
-      return ;
-    }
-
-    if (retryCount > 0) {
-      guide = "\n" + getText("bluetooth_needPw_wrong").replace("%d", retryCount.toString());
-    }
-    const passcode = prompt(getText("bluetooth_needPw") + guide);
-    if (passcode === null) return;
-    
-    if (passcode.length !== 4) {
-      alert(getText("pw_is_four_digits"))
-    }
-
-    this.protocolHandler.sendPasscode(passcode);
-
-    const mac = this.protocolHandler.getMac();
-    if (!mac) {
-      throw new Error("mac address was not registered");
-    }
-    this.dispatcher.dispatch(PenEventName.ON_PW_REQUIRED, { pen: this, mac, event });
-    // throw new Error("Not implemented: onPasscodeRequired");
-  }
+  onPasscodeRequired = (event: IPenEvent) => {  }
 
 
 
@@ -595,17 +584,11 @@ export default class NeoSmartpen implements INeoSmartpen {
     // let ph = this.appPen;
     // ph.onConnected(event);
 
-    console.log("CONNECTED");
-    const mac = this.protocolHandler.getMac();
-    this.mac = mac;
-    console.log(`Connected: ${mac}`);
-
     this.setThickness(this.manager.thickness);
     this.setPenRendererType(this.manager.penRendererType);
     this.setColor(this.manager.color);
 
-    // this.manager.onConnected({ pen: this, event });
-    this.dispatcher.dispatch(PenEventName.ON_CONNECTED, { pen: this, mac, event });
+    this.dispatcher.dispatch(PenEventName.ON_CONNECTED, { pen: this, mac : this.mac, event });
   }
 
 

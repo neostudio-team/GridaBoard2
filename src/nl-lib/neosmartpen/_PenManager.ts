@@ -115,22 +115,6 @@ export default class PenManager {
 
     return pen;
   }
-  public deletePen = (mac:string) : void => {
-    const pen = this.penArray.find(el=>el.mac === mac);
-    console.log(pen);
-    if(pen){
-      pen.pen.disConnect();
-    }
-  }
-  public getPen = (mac:string) : INeoSmartpen => {
-    const pen = this.penArray.find(el=>el.mac === mac);
-    
-    if(pen){
-      return pen.pen;
-    }else{
-      return undefined;
-    }
-  }
 
   
   // kitty
@@ -207,10 +191,17 @@ export default class PenManager {
    *
    * @param pen
    */
-  private removePen = (pen: INeoSmartpen) => {  }
+  private removePen = (pen: INeoSmartpen) => {
+    const btDeviceId = pen.getBtDevice().id;
 
-  setActivePen = async (penMac: string) => {
-    _active_pen = await this.penArray.find(penInfo => penInfo.pen.mac === penMac).pen;
+    const index = this.penArray.findIndex(penInfo => penInfo.id === btDeviceId);
+    if (index > -1) {
+      this.penArray.splice(index, 1);
+    }
+  }
+
+  setActivePen = async (penId: string) => {
+    _active_pen = await this.penArray.find(penInfo => penInfo.pen.mac === penId).pen;
     
     const activePenColor = _active_pen.penState[_active_pen.penRendererType].color;
     const activePenThickness = _active_pen.penState[_active_pen.penRendererType].thickness;
@@ -329,16 +320,16 @@ export default class PenManager {
    */
   public onConnected = (opt: { pen: INeoSmartpen, event: IPenEvent }) => {
     const { pen } = opt;
-    const penMac = pen.mac;
+    const btDeviceId = pen.getBtDevice().id;
 
-    const index = this.penArray.findIndex(penInfo => penInfo.mac === penMac);
+    const index = this.penArray.findIndex(penInfo => penInfo.id === btDeviceId);
 
     if (index > -1) {
       this.penArray[index].connected = true;
     }
     else {
       console.log("PenManager: something wrong, un-added pen connected");
-      this.penArray.push({ id: pen.id, mac: pen.getMac(), pen, connected: true });
+      this.penArray.push({ id: pen.getBtDevice().id, mac: pen.getMac(), pen, connected: true });
     }
 
     const themeManager = ThemeManager.getInstance();
@@ -351,9 +342,9 @@ export default class PenManager {
    */
   public onDisconnected = (opt: { pen: INeoSmartpen, event: IPenEvent }) => {
     const { pen } = opt;
-    const penMac = pen.mac;
+    const btDeviceId = pen.getBtDevice().id;
     
-    const index = this.penArray.findIndex(penInfo => penInfo.mac === penMac);
+    const index = this.penArray.findIndex(penInfo => penInfo.id === btDeviceId);
     
     if (index > -1) {
       alert(getText('pen_disconnected_alert'));

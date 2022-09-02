@@ -414,7 +414,7 @@ const PenItem = (props:{penData:PenListData, idx:number, checked:boolean, setSel
               {penData.name}
             </div>
             <div className={`${penData.battery < 30 ? "warn" : ""}`}>
-              ({penData.battery===128? getText("bluetooth_chargeBattery") : penData.battery + "%"})
+              ({penData.battery >= 128? getText("bluetooth_chargeBattery") : penData.battery + "%"})
             </div>
           </div>
           <div>
