@@ -243,7 +243,8 @@
         "bluetooth_disconnect": "연결해제",
         "bluetooth_hookPermission": "‘[%NAME]’에서\\n디바이스 권한을 이동하시겠습니까?",
         "NEOSTUDIO_WEB": "네오스튜디오(WEB)",
-        "bluetooth_chargeBattery": "충전중"
+        "bluetooth_chargeBattery": "충전중",
+        "login_withNDP" : "NDP 로그인"
     },
     "en": {
         "save_file": "Save",

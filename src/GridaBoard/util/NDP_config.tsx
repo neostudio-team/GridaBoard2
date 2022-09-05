@@ -23,6 +23,7 @@ const ndp = new NDP({
 ndp.setShare();
 
 (window as any).ndp = ndp;
+(window as any).NDP = NDP;
 (window as any).test3 = showAlert;
 (window as any).test4 = PenManager;
 
@@ -234,7 +235,15 @@ NDP.getInstance().onAuthStateChanged(async userId => {
   }
 });
 export const signInWithNDPC = async () => {
-
-  NDP.getInstance().Client.getToken();
+  if(NDP.getInstance().Client.localClient) {
+    const logined = await NDP.getInstance().Client.getToken();
+    console.log(logined);
+    if(logined === undefined){
+      // TODO GAEMY : 경고문 추가
+      alert("클라이언트 로그인 필요")
+    }
+  } else {
+    NDP.getInstance().Client.openClient();
+  }
 }
 export default firebase;

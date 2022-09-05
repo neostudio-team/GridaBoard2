@@ -150,7 +150,7 @@ class Client {
 
             return token as string;
         }else{
-            return "can't find client";
+            return undefined;
         }
     }
     /** 
@@ -241,6 +241,20 @@ class Client {
 
         socket.disConnect();
         return true;
+    }
+    openClient(){
+        if(document.querySelector("#ndp_client_open_iframe") !== null){
+            const beforeFrame = document.querySelector("#ndp_client_open_iframe");
+            document.body.removeChild(beforeFrame);
+        }
+        const frame = document.createElement("iframe");
+        frame.id = "ndp_client_open_iframe";
+        frame.width = "0px";
+        frame.height = "0px";
+        frame.style.display = "none";
+        frame.style.visibility = "hidden";
+        document.body.appendChild(frame);
+        frame.src = "neolabcloud://";
     }
 }
 
