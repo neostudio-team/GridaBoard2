@@ -28,7 +28,8 @@
 		{ "namePrefix": "ACE" },
 		{ "namePrefix": "F121" },
 		{ "namePrefix": "NeosmartpenHL" },
-		{ "namePrefix": "NeosmartpenIC" }
+		{ "namePrefix": "NeosmartpenIC" },
+		{ "namePrefix": "NPEN" }
 	]
 }
 
