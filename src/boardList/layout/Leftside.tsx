@@ -165,6 +165,8 @@ const Leftside = (props : Props)=>{
   /**
    * category Data
    * [Category Name, Order, Doc Count , DB Key]
+   * 
+   * #categoryData #카테고리 #카테고리 데이터
    */
   category.sort((a,b)=>a[1]-b[1]);
   // console.log(category);

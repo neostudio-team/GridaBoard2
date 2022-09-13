@@ -231,8 +231,11 @@ const GridView = (props: Props) => {
         const times = new Date(el.last_modified.seconds * 1000);
         const timestamp = getTimeStamp(el.created);
         const keyStr = el.doc_name + '_' + timestamp;
-        const categoryName = allCategory[el.category][0] === 'Unshelved' ? 
-          getText("boardList_unshelved").substring(0,5) : allCategory[el.category][0]
+        let categoryNo = el.category;
+        if(!allCategory[categoryNo]) categoryNo = 0;
+        
+        const categoryName = allCategory[categoryNo][0] === 'Unshelved' ? 
+          getText("boardList_unshelved").substring(0,5) : allCategory[categoryNo][0]
         
         return (
           <React.Fragment key={keyStr}>

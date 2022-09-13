@@ -139,8 +139,7 @@ const BoardList = () => {
   }
   for (let i = 0; i < docsObj.docs.length; i++) {
     const now = docsObj.docs[i];
-    // console.log(docsObj.category, now);
-    if (now.dateDeleted === 0) {
+    if (now.dateDeleted === 0 && docsObj.category[now.category]) {
       docsObj.category[now.category][2] += 1;
     }
   }
