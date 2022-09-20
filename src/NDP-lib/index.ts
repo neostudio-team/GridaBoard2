@@ -5,6 +5,7 @@ import Relay from "./Relay";
 import Client from "./Client";
 import InkStore from "./InkStore";
 import Paper from "./Paper";
+import Storage from "./Storage";
 // import {clientIdType, AuthorizationToken, TokenUserData} from "./enum";
 
 // old test server : https://ndp-dev.onthe.live:5443
@@ -39,6 +40,7 @@ class NDP {
     Client : Client = new Client();
     InkStore : InkStore = new InkStore();
     Paper: Paper = new Paper();
+    Storage: Storage = new Storage();
     
     loginType:"client" | "auth" | null = null;
     url:{[type:string]:string} = {};
@@ -50,6 +52,7 @@ class NDP {
     userId = "";
     
     private gatewayStateChangeFunctions:Array<Function> = [];
+    private authStateChangeFunctions:Array<Function> = [];
 
     constructor (initData?:NDPinit){
         // 기본적으로 동적으로 생성해서 사용하나, 프로젝트 내에서 단 하나의 NDP class를 이용하고 싶다면 setShare를 이용하여 단일화 시킬 수 있다.
@@ -129,6 +132,10 @@ class NDP {
         this.Paper.setInit({
             accessToken: this.accessToken,
             url : this.url.PAPER
+        });
+        this.Storage.setInit({
+            accessToken : this.accessToken,
+            url : this.url.STORAGE
         })
 
         await this.User.setInit({
@@ -137,13 +144,26 @@ class NDP {
             clientId : this.clientId,
             url : this.url.USER
         });
+
+        
+    
+        const changeFunction = this.authStateChangeFunctions.splice(0);
+        for(let i = 0; i < changeFunction.length; i++){
+            try{
+                await changeFunction[i](this.userId);
+            }catch(e){
+                console.log(e);
+            }
+        }
+        this.authStateChangeFunctions = [];
     }
 
 
     onAuthStateChanged(callbackFunction:(userId:string)=>any){
         // this.authStateChangeFunctions.push(callbackFunction);
-        this.Auth.onAuthStateChanged(callbackFunction);
-        this.Client.onAuthStateChanged(callbackFunction);
+        // this.Auth.onAuthStateChanged(callbackFunction);
+        // this.Client.onAuthStateChanged(callbackFunction);
+        this.authStateChangeFunctions.push(callbackFunction);
     }
 
 

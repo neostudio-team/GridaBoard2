@@ -124,15 +124,6 @@ class Client {
             this.discomposeJWTToken(this.accessToken);
 
     
-            const changeFunction = this.authStateChangeFunctions.splice(0);
-            for(let i = 0; i < changeFunction.length; i++){
-                try{
-                    await changeFunction[i](this._userId);
-                }catch(e){
-                    console.log(e);
-                }
-            }
-            this.authStateChangeFunctions = [];
             return this.accessToken as string;
         }else{
             console.error(token.message);

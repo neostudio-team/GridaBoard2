@@ -302,3 +302,23 @@ export const penType:{
     1 : "MOVE",
     2 : "END",
 }
+
+
+export interface StorageDetailFileData {
+    contentType: string,
+    description: string,
+    expiredDatetime: number,
+    fileName: string,
+    fileType: string,
+    id: number,
+    metaData: {
+        [key: number] : any,
+        [key: string] : any
+    },
+    mimeType: string,
+    name: string,
+    papers: Array<any>,
+    requestUri: string,
+    state: string,
+    tag: string,
+  }
