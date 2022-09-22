@@ -41,11 +41,7 @@ class NSocket {
             socket.onerror = () => {
                 reject("fail");
             }
-            // this.socket.onmessage = this.onmessage.bind(this);
-            // this.socket.onerror = this.connectError.bind(this);
         })
-        // this.socket.onmessage = this.onmessage.bind(this);
-        // this.socket.onerror = this.connectError.bind(this);
     }
     connectError(ev: Event){
         console.log(ev);

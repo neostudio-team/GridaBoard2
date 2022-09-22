@@ -175,9 +175,10 @@ const CheckedNav = (props: checkedNavProp)=>{
         }
       });
     }else if(title === "open"){
-      await routeChange(selectedItems[0]);
-      const path = `/app`;
-      await history.push(path);
+      await routeChange(selectedItems[0], async ()=>{
+        const path = `/app`;
+        await history.push(path);
+      });
     }else if(title === "nameChange"){
       showGroupDialog({
         type:"changeDocName",

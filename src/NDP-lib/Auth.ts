@@ -132,6 +132,16 @@ class Auth {
             const token = await this.getLoginToken(code);
     
             console.log(token);
+    
+            const changeFunction = this.authStateChangeFunctions.splice(0);
+            for(let i = 0; i < changeFunction.length; i++){
+                try{
+                    await changeFunction[i](this._userId);
+                }catch(e){
+                    console.log(e);
+                }
+            }
+            this.authStateChangeFunctions = [];
             // TODO : 유저 정보 불러오기 등등 필요함
             return token;
         }catch(e){

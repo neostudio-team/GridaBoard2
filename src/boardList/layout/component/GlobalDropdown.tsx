@@ -147,10 +147,10 @@ const GlobalDropdown = (props: Prop) => {
   const history = useHistory();
 
   const routeChanger = async (data)=>{
-    if(await routeChange(data) !== false){
+    await routeChange(data, async ()=>{
       const path = `/app`;
       await history.push(path);
-    }
+    });
   }
 
   const runEvent = async index => {

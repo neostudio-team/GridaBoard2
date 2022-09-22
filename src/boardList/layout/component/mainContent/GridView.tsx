@@ -1,7 +1,7 @@
 import { makeStyles, Grow, IconButton, Checkbox, Fade, SvgIcon } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import {MoreVert, DeleteOutline} from '@material-ui/icons';
-import { getThumbNailPath, getTimeStamp, routeChange } from '../../../BoardListPageFunc';
+import { getThumbNailPath, routeChange } from '../../../BoardListPageFunc';
 import { IBoardData } from '../../../structures/BoardStructures';
 import { showDropDown } from 'GridaBoard/store/reducers/listReducer';
 import getText from "GridaBoard/language/language";
@@ -164,7 +164,7 @@ const GridView = (props: Props) => {
   const isChecked = keyStr => {
     for (const selectedItem of selectedItems) {
       if (selectedItem.doc_name === undefined) continue;
-      const timestamp = getTimeStamp(selectedItem.created);
+      const timestamp = new Date(selectedItem.created).getTime();
       const itemKey = selectedItem.doc_name + '_' + timestamp;
       if (keyStr === itemKey) {
         return true;
@@ -203,8 +203,8 @@ const GridView = (props: Props) => {
     <React.Fragment>
       {docsList.map((el, idx) => {
         const path = pathList[idx];
-        const times = new Date(el.last_modified.seconds * 1000);
-        const timestamp = getTimeStamp(el.created);
+        const times = new Date(el.last_modified);
+        const timestamp = new Date(el.created).getTime();
         const keyStr = el.doc_name + '_' + timestamp;
         const categoryName = allCategory[el.category][0] === 'Unshelved' ? 
           getText("boardList_unshelved").substring(0,5) : allCategory[el.category][0]
@@ -217,11 +217,11 @@ const GridView = (props: Props) => {
               onMouseOver={e => updateShowBtns(idx, true)}
               onMouseLeave={e => updateShowBtns(idx, false)}>
               <div style={{ backgroundImage: `url(${path})` }} onClick={async () => {
-                await routeChange(el);
                 
-                const path = `/app`;
-                await history.push(path);
-
+                await routeChange(el, async ()=>{
+                  const path = `/app`;
+                  await history.push(path);
+                });
               }}>
                 <BoardLoadingCircle checked={isChecked(keyStr)} />
               </div>

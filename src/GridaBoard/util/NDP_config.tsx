@@ -3,7 +3,7 @@ import NDP from "NDP-lib";
 import React from "react";
 import { SocketReturnData } from "NDP-lib/NSocket";
 import { setIsPenControlOwner, setPenList } from "../store/reducers/ndpClient";
-import { penControlOwner, PenListData } from "NDP-lib/enum";
+import { penControlOwner, PenListData, StorageSaveOption } from "NDP-lib/enum";
 import { showAlert } from "../store/reducers/listReducer";
 import { store } from "../client/pages/GridaBoard";
 import PenManager from "nl-lib/neosmartpen/PenManager";
@@ -12,6 +12,7 @@ import { DeviceTypeEnum, PenEventName } from "../../nl-lib/common/enums";
 import GridaApp from "../GridaApp";
 import { DPI_TO_UNIT } from "../../nl-lib/common/constants";
 import { makePenEvent, PenCommEventEnum } from "../../nl-lib/neosmartpen/pencomm/pencomm_event";
+import Storage from "NDP-lib/Storage";
 
 
 
@@ -48,24 +49,6 @@ ndp.Client.autoOn("sendDot", (res:SocketReturnData)=>{
   if(res.result && bluetoothOn && searchOn){
     const dotData = res.data;
     if(dotData.dotType === "DOWN"){
-      // const dot = {
-      //   "mac":"9c:7b:d2:05:56:0d",
-      //   "dotType":"DOWN",
-      //   "section":3,
-      //   "owner":1013,
-      //   "book":2,
-      //   "page":2,
-      //   "time":1662014802985,
-      //   "dot":{
-      //     "nTimeDelta":0,
-      //     "force":0.126760557,
-      //     "x":47.19,
-      //     "y":18.02,
-      //     "tx":0,
-      //     "ty":0,
-      //     "rotation":0
-      //   }
-      // }
       const nowPen = PenManager.getInstance().getPen(dotData.mac);
       if(!nowPen) return ;
   
@@ -78,24 +61,6 @@ ndp.Client.autoOn("sendDot", (res:SocketReturnData)=>{
       const { section, owner, book, page } = dotData;
       nowPen.onPageInfo({ timeStamp, section, owner, book, page }, false);
     }else if(dotData.dotType === "MOVE"){
-      // const dot = {
-      //   "mac":"9c:7b:d2:05:56:0d",
-      //   "dotType":"MOVE",
-      //   "section":3,
-      //   "owner":1013,
-      //   "book":2,
-      //   "page":2,
-      //   "time":1662014802993,
-      //   "dot":{
-      //     "nTimeDelta":8,
-      //     "force":0.746478856,
-      //     "x":47.11,
-      //     "y":18.04,
-      //     "tx":0,
-      //     "ty":0,
-      //     "rotation":0
-      //   }
-      // }
       const nowPen = PenManager.getInstance().getPen(dotData.mac);
       if(!nowPen) return ;
       
@@ -121,41 +86,13 @@ ndp.Client.autoOn("sendDot", (res:SocketReturnData)=>{
         isFirstDot: false
       });
     }else if(dotData.dotType === "UP"){
-      // const dot = {
-      //   book: 2,
-      //   dot: {nTimeDelta: 0, force: 0.265258223, x: 41.54, y: 16.49, tx: 0, ty: 0, rotation: 0},
-      //   dotType: "UP",
-      //   mac: "9c:7b:d2:05:56:0d",
-      //   owner: 1013,
-      //   page: 2,
-      //   section: 3,
-      //   time: 1662014805686
-      // }
       const nowPen = PenManager.getInstance().getPen(dotData.mac);
       console.log(dotData.dotType, nowPen);
       if(!nowPen) return ;
       const timeStamp = dotData.time;
   
       nowPen.onPenUp({ timeStamp });
-    }else if(dotData.dotType === ""){
-      // const data = {
-      //   book: 2,
-      //   dot:{
-      //     force: 0,
-      //     nTimeDelta: 34,
-      //     rotation: 0,
-      //     tx: 0,
-      //     ty: 0,
-      //     x: 56.83,
-      //     y: 17.18,
-      //   },
-      //   dotType: "",
-      //   mac: "9c:7b:d2:89:00:7c",
-      //   owner: 1013,
-      //   page: 2,
-      //   section: 3,
-      //   time: 981,
-      // }
+    }else if(dotData.dotType === "HOVER"){ 
       const nowPen = PenManager.getInstance().getPen(dotData.mac);
       if(!nowPen) return ;
 
@@ -228,12 +165,18 @@ const penControl = (penList:PenListData[])=>{
 ndp.Client.autoConnectStart();
 
 NDP.getInstance().onAuthStateChanged(async userId => {
-  // user.email
   const data = await NDP.getInstance().Client.localClient.emitCmd("getPenList");
   if(data.result){
     penControl(data.data.penList);
   }
 });
+NDP.getInstance().onAuthStateChanged(async userId => {
+    GridaDB.getInstance().setInit();
+});
+
+
+
+
 export const signInWithNDPC = async () => {
   if(NDP.getInstance().Client.localClient) {
     const logined = await NDP.getInstance().Client.getToken();
@@ -247,3 +190,256 @@ export const signInWithNDPC = async () => {
   }
 }
 export default firebase;
+
+
+
+let gridaShare = undefined as GridaDB;
+export class GridaDB {
+  storage : Storage;
+  dbData : {[key:string]:any,[key:number]:any} = {};
+  isInit = false;
+  dbFileDataId : number;
+
+  waitForInit:Array<Function> = [];
+  constructor(){
+    if(gridaShare !== undefined) return gridaShare;
+
+  }
+  async initWait(){
+    await new Promise((res,rej)=>{
+      this.waitForInit.push(res);
+    })
+  }
+  async setInit(){
+    this.storage = NDP.getInstance().Storage;
+    
+    await this.dbSet();
+    
+    this.isInit = true;
+
+    for(let i = 0; i< this.waitForInit.length; i++){
+      this.waitForInit[i]();
+    }
+  }
+
+
+  async getDoc(id){
+    if(!this.isInit) await this.initWait();
+
+    let rtData = null;
+    if(this.dbData[id]){
+      rtData = clone(this.dbData[id]);
+    }
+
+    return rtData;
+  }
+  async getDocAll(){
+    if(!this.isInit) await this.initWait();
+
+    return clone(this.dbData);
+  }
+  async deleteDoc(id){
+    if(!this.isInit) await this.initWait();
+
+    if(this.dbData[id]){
+      delete this.dbData[id];
+    }
+  }
+  async updateDoc(id, data:{[key:string]:any, [key:number]:any}){
+    if(!this.isInit) await this.initWait();
+    if(this.dbData[id]){
+      this.dbData[id] = Object.assign(this.dbData[id], data);
+    }else{
+      return false;
+    }
+    
+    await this.dbFileUpdate();
+    return true;
+  }
+
+  async setDoc(id:string|number, data:{[key:string]:any,[key:number]:any}){
+    if(!this.isInit) await this.initWait();
+    this.dbData[id] = data;
+
+    await this.dbFileUpdate();
+  }
+
+
+  async getFilePath(tag:string){
+    if(!this.isInit) await this.initWait();
+    const dbFileData = await this.storage.getFileDatafromTag(tag);
+    
+    let fileId = null as number;
+    if(dbFileData === null){
+      return null;
+    }else if(dbFileData.totalElements === 1){
+      fileId = dbFileData.resultElements[0].id;
+    }else{
+      fileId = dbFileData.resultElements[dbFileData.totalElements-1].id;
+    }
+
+    const file = await this.storage.getFileDatafromId(fileId);
+
+    return {
+      url : file.requestUri,
+      expiredDatetime : file.expiredDatetime
+    };
+  }
+  async getFile(tag:string, type ?: string) {
+    if(!this.isInit) await this.initWait();
+    const requestUri = (await this.getFilePath(tag)).url;
+    
+
+    const file = await fetch(`${requestUri}`,{
+      method : "GET",
+      headers: {
+            'Content-Type': 'application/json'
+      }
+    });
+
+    if(type === "json"){
+      return await file.json();
+    }else{
+      return await file.blob();
+    }
+  }
+  async deleteFile(tag:string){
+    if(!this.isInit) await this.initWait();
+    const fileData = await this.storage.getFileDatafromTag(tag);
+    
+    let fileId = null as number;
+    if(fileData === null){
+      return false;
+    }else if(fileData.totalElements === 1){
+      fileId = fileData.resultElements[0].id;
+    }else{
+      fileId = fileData.resultElements[fileData.totalElements-1].id;
+    }
+
+    await this.storage.deleteFile(fileId);
+
+    return true;
+  }
+  async saveGrida(file:Blob, fileName : string, path:string){
+    if(!this.isInit) await this.initWait();
+
+    const fileNameArr = fileName.split(".");
+    fileNameArr.pop();
+    const name = fileNameArr.join(".");
+
+    await this.saveFile(file,{
+      name : name,
+      fileName : fileName,
+      fileType : "Normal",
+      contentType : "text",
+      mimeType : "text/json",
+      tag : path,
+      description : "gridaboard format file"
+    });
+  }
+  async savePng(file:Blob, fileName : string, path:string){
+    if(!this.isInit) await this.initWait();
+
+    const fileNameArr = fileName.split(".");
+    fileNameArr.pop();
+    const name = fileNameArr.join(".");
+
+    await this.saveFile(file,{
+      name : name,
+      fileName : fileName,
+      fileType : "Normal",
+      contentType : "image",
+      mimeType : "image/png",
+      tag : path,
+      description : "gridaboard thumbnail png"
+    });
+  }
+  async saveFile(file:Blob, opt:StorageSaveOption){
+    const saveData = await this.storage.saveFile(file, opt);
+  }
+
+
+
+
+
+  
+  async dbSet(){
+    let dbFileData = await this.storage.getFileDatafromTag("gridaBoardDB");
+    let newDB = null;
+
+    console.log(dbFileData);
+    if(dbFileData === null){
+      newDB = await this.newDbSet();
+      dbFileData = await this.storage.getFileDatafromTag("gridaBoardDB");
+    }
+
+    if(dbFileData.totalElements > 1){// data too many : something wrong
+
+    }else{
+      newDB = await this.storage.getFileFromId(dbFileData.resultElements[0].id);
+      this.dbFileDataId = dbFileData.resultElements[0].id;
+    }
+
+    newDB = JSON.parse(await (newDB as Blob).text());
+
+    this.dbData = newDB;
+  }
+  async newDbSet(){
+    const DBJSON = {};
+    
+    const dataBlob = await this.saveDB(DBJSON);
+
+    return dataBlob;
+  }
+  async dbFileUpdate(){
+    const beforeDbId = this.dbFileDataId;
+
+    await this.saveDB(this.dbData);
+    this.deleteDB(beforeDbId);
+  }
+  async saveDB(dbData){
+    const data = JSON.stringify(dbData, null, 4);
+
+    const dataBlob = new Blob([encode(data)]);
+
+
+    const saveData = await this.storage.saveFile(dataBlob, {
+      name : "gridaBoardDB",
+      fileName : "gridaBoardDB.json",
+      fileType : "Normal",
+      contentType : "text",
+      mimeType : "text/json",
+      tag : "gridaBoardDB",
+      description : "gridaboard default Database file"
+    });
+    if(saveData !== "error"){
+      this.dbFileDataId = saveData.id;
+    }
+    return dataBlob;
+  }
+  async deleteDB(id:number){
+    this.storage.deleteFile(id);
+  }
+  static getInstance(){
+      if(gridaShare) return gridaShare as GridaDB;
+
+      else{
+          gridaShare = new GridaDB();
+          return gridaShare;
+      }
+  }
+}
+
+
+(window as any).GridaDB = GridaDB;
+
+export const encode = function( s ) {
+	const out = [];
+	for ( let i = 0; i < s.length; i++ ) {
+		out[i] = s.charCodeAt(i);
+	}
+	return new Uint8Array( out );
+}
+
+
+const clone = (data)=> JSON.parse(JSON.stringify(data));

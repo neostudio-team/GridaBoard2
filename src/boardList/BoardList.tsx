@@ -14,9 +14,8 @@ import { setDate, setDocId, setDocName, setIsNewDoc } from '../GridaBoard/store/
 import { RootState } from '../GridaBoard/store/rootReducer';
 import { showGroupDialog, hideGroupDialog, changeGroup } from 'GridaBoard/store/reducers/listReducer';
 import CombineDialog from './layout/component/dialog/CombineDialog';
-import { getCategoryArray } from "./BoardListPageFunc2";
 import GlobalDropdown from './layout/component/GlobalDropdown';
-import { setDefaultCategory, getDatabase } from "./BoardListPageFunc2"
+import { getCategoryArray, setDefaultCategory, getDatabase } from "./BoardListPageFunc2"
 import LoadingCircle from "GridaBoard/Load/LoadingCircle";
 import { setLoadingVisibility } from 'GridaBoard/store/reducers/loadingCircle'
 import { forceUpdateBoardList } from '../GridaBoard/store/reducers/appConfigReducer';

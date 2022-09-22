@@ -303,22 +303,57 @@ export const penType:{
     2 : "END",
 }
 
+export interface StorageData {
+    kind: string,
+    totalElements: number,
+    resultElements: Array<{
+        id : number,
+        name : string,
+        fileType : string,
+        size : number,
+        contentType : string,
+        mimeType : string,
+        tag : string,
+        description : string,
+        state : string,
+        papers : Array<any>,
+        metaData : {
+            [key: number] : any,
+            [key: string] : any
+        },
+        fileName : string
+    }>
+  }
 
 export interface StorageDetailFileData {
-    contentType: string,
-    description: string,
-    expiredDatetime: number,
-    fileName: string,
-    fileType: string,
-    id: number,
-    metaData: {
+    contentType : string,
+    description : string,
+    expiredDatetime : number,
+    fileName : string,
+    fileType : string,
+    id : number,
+    metaData : {
         [key: number] : any,
         [key: string] : any
     },
-    mimeType: string,
-    name: string,
-    papers: Array<any>,
-    requestUri: string,
-    state: string,
-    tag: string,
+    mimeType : string,
+    name : string,
+    papers : Array<any>,
+    requestUri : string,
+    state : string,
+    tag : string,
+  }
+
+  
+export interface StorageSaveOption {
+    name : string,
+    fileName : string,
+    fileType : string,
+    contentType ?: string,
+    mimeType : string,
+    tag ?: string,
+    description :string,
+    papers ?: Array<string>,
+    metaData ?: {[key:string]:any, [key:number]:any}
+    
   }
