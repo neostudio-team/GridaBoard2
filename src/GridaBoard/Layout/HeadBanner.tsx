@@ -48,6 +48,9 @@ const HeadBanner = () => {
   if(languageType === "ko" && !bannerCookie){ //banner는 한국어 일때만 적용
     _check = true;
   }
+  // 강제 false
+  // 해드 베너 일시 사용 안함
+  _check = false;
 
 
   const [checked, setChecked] = useState(_check);
