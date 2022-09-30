@@ -42,6 +42,13 @@ export const PlateNcode_3: IPageSOBP = { // 부기보드
   page: 16,
 }
 
+export const PlateNcode_4: IPageSOBP = { // 투명 플레이트
+  section: 0,
+  owner: 27,
+  book: 667,
+  page: 1,
+}
+
 export const FilmNcode_Landscape: IPageSOBP = {
   section: 3,
   owner: 1013,

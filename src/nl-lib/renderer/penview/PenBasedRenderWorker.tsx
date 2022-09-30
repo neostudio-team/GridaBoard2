@@ -497,8 +497,8 @@ export default class PenBasedRenderWorker extends RenderWorkerBase {
 
     //좌표 변환 먼저(화면에 보이는 px 계산)
     const { x, y } = dot;
-    let newX = x * nCodeRatio + viewScrollLeft;
-    let newY = y * nCodeRatio + viewScrollTop;
+    let newX = (x - noteItem.margin.Xmin) * nCodeRatio + viewScrollLeft;
+    let newY = (y - noteItem.margin.Ymin) * nCodeRatio + viewScrollTop;
 
     if(nowPageWidth < viewWidth){
       // 좌우 여백 생김

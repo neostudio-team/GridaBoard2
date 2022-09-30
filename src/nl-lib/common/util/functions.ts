@@ -1,7 +1,7 @@
 import { PDFDocument } from "pdf-lib";
 import { sprintf } from "sprintf-js";
 import GridaDoc from "../../../GridaBoard/GridaDoc";
-import { g_availablePagesInSection, UNIT_TO_DPI, PlateNcode_1, PlateNcode_2, PlateNcode_3 } from "../constants";
+import { g_availablePagesInSection, UNIT_TO_DPI, PlateNcode_1, PlateNcode_2, PlateNcode_3, PlateNcode_4 } from "../constants";
 import { IUnitString, IPageSOBP, IPointDpi, IPdfToNcodeMapItem } from "../structures";
 
 export function compareObject(curr: Object, next: Object, header = "") {
@@ -82,7 +82,7 @@ export function isSamePage(pg1: IPageSOBP, pg2: IPageSOBP): boolean {
 
 
 export const isPlatePage = (pageInfo:IPageSOBP)=>{
-  if (isSamePage(PlateNcode_1, pageInfo) || isSamePage(PlateNcode_2, pageInfo) || isSamePage(PlateNcode_3, pageInfo)) {
+  if (isSamePage(PlateNcode_1, pageInfo) || isSamePage(PlateNcode_2, pageInfo) || isSamePage(PlateNcode_3, pageInfo) || isSamePage(PlateNcode_4, pageInfo)) {
     return true;
   }else{
     return false;
