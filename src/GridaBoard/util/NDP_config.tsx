@@ -165,13 +165,18 @@ const penControl = (penList:PenListData[])=>{
 ndp.Client.autoConnectStart();
 
 NDP.getInstance().onAuthStateChanged(async userId => {
-  const data = await NDP.getInstance().Client.localClient.emitCmd("getPenList");
-  if(data.result){
-    penControl(data.data.penList);
+  if(userId !== null){
+    const data = await NDP.getInstance().Client.localClient.emitCmd("getPenList");
+    if(data.result){
+      penControl(data.data.penList);
+    }
   }
 });
+
 NDP.getInstance().onAuthStateChanged(async userId => {
+  if(userId !== null){
     GridaDB.getInstance().setInit();
+  }
 });
 
 
@@ -184,6 +189,8 @@ export const signInWithNDPC = async () => {
     if(logined === undefined){
       // TODO GAEMY : 경고문 추가
       alert("클라이언트 로그인 필요")
+    }else if(logined === -1){
+      await NDP.getInstance().Client.refreshToken();
     }
   } else {
     NDP.getInstance().Client.openClient();

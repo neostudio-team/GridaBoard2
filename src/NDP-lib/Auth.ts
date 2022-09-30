@@ -141,7 +141,6 @@ class Auth {
                     console.log(e);
                 }
             }
-            this.authStateChangeFunctions = [];
             // TODO : 유저 정보 불러오기 등등 필요함
             return token;
         }catch(e){

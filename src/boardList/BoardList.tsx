@@ -96,7 +96,6 @@ const BoardList = () => {
     });
     dispatch(forceUpdateBoardList());
   }
-  
   useEffect(()=>{
     changeGroup(false);
 
@@ -149,9 +148,9 @@ const BoardList = () => {
   if (userId === undefined) {
     //로그인으로 자동으로 넘기기
     useEffect(()=>{
+      setLoadingVisibility(true);
       NDP.getInstance().onAuthStateChanged(async userId => {
         // user.email
-        console.log(userId);
         if(userId !== null){
           //로그인 완료
           console.log("logined", userId);
@@ -162,8 +161,9 @@ const BoardList = () => {
           const user = await NDP.getInstance().User.getUserData();
           localStorage.GridaBoard_userData = JSON.stringify(user);
           dispatch(forceUpdateBoardList());
+          setLoadingVisibility(false);
         } else {
-          history.push("/");
+          location.replace("/");
         }
       });
     },[])
@@ -179,6 +179,7 @@ const BoardList = () => {
 
   return (
     <MuiThemeProvider theme={theme}>
+      <LoadingCircle />
       <HelpMenu />
       <div className={classes.mainBackground}>
         <AppBar position="relative" color="transparent" elevation={0}>
@@ -190,7 +191,6 @@ const BoardList = () => {
           <MainContent selected={category} category={docsObj.category} docs={docsObj.docs} selectCategory={selectCategory}  />
         </div>
       </div>
-      <LoadingCircle />
       <CombineDialog open={isShowDialog} docsObj={docsObj} />
       <GlobalDropdown open={isShowDropdown} category={docsObj.category} />
     </MuiThemeProvider>

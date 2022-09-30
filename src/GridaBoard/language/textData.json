@@ -244,7 +244,10 @@
         "bluetooth_hookPermission": "‘[%NAME]’에서\\n디바이스 권한을 이동하시겠습니까?",
         "NEOSTUDIO_WEB": "네오스튜디오(WEB)",
         "bluetooth_chargeBattery": "충전중",
-        "login_withNDP" : "NDP 로그인"
+        "GRIDABOARD": "그리다보드",
+        "bluetooth_deviceOff_title": "디바이스 비활성화",
+        "bluetooth_deviceOff_sub": "새 창이 감지되었습니다.\\n디바이스가 비활성화 됩니다.",
+        "login_withNDP": "NDP 로그인"
     },
     "en": {
         "save_file": "Save",
@@ -479,7 +482,8 @@
         "nav_plate_mode": "PLATE MODE",
         "nav_page_mode": "PAGE MODE",
         "deleteTrash_title": "This board will be deleted.",
-        "deleteTras_warn": "This action cannot be undone."
+        "deleteTras_warn": "This action cannot be undone.",
+        "login_withNDP": "Sign in with NDP"
     },
     "ja": {
         "save_file": "保存",
@@ -714,7 +718,8 @@
         "nav_plate_mode": "プレートモード",
         "nav_page_mode": "ノートモード",
         "deleteTrash_title": "このボードは削除されます。",
-        "deleteTras_warn": "この操作は取り消せません。"
+        "deleteTras_warn": "この操作は取り消せません。",
+        "login_withNDP": "NDPでログイン"
     },
     "tw": {
         "save_file": "保存",
@@ -949,7 +954,8 @@
         "nav_plate_mode": "手寫板模式",
         "nav_page_mode": "紙張模式",
         "deleteTrash_title": "此记事板将被删除。",
-        "deleteTras_warn": "该操作不能撤销。"
+        "deleteTras_warn": "该操作不能撤销。",
+        "login_withNDP": "使用 Google 帳號登入"
     },
     "de": {},
     "es": {}

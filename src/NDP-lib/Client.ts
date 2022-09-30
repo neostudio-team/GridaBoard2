@@ -80,8 +80,9 @@ class Client {
             return false;
         }
         const socket = new NSocket(this.serverUrl);
-        socket.on("tokenInfo",this.tokenInfoCallback.bind(this))
-        socket.on("penControlOwner",this.penControlCallback.bind(this))
+        socket.on("tokenInfo",this.tokenInfoCallback.bind(this));
+        socket.on("penControlOwner",this.penControlCallback.bind(this));
+        socket.on("tokenUpdate", this.tokenInfoCallback.bind(this));
         this.runAutoOn(socket);
         try{
             await socket.connect();
@@ -121,10 +122,18 @@ class Client {
             this.accessToken = tokenData.accessToken as string;
             this._clientId = tokenData.clientID;
             this._resourceOwnerId = tokenData.resourceOwner;
-            this.discomposeJWTToken(this.accessToken);
+            const jwtToken = this.discomposeJWTToken(this.accessToken);
+            if(new Date(jwtToken.exp * 1000) < new Date()){
+                // 기간 만료됨
+                this.accessToken = "";
+                this._clientId = "";
+                this._resourceOwnerId = "";
+                this._userId = null as string;
+                this.applicationId = -1;
+            }
 
     
-            const changeFunction = this.authStateChangeFunctions.splice(0);
+            const changeFunction = this.authStateChangeFunctions.slice(0);
             for(let i = 0; i < changeFunction.length; i++){
                 try{
                     await changeFunction[i](this._userId);
@@ -132,10 +141,18 @@ class Client {
                     console.log(e);
                 }
             }
-            this.authStateChangeFunctions = [];
-            return this.accessToken as string;
+
+            if(this._userId === null){
+                // 토큰 만료
+                return -1;
+            }else{
+                // 정상 로그인
+                return this.accessToken as string;
+            }
+            
         }else{
             console.error(token.message);
+            // 클라이언트 로그인 안됨
             return ;
         }
     }
@@ -148,7 +165,17 @@ class Client {
             const token = await this.tokenInfoCallback(getToken);
             console.log(token);
 
-            return token as string;
+            return token;
+        }else{
+            return undefined;
+        }
+    }
+    /**
+     * 토큰 리프래시 함수
+     */
+    async refreshToken(){
+        if(this.localClient){
+            await this.localClient.emitCmd("tokenExpired");
         }else{
             return undefined;
         }
@@ -213,6 +240,7 @@ class Client {
             this.applicationId = jwtUserData.applicationId;
             this.tokenUserData = jwtUserData as TokenUserData;
         }
+        return jwtUserData;
     }
 
     private async autoTry():Promise<boolean>{

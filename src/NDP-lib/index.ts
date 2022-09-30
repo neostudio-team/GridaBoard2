@@ -81,7 +81,8 @@ class NDP {
             this.applicationId = this.Client.applicationId;
             this.accessToken = this.Client.accessToken;
             this.resourceOwnerId = this.Client.resourceOwnerId;
-            await this.getGateway();
+            if(this.userId !== null && userId !== null)
+                await this.getGateway();
             
             await this.setInitDataAfterLogin("client", userId);
         })
@@ -114,48 +115,56 @@ class NDP {
         if(type === "auth" && this.applicationId === -1){
             console.error("직접 로그인 사용을 원할 경우 init시 applicationId 가 필요합니다.");
         }
+        const beforeUserId = this.userId;
+
         this.userId = userId;
         this.loginType = type;
         
-        this.Relay.setInit({
-            userId,
-            accessToken: this.accessToken,
-            applicationId : this.applicationId,
-            resourceOwnerId : this.resourceOwnerId,
-            url : this.url.RELAY
-        });
-        this.InkStore.setInit({
-            userId,
-            accessToken: this.accessToken,
-            url : this.url.INK
-        });
-        this.Paper.setInit({
-            accessToken: this.accessToken,
-            url : this.url.PAPER
-        });
-        this.Storage.setInit({
-            accessToken : this.accessToken,
-            url : this.url.STORAGE
-        })
-
-        await this.User.setInit({
-            userId,
-            accessToken: this.accessToken,
-            clientId : this.clientId,
-            url : this.url.USER
-        });
-
-        
-    
-        const changeFunction = this.authStateChangeFunctions.splice(0);
-        for(let i = 0; i < changeFunction.length; i++){
-            try{
-                await changeFunction[i](this.userId);
-            }catch(e){
-                console.log(e);
-            }
+        if(this.userId !== null){
+            this.Relay.setInit({
+                userId,
+                accessToken: this.accessToken,
+                applicationId : this.applicationId,
+                resourceOwnerId : this.resourceOwnerId,
+                url : this.url.RELAY
+            });
+            this.InkStore.setInit({
+                userId,
+                accessToken: this.accessToken,
+                url : this.url.INK
+            });
+            this.Paper.setInit({
+                accessToken: this.accessToken,
+                url : this.url.PAPER
+            });
+            this.Storage.setInit({
+                accessToken : this.accessToken,
+                url : this.url.STORAGE
+            })
+            await this.User.setInit({
+                userId,
+                accessToken: this.accessToken,
+                clientId : this.clientId,
+                url : this.url.USER
+            });
         }
-        this.authStateChangeFunctions = [];
+    
+
+        if(beforeUserId !== this.userId){
+            const changeFunction = this.authStateChangeFunctions.splice(0);
+            for(let i = 0; i < changeFunction.length; i++){
+                try{
+                    await changeFunction[i](this.userId);
+                }catch(e){
+                    console.log(e);
+                }
+            }
+            if(this.userId !== null)
+                this.authStateChangeFunctions = [];
+        }else if(beforeUserId !== null && beforeUserId === this.userId){
+            // 토큰 업데이트
+
+        }
     }
 
 

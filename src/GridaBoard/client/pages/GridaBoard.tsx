@@ -150,7 +150,7 @@ const GridaBoard = () => {
           localStorage.GridaBoard_userData = JSON.stringify(user);
           setForsedUpdate(forsedUpdate+1);
         } else {
-          history.push("/");
+          location.replace("/");
         }
       });
     },[])
