@@ -19,6 +19,7 @@ class Client {
     _resourceOwnerId = "";
     _clientId = "";
     appName = "";
+    tyrCount = 0;
     autoCallback:Array<{eventName:string, callback:(data: SocketReturnData) => any}> = [];
     tokenUserData:TokenUserData = {
         "sub":"",
@@ -115,32 +116,41 @@ class Client {
             return ;
         }
     }
+    async callChangeFunction(userId:string){
+        const changeFunction = this.authStateChangeFunctions.slice(0);
+        for(let i = 0; i < changeFunction.length; i++){
+            try{
+                await changeFunction[i](userId);
+            }catch(e){
+                console.log(e);
+            }
+        }
+    }
     async tokenInfoCallback(token:SocketReturnData){
         if(token.result){
             const data = token.data;
             const tokenData = data["token"];
             this.accessToken = tokenData.accessToken as string;
+            const jwtToken = this.discomposeJWTToken(this.accessToken);
             this._clientId = tokenData.clientID;
             this._resourceOwnerId = tokenData.resourceOwner;
-            const jwtToken = this.discomposeJWTToken(this.accessToken);
+            
             if(new Date(jwtToken.exp * 1000) < new Date()){
-                // 기간 만료됨
+                // 토큰을 받았는데, 만료됨, 리프래시 시도후 종료
                 this.accessToken = "";
                 this._clientId = "";
                 this._resourceOwnerId = "";
                 this._userId = null as string;
                 this.applicationId = -1;
+                const ref = await this.refreshToken();
+
+                if(ref){ //리프래시 성공
+                    return ;   
+                }
+                // 기타 이유로 실패시 _userId : null로 콜백
             }
 
-    
-            const changeFunction = this.authStateChangeFunctions.slice(0);
-            for(let i = 0; i < changeFunction.length; i++){
-                try{
-                    await changeFunction[i](this._userId);
-                }catch(e){
-                    console.log(e);
-                }
-            }
+            await this.callChangeFunction(this._userId);
 
             if(this._userId === null){
                 // 토큰 만료
@@ -151,8 +161,9 @@ class Client {
             }
             
         }else{
-            console.error(token.message);
+            console.log(token.message);
             // 클라이언트 로그인 안됨
+            await this.callChangeFunction(null);
             return ;
         }
     }
@@ -175,9 +186,10 @@ class Client {
      */
     async refreshToken(){
         if(this.localClient){
-            await this.localClient.emitCmd("tokenExpired");
+            const ref = await this.localClient.emitCmd("tokenExpired");
+            return ref.result;
         }else{
-            return undefined;
+            return false;
         }
     }
     /** 
@@ -245,8 +257,16 @@ class Client {
 
     private async autoTry():Promise<boolean>{
         if(!this.autoConnect) return false;
+        // if(this.tyrCount >= 10){
+        //     // 10회 시도시 로그인 실패
+        //     this.callChangeFunction(null);
+        //     this.autoConnect = false;
+        //     this.tyrCount = 0;
+        //     return ;
+        // }
         if(!this.localClient){
             // console.log("retry");
+            this.tyrCount++;
             const isConnect = await this.connect();
             
             if(!isConnect){

@@ -149,23 +149,33 @@ const BoardList = () => {
     //로그인으로 자동으로 넘기기
     useEffect(()=>{
       setLoadingVisibility(true);
-      NDP.getInstance().onAuthStateChanged(async userId => {
-        // user.email
-        if(userId !== null){
-          //로그인 완료
-          console.log("logined", userId);
-          const expirationTime = new Date(NDP.getInstance().tokenExpired);
-          cookies.set("user_email", userId, {
-            expires: expirationTime
+      const checkClient = async ()=>{
+        if(!(await NDP.getInstance().Client.clientOpenCheck())){
+          //클라이언트 연결 안됨, 바로 로그인
+            location.replace("/");
+        }else{
+          NDP.getInstance().onAuthStateChanged(async userId => {
+            // user.email
+            if(userId !== null){
+              //로그인 완료
+              console.log("logined", userId);
+              const expirationTime = new Date(NDP.getInstance().tokenExpired);
+              cookies.set("user_email", userId, {
+                expires: expirationTime
+              });
+              const user = await NDP.getInstance().User.getUserData();
+              localStorage.GridaBoard_userData = JSON.stringify(user);
+              dispatch(forceUpdateBoardList());
+              setLoadingVisibility(false);
+            } else {
+              location.replace("/");
+            }
           });
-          const user = await NDP.getInstance().User.getUserData();
-          localStorage.GridaBoard_userData = JSON.stringify(user);
-          dispatch(forceUpdateBoardList());
-          setLoadingVisibility(false);
-        } else {
-          location.replace("/");
         }
-      });
+      }
+      
+      checkClient();
+      
     },[])
   }
   
