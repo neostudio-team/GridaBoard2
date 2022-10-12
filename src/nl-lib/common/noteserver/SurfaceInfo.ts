@@ -160,10 +160,10 @@ export function adjustNoteItemMarginForFilm(noteItem: INoteServerItem_forPOD, pa
   }
   else if(isSamePage(pageInfo, PlateNcode_4)){
     // 일단 임시로 이 위치
-    noteItem.margin.Xmin = 10; 
-    noteItem.margin.Ymin = 51;
-    noteItem.margin.Xmax = 111;
-    noteItem.margin.Ymax = 123;
+    noteItem.margin.Xmin = 0; 
+    noteItem.margin.Ymin = 0;
+    noteItem.margin.Xmax = 105;
+    noteItem.margin.Ymax = 76;
   }
 }
 
