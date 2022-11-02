@@ -5,8 +5,8 @@ import { IBrushState, IPenEvent, NeoDot, NeoStroke, StrokePageAttr, TransformPar
 import { IBrushType, PEN_STATE, PenEventName } from "nl-lib/common/enums";
 import { InkStorage, IOpenStrokeArg } from "nl-lib/common/penstorage";
 import { IPenToViewerEvent, INeoSmartpen } from "nl-lib/common/neopen/INeoSmartpen";
-import { DefaultPUINcode } from "nl-lib/common/constants";
-import { isSameNcode } from "nl-lib/common/util";
+import { DefaultPUINcode, OnlyWindowController } from "nl-lib/common/constants";
+import { isSameNcode, isSamePage } from "nl-lib/common/util";
 import { isPUI } from "nl-lib/common/noteserver";
 
 import getText from "GridaBoard/language/language";
@@ -413,8 +413,13 @@ export default class NeoSmartpen implements INeoSmartpen {
     const pageInfo = {
       section: event.section, owner: event.owner, book: event.book, page: event.page
     }
-     
-    if (isPUI(pageInfo)) {
+    console.log(pageInfo);
+    if (isSamePage(OnlyWindowController, pageInfo)) {
+      // 윈도우 전용 컨트롤러
+      // 그리다보드에선 닷 무시
+      console.log("!!!!!!!!!!!!!!!! only window!!!!!!!!!!!!!!!!!!")
+      return ;
+    }else if (isPUI(pageInfo)) {
       if (event.isFirstDot) {
         console.log("===================================");
         // let puis = window._pui;

@@ -1,7 +1,7 @@
 import { PDFDocument } from "pdf-lib";
 import { sprintf } from "sprintf-js";
 import GridaDoc from "../../../GridaBoard/GridaDoc";
-import { g_availablePagesInSection, UNIT_TO_DPI, PlateNcode_1, PlateNcode_2, PlateNcode_3, PlateNcode_4 } from "../constants";
+import { g_availablePagesInSection, UNIT_TO_DPI, PlateList } from "../constants";
 import { IUnitString, IPageSOBP, IPointDpi, IPdfToNcodeMapItem } from "../structures";
 
 export function compareObject(curr: Object, next: Object, header = "") {
@@ -82,12 +82,12 @@ export function isSamePage(pg1: IPageSOBP, pg2: IPageSOBP): boolean {
 
 
 export const isPlatePage = (pageInfo:IPageSOBP)=>{
-  if (isSamePage(PlateNcode_1, pageInfo) || isSamePage(PlateNcode_2, pageInfo) || isSamePage(PlateNcode_3, pageInfo) || isSamePage(PlateNcode_4, pageInfo)) {
-    return true;
-  }else{
-    return false;
+  // 플레이트 리스트에 있는 애랑 같으면 리턴 true
+  for(let i = 0; i < PlateList.length; i++){
+    if (isSamePage(PlateList[i], pageInfo)) return true;
   }
-
+  // 같은애가 없으면 리턴 false
+  return false;
 }
 export function isSameNcode(pg1: IPageSOBP, pg2: IPageSOBP): boolean {
   if (pg1 === undefined && pg2 === undefined) return true;

@@ -49,6 +49,22 @@ export const PlateNcode_4: IPageSOBP = { // 투명 플레이트
   page: 1,
 }
 
+export const PlateNcode_5: IPageSOBP = { // 윈도우 기능 플레이트
+  section: 3,
+  owner: 1013,
+  book: 2,
+  page: 23
+}
+
+export const PlateList : Array<IPageSOBP> = [PlateNcode_1, PlateNcode_2, PlateNcode_3, PlateNcode_4, PlateNcode_5];
+
+export const OnlyWindowController : IPageSOBP = { // 윈도우 전용기능 ( 그리다보드에선 사용 안함 )
+  section: 3,
+  owner: 1013,
+  book: 1,
+  page: 15
+}
+
 export const FilmNcode_Landscape: IPageSOBP = {
   section: 3,
   owner: 1013,
