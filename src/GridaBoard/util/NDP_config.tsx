@@ -31,10 +31,11 @@ ndp.setShare();
 ndp.Client.autoOn("penControlOwner",(res: SocketReturnData)=>{
   if(res.result){
     const data = res.data as penControlOwner;
-    setIsPenControlOwner(data);
-    if(!data.owned){
+    
+    if(!data.owned && store.getState().ndpClient.isPenControlOwner){
       showAlert({type : "lostPenOwner"});
     }
+    setIsPenControlOwner(data);
   }
 });
 ndp.Client.autoOn("penListUpdate",(res: SocketReturnData)=>{
@@ -125,6 +126,7 @@ ndp.Client.autoOn("sendDot", (res:SocketReturnData)=>{
 })
 
 const penControl = (penList:PenListData[])=>{
+  console.log(penList);
   const onPenLinkChanged = (e)=>{
     const app = GridaApp.getInstance();
     app.onPenLinkChanged(e);

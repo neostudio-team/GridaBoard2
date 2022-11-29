@@ -230,7 +230,8 @@ export default class PenManager {
     if (_active_pen) {
       _active_pen.setColor(this.color);
     }
-    this._virtualPen.setColor(this.color);
+    console.log(this);
+    this.virtualPen.setColor(this.color);
     this.dispatcher.dispatch(PenEventName.ON_COLOR_CHANGED, this);
   }
 
