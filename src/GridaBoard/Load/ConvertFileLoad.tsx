@@ -228,60 +228,43 @@ const ConvertFileLoad = (props: Props) => {
     const responJson:cloudImportResponse = await res.json();
     
     //전송할 form 데이터 생성
-    // const inputer = document.getElementById("fileForconvert") as HTMLInputElement;
     const formData = new FormData();
     
     for(const key in responJson.data.result.form.parameters){
       formData.set(key, responJson.data.result.form.parameters[key]);
     }
 
-
-    // const testArrayBuffer = new Uint8Array(await inputer.files[0].arrayBuffer());
-    
-    // const names = inputer.files[0].name.split(".");
-    // const fileType = names[names.length-1];
-    
-    // const file = new File([testArrayBuffer], "temp." + fileType, {
-    //   type : inputer.files[0].type,
-    //   lastModified : inputer.files[0].lastModified    
-    // });
-    
     formData.set("file", inputer.files[0]);
 
-    const xhr = new XMLHttpRequest();
-    
-    xhr.open("POST" , responJson.data.result.form.url , true);
-    xhr.onreadystatechange = async () => {
-      try{
-        if(xhr.readyState == 4){
-          const response: HTMLAllCollection = xhr.responseXML.all;
-          //전송 완료
-          //TODO : 예외처리 해줘야 함
-          //어떤 예외처리?? 모르겠음 찾아봐야함 분명 문제 생길듯
-          await setTask(response, inputer.files[0].name);
-        }
-      }catch(e){
-        console.log(e);
-        setLoadingVisibility(false);
-      }
+    try{
+      const fileUploadRes = await fetch(responJson.data.result.form.url, {
+          method: 'POST',
+          cache: 'no-cache',
+          body: formData 
+      })
+      const uplopadName = (fileUploadRes.url.split("/")[fileUploadRes.url.split("/").length-1]).split("?")[0];
+      await setTask(uplopadName, inputer.files[0].name);
+    }catch(e){
+      console.log(e);
+      setLoadingVisibility(false);
     }
-    xhr.send(formData);
   } 
 
-  async function setTask(res:HTMLAllCollection, fileName: string){
+  async function setTask(uplopadName:string, fileName: string){
     //컨버팅 중
       try{
         const subOption = {};
 
-        if(res[3].textContent.split("/")[1].split(".")[1] === "txt"){
+        if(fileName.split(".")[1] === "txt"){
           (subOption as any).engine = "calibre";
         }
+        
         let job = await cloudConvert.jobs.create({
             "tasks": {
                 "task-1": {
                     ...subOption,
                     "operation": "convert", 
-                    "input": [res[3].textContent.split("/")[0]],
+                    "input": [uplopadName],
                     "output_format": "pdf"
                 }
             }
@@ -310,7 +293,7 @@ const ConvertFileLoad = (props: Props) => {
 
           task["task-1"] = {
               "operation": "convert", 
-              "input": [res[3].textContent.split("/")[0]],
+              "input": [uplopadName],
               "output_format": "pdf",
               "password": password
           }
