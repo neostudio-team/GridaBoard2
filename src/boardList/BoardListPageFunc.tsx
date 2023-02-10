@@ -72,11 +72,11 @@ export const deleteAllFromTrash = async () => {
 
     result = 1;
       
-    const thumbnailPath = `thumbnail/${deletedDocId}.png`;
+    const thumbnailPath = `${deletedDocId}.png`;
     await db.deleteFile(thumbnailPath);
 
 
-    const gridaPath = `grida/${deletedDocId}.grida`;
+    const gridaPath = `${deletedDocId}.grida`;
     await db.deleteFile(gridaPath);
   }
 
@@ -115,10 +115,10 @@ export const deleteBoardsFromTrash = async (docItems: IBoardData[]) => {
     result = 1;
 
     try{
-      const thumbnailPath = `thumbnail/${docId}.png`;
+      const thumbnailPath = `${docId}.png`;
       await db.deleteFile(thumbnailPath);
       
-      const gridaPath = `grida/${docId}.grida`;
+      const gridaPath = `${docId}.grida`;
       await db.deleteFile(gridaPath);
       result = 1;
     }catch(e){
@@ -162,8 +162,8 @@ export const copyBoard = async (docItem: IBoardData) => {
   const timeStamp = date.getTime();
   const docId = `${userId}_${docName}_${timeStamp}`;
   
-  const gridaPath = (await db.getFilePath(`grida/${docItem.docId}.grida`)).url;
-  const thumbNailPath = (await db.getFilePath(`thumbnail/${docItem.docId}.png`)).url;
+  const gridaPath = (await db.getFilePath(`${docItem.docId}.grida`)).url;
+  const thumbNailPath = (await db.getFilePath(`${docItem.docId}.png`)).url;
   
   let imageBlob;
   await fetch(thumbNailPath)
@@ -179,14 +179,14 @@ export const copyBoard = async (docItem: IBoardData) => {
     const gridaBlob = new Blob([gridaStr], { type: 'application/json' });
 
     const gridaFileName = `${docId}.grida`;
-    const gridaPath = `grida/${gridaFileName}`;
+    // const gridaPath = `${gridaFileName}`;
 
-    await db.saveGrida(gridaBlob,gridaFileName, gridaPath);
+    await db.saveGrida(gridaBlob,gridaFileName, gridaFileName);
 
     const thumbFileName = `${docId}.png`;
-    const pngPath = `thumbnail/${thumbFileName}`;
+    // const pngPath = `${thumbFileName}`;
 
-    await db.savePng(imageBlob, thumbFileName, pngPath);
+    await db.savePng(imageBlob, thumbFileName, thumbFileName);
 
     saveToDB(docName, date, true, numPages);
   })
@@ -381,19 +381,19 @@ export async function saveGridaToDB(docName: string) {
   setDate(timeStamp.toString());
 
   const gridaFileName = `${userId}_${docName}_${timeStamp}.grida`;
-  const gridaPath = `grida/${gridaFileName}`;
+  // const gridaPath = `grida/${gridaFileName}`;
 
   /** Make & Upload Grida
    * -----------------------------------------------------------------------------------
    */
   const gridaBlob = await makeGridaBlob();
 
-  await db.saveGrida(gridaBlob, gridaFileName, gridaPath);
+  await db.saveGrida(gridaBlob, gridaFileName, gridaFileName);
 
   const thumbFileName = `${userId}_${docName}_${timeStamp}.png`;
-  const pngPath = `thumbnail/${thumbFileName}`;
+  // const pngPath = `thumbnail/${thumbFileName}`;
 
-  await db.savePng(imageBlob, thumbFileName, pngPath);
+  await db.savePng(imageBlob, thumbFileName, thumbFileName);
   
 
   saveToDB(docName, date, false);
@@ -477,10 +477,12 @@ export const getThumbNailPath = async (docsList)=>{
   const pathList = [];
   for(let i = 0; i < docsList.length; i++){
     if(docsList[i].thumbNailPath === undefined || docsList[i].thumbNailPath.expiredDatetime < new Date()){
-      docsList[i].thumbNailPath = await db.getFilePath(`thumbnail/${docsList[i].docId}.png`);
+      docsList[i].thumbNailPath = await db.getFilePath(`${docsList[i].docId}.png`);
     }
 
-    pathList.push(docsList[i].thumbNailPath.url);
+    if(docsList[i].thumbNailPath !== null){
+      pathList.push(docsList[i].thumbNailPath.url);
+    }
   }
   return pathList;
 }
@@ -503,15 +505,15 @@ export const overwrite = async () => {
 
   const gridaFileName = `${docId}.grida`; // `${userId}_${docName}_${date}.grida`;
 
-  const gridaPath = `grida/${gridaFileName}`;
+  // const gridaPath = `grida/${gridaFileName}`;
 
-  await db.saveGrida(gridaBlob, gridaFileName, gridaPath);
+  await db.saveGrida(gridaBlob, gridaFileName, gridaFileName);
 
   const thumbFileName = `${docId}.png`; // `${userId}_${docName}_${date}.png`;
-  const pngPath = `thumbnail/${thumbFileName}`;
+  // const pngPath = `thumbnail/${thumbFileName}`;
 
 
-  await db.savePng(imageBlob, thumbFileName, pngPath);
+  await db.savePng(imageBlob, thumbFileName, thumbFileName);
 
   await updateDB(docId, "thumb_path", "grida_path", date);
 }
@@ -533,7 +535,7 @@ export const routeChange = async (nowDocs, historyCallback ?: Function) => {
 
   GridaDoc.getInstance()._pages = [];
 
-  const gridaFile = await db.getFile(`grida/${nowDocs.docId}.grida`, "json");
+  const gridaFile = await db.getFile(`${nowDocs.docId}.grida`, "json");
 
   await jsonToOpen(gridaFile, nowDocs.doc_name);
     

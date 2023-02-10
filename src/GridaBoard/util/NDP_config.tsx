@@ -383,7 +383,14 @@ export class GridaDB {
     }
 
     if(dbFileData.totalElements > 1){// data too many : something wrong
+      let currectId = -1;
+      dbFileData.resultElements.forEach((el)=>{
+        if(el.id > currectId) currectId = el.id;
+      })
 
+      newDB = await this.storage.getFileFromId(currectId);
+      this.dbFileDataId = currectId;
+      
     }else{
       newDB = await this.storage.getFileFromId(dbFileData.resultElements[0].id);
       this.dbFileDataId = dbFileData.resultElements[0].id;
