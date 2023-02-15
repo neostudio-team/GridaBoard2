@@ -215,7 +215,38 @@ class NDP {
             this.gatewayStateChangeFunctions[i]();
         }
     }
-    
+    async getGatewayStatus(){
+        type StatusData = {
+            "kind": string,
+            "totalElements": number,
+            "resultElements": Array<{
+                "name": string,
+                "status": "ENABLE" | "DISABLE",
+                "message": string
+            }>
+        };
+        const getstatus = await fetch(`${NdpDefaultRouter}/gateway/v2/status`,{
+            method : "GET",
+            headers: {
+            'Content-Type': 'application/json',
+            }
+        });
+        const statusData:StatusData = await getstatus.json() as StatusData;
+        
+        let nowData = null;
+
+        console.log(statusData)
+        for(let i = 0; i < statusData.totalElements; i++){
+            if(statusData.resultElements[i].name === "grida-board"){
+                
+                nowData = statusData.resultElements[i];
+                break ;
+            }
+        }
+
+        if(nowData.status === "ENABLE")return true;
+        else return false;
+    }
     // 사용 편의성을 위해 getInstance 호출시 즉시 share 생성
     static getInstance(){
         if(isShared) return shared as NDP;

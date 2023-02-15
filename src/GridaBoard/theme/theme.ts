@@ -11,7 +11,8 @@ declare module '@material-ui/core/styles/createMuiTheme' {
         blue : Array<string>
         mono : Array<string>
       },
-      shadows: Array<string>
+      shadows: Array<string>,
+      special : Object
     }
   }
   // allow configuration using `createMuiTheme`
@@ -24,7 +25,8 @@ declare module '@material-ui/core/styles/createMuiTheme' {
         blue? : Array<string>
         mono? : Array<string>
       },
-      shadows? : Array<string>
+      shadows? : Array<string>,
+      special? : Object
     }
   }
 }
@@ -56,7 +58,10 @@ export const theme = createMuiTheme({
       "2px 2px 2px rgba(0, 0, 0, 0.25)",
       "0px 0px 2px 2px rgba(0, 0, 0, 0.4) inset",
       "4px 4px 10px rgba(0, 0, 0, 0.3)"
-    ]
+    ],
+    special : {
+      "primary10" : "rgba(104, 143, 255, 0.1)"
+    }    
   },
   palette: {
     primary: {
