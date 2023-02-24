@@ -348,6 +348,7 @@ const sliderStyle = makeStyles(theme=>({
         lineHeight: "16px",
         textAlign: "center",
         letterSpacing: "0.25px",
+        whiteSpace: "pre-wrap",
         color: theme.palette.text.secondary
       },
       "& > div:nth-child(3)" : {
@@ -418,14 +419,15 @@ const CustomSlider = ()=>{
 		// },
 	}
   const data = [];
-  for(let i = 0; i < 2; i++){
+  for(let i = 0; i < 3; i++){
+    // let tipTitle = getText("login_banner_tipTitle");
     data.push({
       title: getText("login_banner_data" + (i+1) + "_title"),
       text : getText("login_banner_data" + (i+1) + "_text"),
+      tipTitle : getText("login_banner_tipTitle"),
       tip: getText("login_banner_data" + (i+1) + "_tip")
     })
   }
-  
   return (
     <Slider ref={e=>slider=e} {...sliderSettings} className={classes.slider} >
       {
@@ -436,7 +438,7 @@ const CustomSlider = ()=>{
             <div>{el.title}</div>
             <div>{el.text}</div>
             <div>
-              <div>{getText("login_banner_tipTitle")}</div>
+              <div>{el.tipTitle}</div>
               <div>{el.tip}</div>
             </div>
           </div>

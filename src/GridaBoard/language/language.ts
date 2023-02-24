@@ -36,12 +36,13 @@ function lang(tag : string) : string{
         return nowText === undefined? "" : nowText;
     }
 
-    if(nowText.indexOf("\\n") != -1){
-        nowText = nowText.replace("\\n", "\n");
+    if(nowText.indexOf("\\n") !== -1){
+        nowText = nowText.replaceAll("\\n", "\n");
     }
 
     return nowText;
 }
+(window as any).lang = lang;
 function changeType(type : string){
     setData(type);
 }

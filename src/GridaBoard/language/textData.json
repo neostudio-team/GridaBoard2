@@ -248,7 +248,10 @@
         "bluetooth_deviceOff_title": "디바이스 비활성화",
         "bluetooth_deviceOff_sub": "새 창이 감지되었습니다.\\n디바이스가 비활성화 됩니다.",
         "login_withNDP": "NeoLAB Cloud 로그인",
-        "no_NDP": "Neolab Cloud가 없다면?"
+        "no_NDP": "Neolab Cloud가 없다면?",
+        "login_banner_data3_title": "새로운 연결 플랫폼, NeoLAB Cloud",
+        "login_banner_data3_text": "이제 NeoLAB Cloud를 통해 확장된 서비스를 경험해보세요!\\n로그인부터 스마트 디바이스 관리까지\\n한 곳에서 안전하게 연결하고 데이터를 보관합니다.",
+        "login_banner_data3_tip": "NeoLAB Cloud에 연결된 디바이스는 그리다보드, 네오스튜디오(Web) 사용 가능"
     },
     "en": {
         "save_file": "Save",
@@ -720,7 +723,25 @@
         "nav_page_mode": "ノートモード",
         "deleteTrash_title": "このボードは削除されます。",
         "deleteTras_warn": "この操作は取り消せません。",
-        "login_withNDP": "NeoLAB Cloudでログイン"
+        "bluetooth_connect": "接続中のデバイス",
+        "bluetooth_deviceOn": "Grida Boardにペンを接続します",
+        "bluetooth_nodevice": "接続中のペンはありません",
+        "bluetooth_connectDevice": "ペン接続",
+        "bluetooth_connecting": "ペンリストを呼び出しています。しばらくお待ちください",
+        "bluetooth_turnOnSwich": "ペンを接続するには\\n制御ボタンをONにしてください",
+        "bluetooth_checkBluetooth": "Bluetooth接続状態を\\n確認してください。",
+        "bluetooth_disconnect": "接続解除",
+        "bluetooth_hookPermission": "\"[%NAME]\"からデバイスの権限を移動しますか？",
+        "NEOSTUDIO_WEB": "NEO STUDIO(web)",
+        "bluetooth_chargeBattery": "充電中",
+        "GRIDABOARD": "Grida Board",
+        "bluetooth_deviceOff_title": "ペン接続制御",
+        "bluetooth_deviceOff_sub": "新しいウィンドウが感知されました\\nペン接続が制御されました",
+        "login_withNDP": "NeoLAB Cloudでログイン",
+        "no_NDP": "NeoLAB Cloudがインストールされていない場合",
+        "login_banner_data3_title": "新たなプラットフォーム、NeoLAB Cloud",
+        "login_banner_data3_text": "NeoLAB Cloudの多様なサービスをご体験ください\\nログインからスマートペン管理まで/n便利で安全なサービスをご利用いただけます",
+        "login_banner_data3_tip": "NeoLAB Cloudに接続したペンはGrida Board、Neo Studio（Web）で使用可能"
     },
     "tw": {
         "save_file": "保存",
