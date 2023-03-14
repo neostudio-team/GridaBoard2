@@ -341,9 +341,9 @@ const MainContent = (props: Props) => {
     tmpDocs.sort(orderFunctionList[orderBy]);
     return tmpDocs;
   };
-
+  
   const orderFunctionList = [
-    (a, b) => b.last_modified.seconds - a.last_modified.seconds,
+    (a, b) => (new Date(b.last_modified)).getTime() - (new Date(a.last_modified)).getTime(),
     (a, b) => (a.doc_name < b.doc_name ? -1 : a.doc_name > b.doc_name ? 1 : 0),
   ];
 

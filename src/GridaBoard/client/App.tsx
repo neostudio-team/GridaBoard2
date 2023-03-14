@@ -7,6 +7,7 @@ import { store } from '../client/pages/GridaBoard';
 declare global {
   interface Window {
     firebaseSetting: "dev" | "live";
+    ndpSetting: "dev" | "live";
   }
 }
 

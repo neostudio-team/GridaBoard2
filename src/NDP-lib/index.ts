@@ -11,7 +11,14 @@ import Storage from "./Storage";
 // old test server : https://ndp-dev.onthe.live:5443
 // new test server : https://llorqt3rofirq76mqwrlexseh4.apigateway.ap-seoul-1.oci.customer-oci.com
 // live server server : https://router.neolab.net
-const NdpDefaultRouter = "https://ndp-dev.onthe.live:5443" ;//;"https://llorqt3rofirq76mqwrlexseh4.apigateway.ap-seoul-1.oci.customer-oci.com";
+let NdpDefaultRouter;
+
+if(window.ndpSetting === "dev"){
+    NdpDefaultRouter = "https://ndp-dev.onthe.live:5443"; //;"https://llorqt3rofirq76mqwrlexseh4.apigateway.ap-seoul-1.oci.customer-oci.com";
+}else{ // window.ndpSetting === "live"
+    NdpDefaultRouter = "https://router.neolab.net";
+}
+
 
 let isShared = false;
 let shared :NDP|undefined;
@@ -235,7 +242,6 @@ class NDP {
         
         let nowData = null;
 
-        console.log(statusData)
         for(let i = 0; i < statusData.totalElements; i++){
             if(statusData.resultElements[i].name === "grida-board"){
                 
@@ -244,8 +250,7 @@ class NDP {
             }
         }
 
-        if(nowData.status === "ENABLE")return true;
-        else return false;
+       return nowData;
     }
     // 사용 편의성을 위해 getInstance 호출시 즉시 share 생성
     static getInstance(){

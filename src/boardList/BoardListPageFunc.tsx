@@ -1,7 +1,6 @@
 import GridaDoc from 'GridaBoard/GridaDoc';
 import { setActivePageNo, setDocNumPages, setUrlAndFilename } from '../GridaBoard/store/reducers/activePageReducer';
 import { setDate, setDocId, setDocName, setIsNewDoc } from '../GridaBoard/store/reducers/docConfigReducer';
-import firebase, { secondaryFirebase, auth } from 'GridaBoard/util/firebase_config';
 import { IBoardData } from './structures/BoardStructures';
 import { MappingStorage, PdfDocMapper } from 'nl-lib/common/mapper';
 import { InkStorage } from 'nl-lib/common/penstorage';

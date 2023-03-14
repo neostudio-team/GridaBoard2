@@ -1,6 +1,5 @@
 import 'firebase/auth';
 import 'firebase/database';
-import firebase, { auth, secondaryFirebase } from 'GridaBoard/util/firebase_config';
 import Cookies from 'universal-cookie';
 import { GridaDB } from 'GridaBoard/util/NDP_config';
 

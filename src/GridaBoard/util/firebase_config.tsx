@@ -78,43 +78,6 @@ const mainFirebase = firebase.initializeApp(firebaseConfig);
 export const secondaryFirebase = firebase.initializeApp(secondaryFirebaseConfig, "secondary");
 export const firebaseAnalytics = secondaryFirebase.analytics();
 
-export const auth = firebase.auth();
-export const secondaryAuth = secondaryFirebase.auth();
-
-const provider = new firebase.auth.GoogleAuthProvider();
-
-const AppleAuthProvider = new firebase.auth.OAuthProvider('apple.com')
-
-provider.setCustomParameters({prompt:"select_account"});
-
-export const signInWithGoogle = async () => {
-  const mainAuth = await auth.signInWithPopup(provider);
-  
-  await signInWith(mainAuth.user);  
-}
-export const signInWithApple = async () => {
-  const mainAuth = await auth.signInWithPopup(AppleAuthProvider);
-
-  await signInWith(mainAuth.user);
-
-}
-
-export const signInWith = async (user: firebase.User) => {
-  const url = cloudfunctionsUrl;
 
 
-  const res = await fetch(`${url}/login?uid=${user.uid}&email=${user.email}&name=${user.displayName}`);
-  const token = await res.text();
 
-
-  const loginData = await secondaryAuth.signInWithCustomToken(token);
-
-  console.log("!!!!!!!!!!!!!!!!!!",loginData);
-  // if(loginData.user.email === null){
-  //   await fetch(`${url}/createEmail?uid=${user.uid}&email=${user.email}&name=${user.displayName}`);
-  //   console.log(loginData);
-  //   debugger;
-  // }
-}
-
-export default firebase;

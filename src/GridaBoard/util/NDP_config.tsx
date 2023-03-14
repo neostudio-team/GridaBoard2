@@ -14,6 +14,9 @@ import { DPI_TO_UNIT } from "../../nl-lib/common/constants";
 import { makePenEvent, PenCommEventEnum } from "../../nl-lib/neosmartpen/pencomm/pencomm_event";
 import Storage from "NDP-lib/Storage";
 import { AirlineSeatReclineExtra } from "@material-ui/icons";
+import { languageType } from "../language/language";
+
+
 
 
 
@@ -26,9 +29,16 @@ ndp.setShare();
 
 const ndpCheck = async ()=>{
   const isOpen = await ndp.getGatewayStatus();
-  if(!isOpen){
-    alert("서비스 사용 불가");
+  if(isOpen.status !== "ENABLE"){
+    if(languageType === "ko"){
+      alert(isOpen[`message_kr`]);
+    }else{
+      alert(isOpen[`message_en`]);
+    }
   }
+  // if(!isOpen){
+  //   alert("서비스 사용 불가");
+  // }
 }
 
 ndpCheck();
