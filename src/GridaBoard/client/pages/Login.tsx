@@ -419,13 +419,16 @@ const CustomSlider = ()=>{
 		// },
 	}
   const data = [];
-  for(let i = 0; i < 3; i++){
+  const idxOrder = [3,1,2];
+  for(let i = 0; i < idxOrder.length; i++){
+    const nowIdx = idxOrder[i];
     // let tipTitle = getText("login_banner_tipTitle");
     data.push({
-      title: getText("login_banner_data" + (i+1) + "_title"),
-      text : getText("login_banner_data" + (i+1) + "_text"),
+      title: getText("login_banner_data" + nowIdx + "_title"),
+      text : getText("login_banner_data" + nowIdx + "_text"),
       tipTitle : getText("login_banner_tipTitle"),
-      tip: getText("login_banner_data" + (i+1) + "_tip")
+      tip: getText("login_banner_data" + nowIdx + "_tip"),
+      idx: nowIdx
     })
   }
   return (
@@ -433,7 +436,7 @@ const CustomSlider = ()=>{
       {
         data.map((el, idx)=>(
         <div key={idx} className={classes.content}>
-          <img src={`/login/title_${idx+1}.png`} alt="" />
+          <img src={`/login/title_${el.idx}.png`} alt="" />
           <div className="textarea">
             <div>{el.title}</div>
             <div>{el.text}</div>
