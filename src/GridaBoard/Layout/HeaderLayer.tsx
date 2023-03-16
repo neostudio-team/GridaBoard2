@@ -317,8 +317,10 @@ const HeaderLayer = (props: Props) => {
   const handleClickSaveAway = () => {
     setSaveOpen(false);
   };
-  const handleClickPenListAway = () => {
-    setPenListOpen(false);
+  const handleClickPenListAway = (target) => {
+    if(target.target.closest("#globalDialog") === null){
+      setPenListOpen(false);
+    }
   };
 
   const handleClickExportAway = () => {

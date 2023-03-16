@@ -190,6 +190,15 @@ const Login = () => {
   const selectedTheme = useSelector((state: RootState) => state.ui.theme);
   const theme : Theme = neolabTheme[selectedTheme];
   const classes = useStyle(theme)();
+
+
+  const openNoticeCookie = cookies.get("openNoticeView");
+  let isOpen = false;
+  if(openNoticeCookie !== "true"){
+    isOpen = true;
+  }
+  const [openNotice, setOpenNotice] = useState(isOpen);
+  
   
 
   useEffect(()=>{
@@ -234,6 +243,7 @@ const Login = () => {
 
   return (
     <MuiThemeProvider theme={theme}>
+    {openNotice ? <OpenNoticePopup setOpenNotice={setOpenNotice} /> : ""}
       <div className={classes.wrap}>
         <div >
           <div className={classes.slider}>

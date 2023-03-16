@@ -193,16 +193,16 @@ const CombineDialog = (props : Props)=>{
   let returnDialog = null;
   if(["newGroup", "changeGroupName", "changeDocName"].includes(diaType)){
     groupProps.classes.paper += `  ${classes.groupDialog}`;
-    returnDialog = (<GroupDialog {...groupProps} />);
+    returnDialog = (<GroupDialog id="globalDialog" {...groupProps} />);
   }else if(["moveDoc"].includes(diaType)){
     groupProps.classes.paper += `  ${classes.groupDialog}`;
-    returnDialog = (<MoveDialog {...groupProps} docsObj={docsObj}/>);
+    returnDialog = (<MoveDialog id="globalDialog" {...groupProps} docsObj={docsObj}/>);
   }else if(["deleteDoc", "logout", "toBoardList", "deletePage", "clearPage", "deleteGroup", "checkCalibration", "deleteTrash", "getPenOwner", "lostPenOwner"].includes(diaType)){
     groupProps.classes.paper += `  ${classes.alertDialog}`;
-    returnDialog = (<AlertDialog {...groupProps} />);
+    returnDialog = (<AlertDialog id="globalDialog" {...groupProps} />);
   }else if(["noticeGesture"].includes(diaType)){
     groupProps.classes.paper = `  ${classes.gestureDialog}`;
-    returnDialog = (<GestureDialog {...groupProps} />);
+    returnDialog = (<GestureDialog id="globalDialog" {...groupProps} />);
   }
 
   return returnDialog;
