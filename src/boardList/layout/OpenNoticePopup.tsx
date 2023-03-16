@@ -1,10 +1,10 @@
-import { makeStyles, Checkbox } from "@material-ui/core";
+import { makeStyles, Checkbox, Button } from "@material-ui/core";
 import React, {useState} from "react";
-import openNoticePopup_background from "../openNoticePopup_background.png";
-import openNoticePopup_visual from "../openNoticePopup_visual.png";
+import openNoticePopup_background from "../openNoticePopup2_background.png";
+import openNoticePopup_visual from "../openNoticePopup2_visual.png";
 import CloseIcon from '@material-ui/icons/Close';
 import Cookies from 'universal-cookie';
-import getText from "GridaBoard/language/language"
+import getText, { languageType } from "GridaBoard/language/language"
 
 const useStyle = makeStyles(theme=>({
   wrap : {
@@ -44,29 +44,49 @@ const useStyle = makeStyles(theme=>({
       lineHeight: "32px",
       textAlign: "center",
       letterSpacing: "0.25px",
-      color: "#2F2E2E",
+      color: "#654EF5",
       whiteSpace: "pre-wrap",
     },
     "& > div:nth-child(2)" : {
-      marginTop : "15px",
+      marginTop : "24px",
 
-      fontFamily: "Roboto",
+
+      fontFamily: "Noto Sans KR",
       fontStyle: "normal",
-      fontWeight: "300",
-      fontSize: "11px",
+      fontWeight: "400",
+      fontSize: "12px",
       lineHeight: "14px",
       /* or 127% */
       
       textAlign: "center",
       letterSpacing: "0.25px",
       
-      color: "#6F6F6F",
+      color: "#666666",
       
       opacity: "0.85",
       whiteSpace: "pre-wrap",
     },
     "& > div:nth-child(3)" : {
-      marginTop: "9px",
+      marginTop: "24px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      "& > button" : {
+        width: "133px",
+        height: "45px",
+        background: "#654EF5",
+        borderRadius: "27px",
+        color: "#FFFFFF",
+        fontFamily: 'Noto Sans CJK KR',
+        fontStyle: "normal",
+        fontWeight: "700",
+        fontSize: "14px",
+        lineHeight: "21px",
+        letterSpacing: "0.25px",
+      }
+    },
+    "& > div:nth-child(4)" : {
+      marginTop: "14px",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
@@ -132,6 +152,15 @@ const OpenNoticePopup = (props:Props)=>{
     }
     setOpenNotice(false);
   }
+  const gotoDetail = ()=>{
+    let url = "";
+    if(languageType === "ko"){
+      url = "https://neolabdev.gitbook.io/neolab-cloud_kr";
+    }else{
+      url = "https://neolabdev.gitbook.io/neolab-cloud_en";
+    }
+    window.open("_blank").location.href= url;
+  }
 
   return (
   <div className={classes.wrap}>
@@ -139,6 +168,7 @@ const OpenNoticePopup = (props:Props)=>{
       <div className={`upper ${classes.upper}`} style={{background:`url(${openNoticePopup_background})`}}>
         <div>{getText("openNotice_title")}</div>
         <div>{getText("openNotice_subTitle")}</div>
+        <div><Button onClick={gotoDetail}>{getText("openNotice_button")}</Button></div>
         <div><img src={openNoticePopup_visual} alt="" /></div>
       </div>
       <div className={`bottom ${classes.bottom}`}>
