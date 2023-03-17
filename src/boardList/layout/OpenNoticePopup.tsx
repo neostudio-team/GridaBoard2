@@ -55,7 +55,7 @@ const useStyle = makeStyles(theme=>({
       fontStyle: "normal",
       fontWeight: "400",
       fontSize: "12px",
-      lineHeight: "14px",
+      lineHeight: "16px",
       /* or 127% */
       
       textAlign: "center",

@@ -715,7 +715,7 @@
         "add_pdf_pptx": "ファイルをインポート (pdf等)",
         "deleteGroup_title": "選択したグループを削除しますか？",
         "deleteGroup_sub": "グループを削除すると、該当のグループ内のボードは「デフォルト」グループに移動します",
-        "openNotice_title": "NeoLAB Cloudがオープンしまし\\nた！",
+        "openNotice_title": "NeoLAB Cloudがオープンしました！",
         "openNotice_subTitle": "ペンマネージャーがNeoLAB Cloudにリニューアルされました！\\nNeoLAB Cloudへのアップデートにより\\nNeo Studio WebやGrib Boardをさらに便利にご利用いただけます。\\nNeoLAB Cloudの新しい機能は、以下のリンクからご確認ください！",
         "openNotice_end": "次回からこのメッセージを表示しない",
         "openNotice_button": "詳しく見る",
