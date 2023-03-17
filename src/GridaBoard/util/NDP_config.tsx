@@ -182,6 +182,9 @@ const penControl = (penList:PenListData[])=>{
 }
 
 
+const timer = setTimeout(()=>{
+  ndp.Client.getToken();
+},5000)
 
 
 ndp.Client.autoConnectStart();
@@ -196,6 +199,8 @@ NDP.getInstance().onAuthStateChanged(async userId => {
 });
 
 NDP.getInstance().onAuthStateChanged(async userId => {
+  console.log(userId);
+  clearTimeout(timer);
   if(userId !== null){
     GridaDB.getInstance().setInit();
   }
