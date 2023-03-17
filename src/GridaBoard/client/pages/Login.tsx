@@ -16,7 +16,7 @@ import appleLogo from "GridaBoard/appleLogo.png";
 import neolabLogo from "GridaBoard/neolabLogo.png";
 import ic_download from "GridaBoard/ic_download.png";
 import { default as Slider, Settings, CustomArrowProps } from "react-slick";
-import getText from "GridaBoard/language/language";
+import getText, { languageType } from "GridaBoard/language/language";
 import OpenNoticePopup from "boardList/layout/OpenNoticePopup"
 import NDP from 'NDP-lib';
 
@@ -238,7 +238,13 @@ const Login = () => {
   termsText.push("signin_agree_policy");
   termsText.push(tempTerm[1]);
   const gotoDownload = ()=>{
-    window.open("https://neosmartpen.co.kr/penmanager/", "_blank", "location=yes, scrollbars=yes, status=yes, noreferrer=yes");
+    let url = "";
+    if(languageType === "ko"){
+      url = "https://neolabdev.gitbook.io/neolab-cloud_kr/neolab-cloud/neolab-cloud";
+    }else{
+      url = "https://neolabdev.gitbook.io/neolab-cloud_en/neolab-cloud/neolab-cloud";
+    }
+    window.open(url, "_blank", "location=yes, scrollbars=yes, status=yes, noreferrer=yes");
   }
 
   return (
