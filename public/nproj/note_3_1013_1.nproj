@@ -14,23 +14,23 @@
         <dummy>true</dummy>
         <manual_action>true</manual_action>
         <symbol_setting align="4" bgcolor="#00ff00" bgalpha="70" outline_alpha="70" textcolor="#000000" textsize="9" texton="1"/>
-        <margin left="11.642" top="11.642" right="11.642" bottom="11.642"/>
+        <margin left="0" top="0" right="0" bottom="0"/>
     </preset>
     <book>
-        <title></title>
+        <title>PUI</title>
         <author></author>
         <section>3</section>
         <owner>1013</owner>
         <code>1</code>
-        <revision>85</revision>
+        <revision>123</revision>
         <scale>0.001</scale>
         <start_page side="">1</start_page>
         <dot_is_line_segment>false</dot_is_line_segment>
         <line_segment_length>1</line_segment_length>
         <target_dpi>600</target_dpi>
         <dotsize>1</dotsize>
-        <segment_info sub_code="" total_size="14" size="14" current_sequence="0" ncode_start_page="1" ncode_end_page="14"/>
-        <extra_info>pdf_page_count=11</extra_info>
+        <segment_info sub_code="" total_size="21" size="21" current_sequence="0" ncode_start_page="1" ncode_end_page="21"/>
+        <extra_info></extra_info>
         <kind>0</kind>
     </book>
     <ticket>
@@ -42,22 +42,29 @@
     <config>
         <resource_mapping_mode>NORMAL</resource_mapping_mode>
     </config>
-    <pages count="14">
+    <pages count="21">
         <!--crop_margin="left, right, top, bottom"-->
         <page_item number="0" rotate_angle="0" x1="0" y1="0" x2="794.504" y2="581.906" crop_margin="33,33,33,33" bg_disabled="false" page_type="0"/>
         <page_item number="1" rotate_angle="0" x1="0" y1="0" x2="581.906" y2="136.866" crop_margin="33,33,33,33" bg_disabled="false" page_type="0"/>
         <page_item number="2" rotate_angle="0" x1="0" y1="0" x2="547.89" y2="689.622" crop_margin="33,33,33,33" bg_disabled="false" page_type="0"/>
         <page_item number="3" rotate_angle="0" x1="0" y1="0" x2="795.921" y2="569.15" crop_margin="33,33,33,33" bg_disabled="false" page_type="0"/>
-        <page_item number="4" rotate_angle="0" x1="0" y1="0" x2="419.52" y2="595.2" crop_margin="33.0009,33.0009,33.0009,33.0009" bg_disabled="false" page_type="0"/>
+        <page_item number="4" rotate_angle="0" x1="0" y1="0" x2="419.52" y2="595.2" crop_margin="0,0,0,0" bg_disabled="false" page_type="0"/>
         <page_item number="5" rotate_angle="0" x1="0" y1="0" x2="198.85" y2="482.031" crop_margin="35.5039,35.504,35.503,35.5039" bg_disabled="false" page_type="0"/>
-        <page_item number="6" rotate_angle="0" x1="0" y1="0" x2="340.157" y2="31.1811" crop_margin="33.0009,33.0009,33.0009,33.0009" bg_disabled="false" page_type="0"/>
-        <page_item number="7" rotate_angle="0" x1="0" y1="0" x2="340.157" y2="31.1811" crop_margin="33.0009,33.0009,33.0009,33.0009" bg_disabled="false" page_type="0"/>
-        <page_item number="8" rotate_angle="0" x1="0" y1="0" x2="340.157" y2="31.1811" crop_margin="33.0009,33.0009,33.0009,33.0009" bg_disabled="false" page_type="0"/>
-        <page_item number="9" rotate_angle="0" x1="0" y1="0" x2="790.92" y2="98.88" crop_margin="33.0009,33.0009,33.0009,33.0009" bg_disabled="false" page_type="0"/>
+        <page_item number="6" rotate_angle="0" x1="0" y1="0" x2="340.157" y2="31.1811" crop_margin="0,0,0,0" bg_disabled="false" page_type="0"/>
+        <page_item number="7" rotate_angle="0" x1="0" y1="0" x2="340.157" y2="31.1811" crop_margin="0,0,0,0" bg_disabled="false" page_type="0"/>
+        <page_item number="8" rotate_angle="0" x1="0" y1="0" x2="340.157" y2="31.1811" crop_margin="0,0,0,0" bg_disabled="false" page_type="0"/>
+        <page_item number="9" rotate_angle="0" x1="0" y1="0" x2="790.92" y2="98.88" crop_margin="0,0,0,0" bg_disabled="false" page_type="0"/>
         <page_item number="10" rotate_angle="0" x1="0" y1="0" x2="198.85" y2="482.314" crop_margin="35.5039,35.504,35.504,35.5039" bg_disabled="false" page_type="0"/>
         <page_item number="11" rotate_angle="0" x1="0" y1="0" x2="439.762" y2="340.549" crop_margin="35.5039,35.504,35.504,35.5039" bg_disabled="false" page_type="0"/>
         <page_item number="12" rotate_angle="0" x1="0" y1="0" x2="578.409" y2="445.181" crop_margin="35.5039,35.503,35.504,35.5039" bg_disabled="false" page_type="0"/>
         <page_item number="13" rotate_angle="0" x1="0" y1="0" x2="578.409" y2="445.181" crop_margin="35.504,35.503,35.504,35.5039" bg_disabled="false" page_type="0"/>
+        <page_item number="14" rotate_angle="0" x1="0" y1="0" x2="841.89" y2="595.276" crop_margin="0,0,0,0" bg_disabled="false" page_type="0"/>
+        <page_item number="15" rotate_angle="0" x1="0" y1="0" x2="841.89" y2="42.5197" crop_margin="0,0,0,0" bg_disabled="false" page_type="0"/>
+        <page_item number="16" rotate_angle="0" x1="0" y1="0" x2="297.78" y2="456.52" crop_margin="35.5039,35.504,35.504,35.504" bg_disabled="false" page_type="0"/>
+        <page_item number="17" rotate_angle="0" x1="0" y1="0" x2="297.78" y2="456.52" crop_margin="35.5039,35.504,35.504,35.504" bg_disabled="false" page_type="0"/>
+        <page_item number="18" rotate_angle="0" x1="0" y1="0" x2="297.78" y2="343.134" crop_margin="35.5039,35.504,35.504,35.5039" bg_disabled="false" page_type="0"/>
+        <page_item number="19" rotate_angle="0" x1="0" y1="0" x2="297.78" y2="343.134" crop_margin="35.5039,35.504,35.504,35.5039" bg_disabled="false" page_type="0"/>
+        <page_item number="20" rotate_angle="0" x1="0" y1="0" x2="297.78" y2="343.134" crop_margin="35.5039,35.504,35.504,35.5039" bg_disabled="false" page_type="0"/>
     </pages>
     <action_table>
         <action>ChangeLanguage_Chinese</action>
@@ -235,7 +242,7 @@
         <symbol page="0" page_name="001" type="Rectangle" x="227.509" y="99.4857" width="24.8769" height="24.1833" lock="1" xylock="0">
             <name></name>
             <id>{a0f6eef5-e3cc-43e0-8844-42dcb1b5199a}</id>
-            <command name="" action="Custom" param="erase_all"/>
+            <command name="" action="Custom" param="erase_brush"/>
             <language_resources>
                 <language resource_country="korean" resource_type="" resource_id=""/>
                 <language resource_country="english" resource_type="" resource_id=""/>
@@ -475,7 +482,7 @@
         <symbol page="1" page_name="002" type="Rectangle" x="164.509" y="70.968" width="24.8769" height="24.1833" lock="1" xylock="0">
             <name></name>
             <id>{efb265fc-824a-4fef-a0c9-f2175d2b9a84}</id>
-            <command name="" action="Custom" param="erase_all"/>
+            <command name="" action="Custom" param="erase_brush"/>
             <language_resources>
                 <language resource_country="korean" resource_type="" resource_id=""/>
                 <language resource_country="english" resource_type="" resource_id=""/>
@@ -3958,6 +3965,330 @@
             <name></name>
             <id>{5d742687-1a7b-4924-8943-b95d7fd5eb91}</id>
             <command name="" action="Custom" param="strokesize_3"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="14" page_name="015" type="Rectangle" x="23.6185" y="10.2545" width="35.1752" height="25.555" lock="1" xylock="0">
+            <name></name>
+            <id>{5038c9da-bc7d-4564-a656-4165a3b4a042}</id>
+            <command name="" action="Custom" param="esc"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="14" page_name="015" type="Rectangle" x="23.6185" y="44.5198" width="35.4291" height="23.7977" lock="1" xylock="0">
+            <name></name>
+            <id>{9330f90f-3a6c-4ca1-997d-949a02f0ad83}</id>
+            <command name="" action="Custom" param="right_click"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="14" page_name="015" type="Rectangle" x="129.818" y="21.1463" width="34.4992" height="23.5521" lock="1" xylock="0">
+            <name></name>
+            <id>{6d97111b-7d83-4d46-ad2c-c68c49690dad}</id>
+            <command name="" action="Custom" param="window_moveright"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="14" page_name="015" type="Rectangle" x="180.489" y="20.3547" width="35.8922" height="23.5818" lock="1" xylock="0">
+            <name></name>
+            <id>{c9f035cb-da2f-4b0f-bcec-2b4bb6321511}</id>
+            <command name="" action="Custom" param="window_switch"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="14" page_name="015" type="Rectangle" x="231.924" y="20.7107" width="34.9965" height="23.4797" lock="1" xylock="0">
+            <name></name>
+            <id>{fc916a0a-967a-4fa8-9328-a5702d7075d7}</id>
+            <command name="" action="Custom" param="window_zoomin"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="14" page_name="015" type="Rectangle" x="266.988" y="20.5339" width="34.0913" height="23.6566" lock="1" xylock="0">
+            <name></name>
+            <id>{417bf5fa-72d6-4185-9bdd-9583eb6ae701}</id>
+            <command name="" action="Custom" param="window_zoomout"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="14" page_name="015" type="Rectangle" x="336.294" y="20.9117" width="34.9827" height="23.0565" lock="1" xylock="0">
+            <name></name>
+            <id>{e3caef41-e276-4d1a-a0d9-34adbd02a265}</id>
+            <command name="" action="Custom" param="copy"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="14" page_name="015" type="Rectangle" x="371.216" y="20.9117" width="33.5947" height="23.3241" lock="1" xylock="0">
+            <name></name>
+            <id>{9d844de3-3bac-47a3-a8bc-4d5ebd06a46b}</id>
+            <command name="" action="Custom" param="paste"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="14" page_name="015" type="Rectangle" x="421.358" y="20.7735" width="35.5367" height="23.5515" lock="1" xylock="0">
+            <name></name>
+            <id>{18498eb9-8f56-48b8-9396-261954be9e58}</id>
+            <command name="" action="Custom" param="clipboard"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="14" page_name="015" type="Rectangle" x="472.082" y="20.6139" width="35.6486" height="24.0678" lock="1" xylock="0">
+            <name></name>
+            <id>{20d975f4-cf60-4516-839e-d975d233e608}</id>
+            <command name="" action="Custom" param="capture"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="14" page_name="015" type="Rectangle" x="523.348" y="20.9872" width="35.2176" height="23.3378" lock="1" xylock="0">
+            <name></name>
+            <id>{5e4c79cf-bb00-4d2a-9ea7-32b501d8a19d}</id>
+            <command name="" action="Custom" param="undo_pc"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="14" page_name="015" type="Rectangle" x="558.639" y="20.898" width="34.1742" height="23.5162" lock="1" xylock="0">
+            <name></name>
+            <id>{38a042d7-b027-4b4f-a7ef-0b64a1d624dc}</id>
+            <command name="" action="Custom" param="redo_pc"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="14" page_name="015" type="Rectangle" x="608.748" y="19.8014" width="36.3043" height="24.1522" lock="1" xylock="0">
+            <name></name>
+            <id>{740fd31b-fef5-4de3-a27a-baafcfc1cf0f}</id>
+            <command name="" action="Custom" param="delete"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="14" page_name="015" type="Rectangle" x="680.685" y="10.6681" width="36.3043" height="24.1522" lock="1" xylock="0">
+            <name></name>
+            <id>{98ff8355-2654-4f41-93f1-4872697c42c1}</id>
+            <command name="" action="Custom" param="PgUp"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="14" page_name="015" type="Rectangle" x="731.367" y="10.4897" width="36.3043" height="24.1522" lock="1" xylock="0">
+            <name></name>
+            <id>{ebdc3693-cefe-4e62-a75f-147fce98bef4}</id>
+            <command name="" action="Custom" param="up"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="14" page_name="015" type="Rectangle" x="782.935" y="10.6681" width="36.3043" height="24.1522" lock="1" xylock="0">
+            <name></name>
+            <id>{642914c8-3b63-4f57-b416-27a2f2f91caa}</id>
+            <command name="" action="Custom" param="PgDn"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="14" page_name="015" type="Rectangle" x="680.698" y="44.7396" width="36.3043" height="24.1522" lock="1" xylock="0">
+            <name></name>
+            <id>{2f476476-1dac-445b-bc8c-745e1e509dd7}</id>
+            <command name="" action="Custom" param="left"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="14" page_name="015" type="Rectangle" x="782.324" y="44.4721" width="36.3043" height="24.1522" lock="1" xylock="0">
+            <name></name>
+            <id>{49059dca-416d-4e63-a14d-48ebe4fec8f0}</id>
+            <command name="" action="Custom" param="right"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="14" page_name="015" type="Rectangle" x="731.38" y="44.5613" width="36.3043" height="24.1522" lock="1" xylock="0">
+            <name></name>
+            <id>{06737a06-026d-4226-8df6-56831ecf7332}</id>
+            <command name="" action="Custom" param="down"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="14" page_name="015" type="Rectangle" x="94.7632" y="20.7879" width="35.0146" height="23.2756" lock="1" xylock="0">
+            <name></name>
+            <id>{24950bcc-1a35-43aa-afea-16be2457711e}</id>
+            <command name="" action="Custom" param="window_moveleft"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="15" page_name="016" type="Rectangle" x="20.3688" y="5.9627" width="31.1795" height="29.7938" lock="1" xylock="0">
+            <name></name>
+            <id>{c0a34667-7b33-417d-ad2b-c668d7afd46b}</id>
+            <command name="" action="Custom" param="https://userguide.gridaboard.io/"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="15" page_name="016" type="Rectangle" x="388.147" y="4.75291" width="31.526" height="32.5653" lock="1" xylock="0">
+            <name></name>
+            <id>{402dfef8-f01a-4099-96d5-a8680e9fc54a}</id>
+            <command name="" action="Custom" param="https://gridaboard.io/"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="16" page_name="017" type="Rectangle" x="2" y="1" width="289.929" height="454.914" lock="0" xylock="0">
+            <name></name>
+            <id>{f5920767-c899-4dcc-81ea-30af9eb78f1e}</id>
+            <command name="" action="Custom" param="adi_snc_1"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="17" page_name="018" type="Rectangle" x="2" y="1" width="294.334" height="452.311" lock="0" xylock="0">
+            <name></name>
+            <id>{1a566aae-1cc1-477a-8150-7c29ece198e7}</id>
+            <command name="" action="Custom" param="adi_snc_2"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="18" page_name="019" type="Rectangle" x="2" y="1" width="293.916" height="340.489" lock="0" xylock="0">
+            <name></name>
+            <id>{bccb827d-b3c4-4528-96de-c53dfb1b6cf6}</id>
+            <command name="" action="Custom" param="adi_tsf_1"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="19" page_name="020" type="Rectangle" x="2" y="1" width="293.916" height="340.489" lock="0" xylock="0">
+            <name></name>
+            <id>{657bdc30-9aef-4d1f-8ee4-043a89f11656}</id>
+            <command name="" action="Custom" param="adi_tsf_2"/>
+            <language_resources>
+                <language resource_country="korean" resource_type="" resource_id=""/>
+                <language resource_country="english" resource_type="" resource_id=""/>
+                <language resource_country="chinese" resource_type="" resource_id=""/>
+                <language resource_country="japanese" resource_type="" resource_id=""/>
+            </language_resources>
+            <matching_symbols previous="" next=""/>
+        </symbol>
+        <symbol page="20" page_name="021" type="Rectangle" x="2" y="1" width="293.916" height="340.489" lock="0" xylock="0">
+            <name></name>
+            <id>{db28a509-7486-487e-9f52-28169b48e796}</id>
+            <command name="" action="Custom" param="adi_blank"/>
             <language_resources>
                 <language resource_country="korean" resource_type="" resource_id=""/>
                 <language resource_country="english" resource_type="" resource_id=""/>
