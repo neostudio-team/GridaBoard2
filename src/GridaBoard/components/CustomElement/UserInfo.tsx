@@ -71,7 +71,7 @@ const useStyle = makeStyles(theme=>({
     fontSize: "12px",
     lineHeight: "14px",
     letterSpacing: "0.25px",
-    
+    textTransform: "none",
     color: theme.palette.text.secondary
   },
   terms: {
@@ -112,14 +112,19 @@ const UserInfo = ()=>{
   const userData = JSON.parse(localStorage.GridaBoard_userData);
   const classes = useStyle();
   // default_user_img
-  const userImg = userData.pictureUrl === null ? "/default_user_img.png" : userData.pictureUrl;
-  const logout = () => {
-    showAlert({
-      type:"logout",
-      selected: null,
-      sub: null
-    });
+  const userImg = userData.profileImageUrl === null ? "/default_user_img.png" : userData.profileImageUrl;
+  const cloudOpen = () => {
+    let frame = null;
+    if(document.querySelector("#cloudOpener") !== null){
+      document.body.removeChild(document.querySelector("#cloudOpener"));
+    }
+      frame = document.createElement("iframe");
+    frame.id = "cloudOpener";
+    frame.src = "neolabcloud://";
+    frame.style.display="hidden";
+    document.body.appendChild(frame);
   };
+
   // getText('profile_logout')
   return (
   <div className={classes.wrap}>
@@ -128,8 +133,8 @@ const UserInfo = ()=>{
       <div>{userData.name}</div>
       <div>{userData.id}</div>
     </div>
-    <Button className={classes.logout} onClick={logout}>
-      {getText('profile_logout')}
+    <Button className={classes.logout} onClick={cloudOpen}>
+      {getText('open_neolabcloud')}
     </Button>
     <div className={classes.liner}/>
     <div className={classes.terms}>

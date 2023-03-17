@@ -252,7 +252,8 @@
         "no_NDP": "Neolab Cloud가 없다면?",
         "login_banner_data3_title": "새로운 연결 플랫폼, NeoLAB Cloud",
         "login_banner_data3_text": "이제 NeoLAB Cloud를 통해 확장된 서비스를 경험해보세요!\\n로그인부터 스마트 디바이스 관리까지\\n한 곳에서 안전하게 연결하고 데이터를 보관합니다.",
-        "login_banner_data3_tip": "NeoLAB Cloud에 연결된 디바이스는 그리다보드, 네오스튜디오(Web) 사용 가능"
+        "login_banner_data3_tip": "NeoLAB Cloud에 연결된 디바이스는 그리다보드, 네오스튜디오(Web) 사용 가능",
+        "open_neolabcloud": "NeoLAB Cloud 열기"
     },
     "en": {
         "save_file": "Save",
@@ -507,7 +508,8 @@
         "no_NDP": "Haven`t downloaded NeoLAB Cloud yet?",
         "login_banner_data3_title": "A wholly new platform, NeoLAB Cloud",
         "login_banner_data3_text": "Experience expanded services through NeoLAB Cloud now!/nFrom login to smart device management/nYou can securely connect and keep your data in one place.",
-        "login_banner_data3_tip": "Devices connected to NeoLAB Cloud can use Grida Board and Neo Studio (web)."
+        "login_banner_data3_tip": "Devices connected to NeoLAB Cloud can use Grida Board and Neo Studio (web).",
+        "open_neolabcloud": "Open NeoLAB Cloud"
     },
     "ja": {
         "save_file": "保存",
@@ -762,7 +764,8 @@
         "no_NDP": "NeoLAB Cloudがインストールされていない場合",
         "login_banner_data3_title": "新たなプラットフォーム、NeoLAB Cloud",
         "login_banner_data3_text": "NeoLAB Cloudの多様なサービスをご体験ください\\nログインからスマートペン管理まで/n便利で安全なサービスをご利用いただけます",
-        "login_banner_data3_tip": "NeoLAB Cloudに接続したペンはGrida Board、Neo Studio（Web）で使用可能"
+        "login_banner_data3_tip": "NeoLAB Cloudに接続したペンはGrida Board、Neo Studio（Web）で使用可能",
+        "open_neolabcloud": "NeoLAB Cloudを開く"
     },
     "tw": {
         "save_file": "保存",
@@ -1017,7 +1020,8 @@
         "no_NDP": "尚未安裝 Neolab Cloud?",
         "login_banner_data3_title": "嶄新的橋梁平臺, NeoLAB Cloud",
         "login_banner_data3_text": "立即通過 NeoLAB Cloud 體驗新增的服務！\\n從登錄到智能設備管理在\\n一個地方即可安全連接並將數據存儲在一處。",
-        "login_banner_data3_tip": "連接到 NeoLAB Cloud 的設備可以使用 Grida Board 和 Neo Studio (Web)"
+        "login_banner_data3_tip": "連接到 NeoLAB Cloud 的設備可以使用 Grida Board 和 Neo Studio (Web)",
+        "open_neolabcloud": "打開NeoLAB Cloud"
     },
     "de": {},
     "es": {}
