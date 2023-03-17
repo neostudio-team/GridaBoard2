@@ -48,10 +48,16 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
 
   const cmd = (isCtrl ? 1 : 0) | (isAlt ? 2 : 0) | (isShift ? 4 : 0) | (evt.metaKey ? 8 : 0);
 
+  console.log(evt);
   // console.log(`key down cmd=${cmd} ==> code=${evt.code}  key => ${evt.key}`); 
-  
+  let code = evt.code;
+
+  if(code === ""){
+    // neolab cloud event
+    code = evt.key;
+  }
   if (cmd == 0 || (isShift && evt.key === "+")) {
-    switch (evt.code) {
+    switch (code) {
       case "Digit0":
       case "Numpad0":
       case "Digit1":
@@ -73,7 +79,7 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
       case "Digit9":
       case "Numpad9":
         {
-          if(evt.code.indexOf("Numpad") === -1){
+          if(code.indexOf("Numpad") === -1){
             const color_num = evt.keyCode - 0x30;
             PenManager.getInstance().setColor(color_num);
           }
@@ -196,6 +202,7 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
       // page up
       // case "Keypageup":
       case "ArrowLeft": {// 키보드 ←  
+        console.log("111111111111111111111111111");
         if(document.querySelector("#grida-main-view").clientHeight < (document.querySelector("#grida-main-view") as HTMLElement).offsetHeight){
           //하단 스크롤 존재
           return ;
@@ -283,7 +290,7 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
         // toggleAllStrokesVisible();
         break;
     }
-    switch (evt.code){
+    switch (code){
       case "KeyG" : { // shift + G 제스처 기능 온오프
         evt.preventDefault(); //web 기본 오픈 기능 강제 스탑
         setGestureMode(!store.getState().gesture.gestureMode);
@@ -302,7 +309,7 @@ export default function KeyBoardShortCut(evt: KeyboardEvent) {
       }
     }
   } else if (cmd == 1) {
-    switch (evt.code) {
+    switch (code) {
       case "KeyO":{ // ctrl-o
         evt.preventDefault(); //web 기본 오픈 기능 강제 스탑
         fileOpenHandler("");
