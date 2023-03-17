@@ -214,15 +214,15 @@ declare global {
 
 (function (window) {
   const pui_grida = new PUIController('./nproj/3_1013_1116_Grida.nproj');
+  const pui_lamy = new PUIController("./nproj/note_3_1013_1.nproj");
   const pui_smart = new PUIController("./nproj/SmartClassKit_Controller.nproj");
   const pui_paper = new PUIController("./nproj/papertube_controller_171117.nproj");
-  const pui_lamy = new PUIController("./nproj/note_3_1013_1.nproj");
 
   window._pui = [];
   window._pui.push(pui_grida);
-  window._pui.push(pui_smart);
   window._pui.push(pui_paper);
   window._pui.push(pui_lamy);
+  window._pui.push(pui_smart);
 
 })(window);
 

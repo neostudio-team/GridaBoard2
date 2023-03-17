@@ -435,6 +435,7 @@ export default class NeoSmartpen implements INeoSmartpen {
       console.log("!!!!!!!!!!!!!!!! only window!!!!!!!!!!!!!!!!!!")
       return ;
     }else if (isPUI(pageInfo)) {
+      console.log(pageInfo);
       if (event.isFirstDot) {
         console.log("===================================");
         // let puis = window._pui;
@@ -444,6 +445,7 @@ export default class NeoSmartpen implements INeoSmartpen {
         for (i = 0; i < puis.length; i++) {
           const pui = puis[i];
           console.log(pui);
+          console.log(event.owner, event.book, event.page, dot.x, dot.y);
           const cmd = pui.getCommand(event.owner, event.book, event.page, dot.x, dot.y);
           console.log(cmd);
 
