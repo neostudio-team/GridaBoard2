@@ -34,10 +34,12 @@ export const setPens = async (pens: INeoSmartpen[]) => {
   })
 }
 
-export const forceUpdateBoardList = () => ({
+export const forceUpdateBoardList = () => (
+  store.dispatch({
     type: ACTION_TYPE.UPDATE_BOARDLIST,
     value: 1,
-})
+  })
+)
 
 export const setMappingState = async (state: string) => {
   store.dispatch({

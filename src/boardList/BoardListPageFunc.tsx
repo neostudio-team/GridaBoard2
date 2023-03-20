@@ -454,7 +454,7 @@ export async function saveToDB(docName: string, nowDate: Date, isCopyProcess: bo
 
   console.log(`${docName} is created`);
   if (isCopyProcess) {
-    store.dispatch(forceUpdateBoardList());
+    forceUpdateBoardList();
     showSnackbar({
       snackbarType : "copyDoc",
       selectedDocName : [docName],

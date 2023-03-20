@@ -282,7 +282,7 @@ const MoveDialog = (props: Props)=>{
     await changeCategory(selected, nowData);
     
     closeEvent(false);
-    dispatch(forceUpdateBoardList());
+    forceUpdateBoardList();
     
     const selectedDocNames: string[] = [];
     for (const doc of selected) {

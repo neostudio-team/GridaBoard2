@@ -111,7 +111,7 @@ const itemData = {
       0: async (val) => { //완전 삭제
         const result = await deleteBoardsFromTrash([val]);
         if (result) {
-          store.dispatch(forceUpdateBoardList());
+          forceUpdateBoardList();
           showSnackbar({
             snackbarType :"deleteForever",
             selectedDocName: [""],
@@ -121,7 +121,7 @@ const itemData = {
       1: async (val) => { //복원
         const result = await restoreBoardsFromTrash([val]);
         if (result) {
-          store.dispatch(forceUpdateBoardList());
+          forceUpdateBoardList();
         }
       },
     },
@@ -156,7 +156,7 @@ const GlobalDropdown = (props: Prop) => {
   const runEvent = async index => {
     await nowItemData.runFunction[index](dropDown.selected, routeChanger);
     hideDropDown();
-    store.dispatch(forceUpdateBoardList());
+    forceUpdateBoardList();
   };
 
   let canMoveUp = true, canMoveDown = true;

@@ -349,7 +349,7 @@ const MainContent = (props: Props) => {
 
   const listOrderChange = event => {
     setOrderBy(event.target.value);
-    dispatch(forceUpdateBoardList());
+    forceUpdateBoardList();
   };
   const listViewType = val => {
     setListType(val);
@@ -360,7 +360,7 @@ const MainContent = (props: Props) => {
     
     const result = await deleteBoardsFromTrash(selectedItems);
     if (result) {
-      dispatch(forceUpdateBoardList());
+      forceUpdateBoardList();
       showSnackbar({
         snackbarType :"deleteForever",
         selectedDocName: [""],
@@ -373,7 +373,7 @@ const MainContent = (props: Props) => {
     if(selectedItems.length === 0) return ;
     const result = await restoreBoardsFromTrash(selectedItems);
     if (result) {
-      dispatch(forceUpdateBoardList());
+      forceUpdateBoardList();
     }
     const nameArr = Array.from(selectedItems,(el)=>el.doc_name);
     showSnackbar({

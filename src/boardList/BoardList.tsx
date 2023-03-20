@@ -55,6 +55,41 @@ const useStyle = makeStyles(theme => ({
   }
 }));
 
+const checkClient = async ()=>{
+  console.log(123123);
+  setLoadingVisibility(true);
+  NDP.getInstance().onAuthStateChanged(async userId => {
+    // user.email
+    if(userId !== null){
+      //로그인 완료
+      console.log("logined", userId);
+      const cookies = new Cookies();
+      const expirationTime = new Date(NDP.getInstance().tokenExpired);
+      cookies.set("user_email", userId, {
+        expires: expirationTime
+      });
+      const user = await NDP.getInstance().User.getUserData();
+      localStorage.GridaBoard_userData = JSON.stringify(user);
+      setLoadingVisibility(false);
+      console.log("1111111111111111111111");
+        forceUpdateBoardList();
+      // setForceUpdate(forceUpdate+1);
+      // setLogined(true);
+      // setUserId(NDP.getInstance().userId);
+        
+    } else {
+      location.replace("/");
+    }
+  });
+
+  if(!(await NDP.getInstance().Client.clientOpenCheck())){
+    //클라이언트 연결 안됨, 바로 로그인
+      location.replace("/");
+  }
+
+}
+
+checkClient();
 const BoardList = () => {
   const cookies = new Cookies();
   const [theme, settheme] = useState(neolabTheme.theme);
@@ -63,11 +98,14 @@ const BoardList = () => {
     category: [],
   });
   const [category, setCategory] = useState('recent');
+  // const [userId, setUserId] = useState(NDP.getInstance().userId);
   const userId = cookies.get('user_email');
   const dispatch = useDispatch();
   
   const history = useHistory();
 
+  const [forceUpdate, setForceUpdate] = useState(0);
+  const [logined, setLogined] = useState(false);
   const updateCount = useSelector((state: RootState) => state.appConfig.updateCount);
   const isShowDialog = useSelector((state: RootState) => state.list.dialog.show);
   const isShowDropdown = useSelector((state: RootState) => state.list.dropDown.show);
@@ -94,7 +132,7 @@ const BoardList = () => {
       ...docsObj,
       category: dataArr,
     });
-    dispatch(forceUpdateBoardList());
+    forceUpdateBoardList();
   }
   useEffect(()=>{
     changeGroup(false);
@@ -109,22 +147,23 @@ const BoardList = () => {
   useEffect(() => {
     const getDb = async ()=>{
       const data = await getDatabase();
-      if(data === false) return false;
+      if(data === false) return ;
 
       for (let i = 0; i < data.category.length; i++) {
           data.category[i][3] = i;
       }
       
+      console.log(data);
       
       setDocsObj({
         docs: data.docs,
         category: data.category,
       });
     }
-    if (userId !== undefined) {
+    if (userId !== "") {
       getDb();
     }
-  }, [updateCount]);
+  }, [forceUpdate]);
 
 
 
@@ -144,39 +183,15 @@ const BoardList = () => {
   };
   const classes = useStyle();
   
-  if (userId === undefined) {
-    //로그인으로 자동으로 넘기기
-    useEffect(()=>{
-      setLoadingVisibility(true);
-      const checkClient = async ()=>{
-        if(!(await NDP.getInstance().Client.clientOpenCheck())){
-          //클라이언트 연결 안됨, 바로 로그인
-            location.replace("/");
-        }else{
-          NDP.getInstance().onAuthStateChanged(async userId => {
-            // user.email
-            if(userId !== null){
-              //로그인 완료
-              console.log("logined", userId);
-              const expirationTime = new Date(NDP.getInstance().tokenExpired);
-              cookies.set("user_email", userId, {
-                expires: expirationTime
-              });
-              const user = await NDP.getInstance().User.getUserData();
-              localStorage.GridaBoard_userData = JSON.stringify(user);
-              dispatch(forceUpdateBoardList());
-              setLoadingVisibility(false);
-            } else {
-              location.replace("/");
-            }
-          });
-        }
-      }
-      
-      checkClient();
-      
-    },[])
-  }
+  console.log(NDP.getInstance().userId);
+  
+  // NDP.getInstance().onAuthStateChanged(userId => {
+  //   // user.email
+  //   if(userId !== null){
+  //     setUserId(userId);
+  //   }
+  // });
+  console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@", userId);
   
   const firstHelp = cookies.get("firstHelp_2_1");
   

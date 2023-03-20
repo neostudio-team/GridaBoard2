@@ -133,7 +133,7 @@ class Auth {
     
             console.log(token);
     
-            const changeFunction = this.authStateChangeFunctions.splice(0);
+            const changeFunction = this.authStateChangeFunctions.slice(0);
             for(let i = 0; i < changeFunction.length; i++){
                 try{
                     await changeFunction[i](this._userId);

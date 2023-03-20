@@ -137,7 +137,7 @@ const AlertDialog = (props : Props)=>{
         const result = await deleteBoardFromLive(deleteData);
         
         if (result === 1) {
-          dispatch(forceUpdateBoardList());
+          forceUpdateBoardList();
 
           const selectedDocNames: string[] = [];
           for (const doc of subData.data) {
@@ -155,7 +155,7 @@ const AlertDialog = (props : Props)=>{
       case "deleteTrash" : {
         const result = await deleteAllFromTrash();
         if (result === 1) {
-          dispatch(forceUpdateBoardList()); 
+          forceUpdateBoardList();
         } 
         break;
       }

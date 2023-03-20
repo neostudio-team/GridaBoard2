@@ -189,7 +189,7 @@ const GroupDialog = (props : Props)=>{
     await changeDocName(defaultValue, newText as string);
 
     closeEvent(false);
-    dispatch(forceUpdateBoardList());
+    forceUpdateBoardList();
   }
 
   const save = async ()=>{

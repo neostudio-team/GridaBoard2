@@ -83,7 +83,6 @@ class NDP {
         })
         //client Login시
         this.Client.onAuthStateChanged(async (userId:string)=>{
-            console.log(this);
             this.clientId = this.Client.clientId;
             this.applicationId = this.Client.applicationId;
             this.accessToken = this.Client.accessToken;
@@ -155,10 +154,8 @@ class NDP {
                 url : this.url.USER
             });
         }
-    
-
         if(beforeUserId !== this.userId){
-            const changeFunction = this.authStateChangeFunctions.splice(0);
+            const changeFunction = this.authStateChangeFunctions.slice(0);
             for(let i = 0; i < changeFunction.length; i++){
                 try{
                     await changeFunction[i](this.userId);
