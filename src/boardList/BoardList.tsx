@@ -57,7 +57,6 @@ const useStyle = makeStyles(theme => ({
 
 const ndpAuthChange = async ()=>{
   console.log(123123);
-  setLoadingVisibility(true);
   NDP.getInstance().onAuthStateChanged(async userId => {
     // user.email
     if(userId !== null){
@@ -167,6 +166,10 @@ const BoardList = () => {
           location.replace("/");
       }
     }
+    if(NDP.getInstance().userId === ""){
+      setLoadingVisibility(true);
+    }
+
     ndpAuthChange();
     checkClient();
   },[])
