@@ -55,7 +55,7 @@ const useStyle = makeStyles(theme => ({
   }
 }));
 
-const checkClient = async ()=>{
+const ndpAuthChange = async ()=>{
   console.log(123123);
   setLoadingVisibility(true);
   NDP.getInstance().onAuthStateChanged(async userId => {
@@ -81,15 +81,10 @@ const checkClient = async ()=>{
       location.replace("/");
     }
   });
-
-  if(!(await NDP.getInstance().Client.clientOpenCheck())){
-    //클라이언트 연결 안됨, 바로 로그인
-      location.replace("/");
-  }
-
 }
 
-checkClient();
+
+
 const BoardList = () => {
   const cookies = new Cookies();
   const [theme, settheme] = useState(neolabTheme.theme);
@@ -165,6 +160,16 @@ const BoardList = () => {
     }
   }, [forceUpdate]);
 
+  useEffect(()=>{
+    const checkClient = async ()=>{
+      if(!(await NDP.getInstance().Client.clientOpenCheck())){
+        //클라이언트 연결 안됨, 바로 로그인
+          location.replace("/");
+      }
+    }
+    ndpAuthChange();
+    checkClient();
+  },[])
 
 
   for (let i = 0; i < docsObj.category.length; i++) {
