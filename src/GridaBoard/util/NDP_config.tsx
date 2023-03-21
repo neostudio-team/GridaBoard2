@@ -441,7 +441,8 @@ export class GridaDB {
   async saveDB(dbData){
     const data = JSON.stringify(dbData, null, 4);
 
-    const dataBlob = new Blob([encode(data)]);
+    const dataBlob = new Blob([data], {type:"text/json"});
+    const beforeId = this.dbFileDataId;
 
 
     const saveData = await this.storage.saveFile(dataBlob, {
@@ -484,3 +485,5 @@ export const encode = function( s ) {
 
 
 const clone = (data)=> JSON.parse(JSON.stringify(data));
+
+
