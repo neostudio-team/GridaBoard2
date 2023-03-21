@@ -475,7 +475,7 @@ export const getThumbNailPath = async (docsList)=>{
    */  
   const pathList = [];
   for(let i = 0; i < docsList.length; i++){
-    if(docsList[i].thumbNailPath === undefined || docsList[i].thumbNailPath.expiredDatetime < new Date()){
+    if(docsList[i].thumbNailPath === null || docsList[i].thumbNailPath === undefined || docsList[i].thumbNailPath.expiredDatetime < new Date()){
       docsList[i].thumbNailPath = await db.getFilePath(`${docsList[i].docId}.png`);
     }
 
