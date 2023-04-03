@@ -489,6 +489,23 @@ export const g_paperType_default: IPaperTypeSet = {
     "ncode_end_page": 1,
     "ncode_start_page": 1
   },
+  "3.27.1246": {
+    "owner": 27,
+    "pdf_page_count": 3,
+    "margin": {
+      "Ymax": 93.7,
+      "Xmin": 5.2,
+      "Ymin": 8.3,
+      "Xmax": 122.95,
+    },
+    "nproj_file": "note_1246.nproj",
+    "book": 1246,
+    "pdf_name": "note_1246.pdf",
+    "section": 3,
+    "title": "Glass board",
+    "ncode_end_page": 3,
+    "ncode_start_page": 1
+  },
 };
 
 export const g_paperType = {
