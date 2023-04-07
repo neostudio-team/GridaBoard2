@@ -407,14 +407,19 @@ export class GridaDB {
       dbFileData = await this.storage.getFileDatafromTag("gridaBoardDB");
     }
 
-    if(dbFileData.totalElements > 1){// data too many : something wrong
+    if(dbFileData.totalElements > 1){
       let currectId = -1;
       dbFileData.resultElements.forEach((el)=>{
-        if(el.id > currectId) currectId = el.id;
+      if(el.state === "Finished" && el.id > currectId) currectId = el.id;
       })
 
-      newDB = await this.storage.getFileFromId(currectId);
-      this.dbFileDataId = currectId;
+      if(currectId === -1){
+        newDB = await this.newDbSet();
+        dbFileData = await this.storage.getFileDatafromTag("gridaBoardDB");
+      }else{
+        newDB = await this.storage.getFileFromId(currectId);
+        this.dbFileDataId = currectId;
+      }
       
     }else{
       newDB = await this.storage.getFileFromId(dbFileData.resultElements[0].id);
