@@ -4,5 +4,17 @@
     "test": "gridaboard-v2-test",
     "live": "gridaboard",
     "dev": "gridaboard-v2-dev"
+  },
+  "targets": {
+    "gridaboard": {
+      "hosting": {
+        "ndp": [
+          "gridaboard"
+        ],
+        "firebase": [
+          "gridaboard-2022"
+        ]
+      }
+    }
   }
 }

@@ -8,7 +8,6 @@ import Cookies from 'universal-cookie';
 import "firebase/firestore";
 import "firebase/auth";
 import { signInWithGoogle, signInWithApple, auth, secondaryAuth, signInWith} from "GridaBoard/util/firebase_config";
-import { signInWithNDPC } from "GridaBoard/util/NDP_config";
 import { useSelector } from 'react-redux';
 import { RootState } from 'GridaBoard/store/rootReducer';
 import * as neolabTheme from "GridaBoard/theme";
@@ -192,7 +191,7 @@ const Login = () => {
               <div className={classes.loginBtns}>
                 <Button onClick = {signInWithGoogle}> <img src={googleLogo} alt="" />{getText("login_withGoogle")}</Button>
                 <Button onClick={signInWithApple}> <img src={appleLogo} alt="" />{getText("login_withApple")} </Button>
-                <Button onClick={signInWithNDPC}> <img src={appleLogo} alt="" />{getText("login_withApple")} </Button>
+                {/* <Button onClick={signInWithNDPC}> <img src={appleLogo} alt="" />{getText("login_withApple")} </Button> */}
               </div>
               <div className={classes.terms}>
                 {termsText.map(el=>{
