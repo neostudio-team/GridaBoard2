@@ -4,16 +4,13 @@ import {
 } from '@material-ui/core';
 import React from 'react';
 import { savePDF } from "./SavePdf";
-import { makeGridaBlob, saveGrida } from "./SaveGrida";
+import { saveGrida } from "./SaveGrida";
 import PdfDialogTextArea from './PdfDialogTextArea';
 import { turnOnGlobalKeyShortCut } from '../GlobalFunctions';
 import getText from "../language/language";
-import { makeThumbnail, saveGridaToDB, updateDB } from 'boardList/BoardListPageFunc';
+import { overwrite, saveGridaToDB } from 'boardList/BoardListPageFunc';
 import { store } from '../client/pages/GridaBoard';
-import firebase, { secondaryFirebase } from 'GridaBoard/util/firebase_config';
 import { setDocId, setDocName, setIsNewDoc } from '../store/reducers/docConfigReducer';
-import { setLoadingVisibility } from '../store/reducers/loadingCircle';
-import { showSnackbar } from '../store/reducers/listReducer';
 
 
 const useStyles = makeStyles((theme) => {
@@ -101,11 +98,12 @@ const SavePdfDialog = (props: Props) => {
     turnOnGlobalKeyShortCut(true);
   };
 
-  const handleDialogOpen = (saveType: string) => {
+  const handleDialogOpen = async (saveType: string) => {
     const isNewDoc = store.getState().docConfig.isNewDoc;
     if (saveType === "overwrite" && !isNewDoc) {
       setOpen(false)
-      overwrite();
+      await overwrite();
+      handleClickSaveAway();
     } else {
       setOpen(true);
       turnOnGlobalKeyShortCut(false);
@@ -116,99 +114,6 @@ const SavePdfDialog = (props: Props) => {
     setOpen(false);
     onReset();
   };
-
-  const overwrite = async () => {
-    setLoadingVisibility(true);
-
-    //1. 썸네일 새로 만들기
-    const imageBlob = await makeThumbnail();
-
-    //2. grida 새로 만들기
-    const gridaBlob = await makeGridaBlob();
-
-    //3. thumbnail, last_modifed, grida 업데이트
-    const docId = store.getState().docConfig.docId;
-    const date = store.getState().docConfig.date;
-    const uid =  firebase.auth().currentUser.uid;
-
-    const gridaFileName = `${docId}.grida`; // `${userId}_${docName}_${date}.grida`;
-
-    const storageRef = secondaryFirebase.storage().ref();
-    const gridaRef = storageRef.child(`grida/${uid}/${gridaFileName}`);
-
-    const gridaUploadTask = gridaRef.put(gridaBlob);
-    await gridaUploadTask.on(
-      firebase.storage.TaskEvent.STATE_CHANGED,
-      function (snapshot) {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log('Grida Upload is ' + progress + '% done');
-        switch (snapshot.state) {
-          case firebase.storage.TaskState.PAUSED: // or 'paused'
-            console.log('Upload is paused');
-            break;
-          case firebase.storage.TaskState.RUNNING: // or 'running'
-            console.log('Upload is running');
-            break;
-        }
-      },
-      function (error) {
-        switch (error.code) {
-          case 'storage/unauthorized':
-            // User doesn't have permission to access the object
-            break;
-  
-          case 'storage/canceled':
-            // User canceled the upload
-            break;
-  
-          case 'storage/unknown':
-            // Unknown error occurred, inspect error.serverResponse
-            break;
-        }
-      },
-      async function () {
-        const thumbFileName = `${docId}.png`; // `${userId}_${docName}_${date}.png`;
-        const pngRef = storageRef.child(`thumbnail/${uid}/${thumbFileName}`);
-
-        const thumbUploadTask = pngRef.put(imageBlob);
-        await thumbUploadTask.on(
-          firebase.storage.TaskEvent.STATE_CHANGED,
-          function (snapshot) {
-            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log('Thumbnail Upload is ' + progress + '% done');
-            switch (snapshot.state) {
-              case firebase.storage.TaskState.PAUSED: // or 'paused'
-                console.log('Upload is paused');
-                break;
-              case firebase.storage.TaskState.RUNNING: // or 'running'
-                console.log('Upload is running');
-                break;
-            }
-          },
-          function (error) {
-            switch (error.code) {
-              case 'storage/unauthorized':
-                // User doesn't have permission to access the object
-                break;
-
-              case 'storage/canceled':
-                // User canceled the upload
-                break;
-
-              case 'storage/unknown':
-                // Unknown error occurred, inspect error.serverResponse
-                break;
-            }
-          },
-          async function () {
-            updateDB(docId, "thumb_path", "grida_path", date);
-            handleClickSaveAway();
-          }
-        );
-      
-      }
-    );
-  }
 
   const handleSavePdf = async () => {
     //공백과 .으로는 시작 할 수 없음

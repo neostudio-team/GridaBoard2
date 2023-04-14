@@ -6,9 +6,10 @@ import { hideDropDown, showGroupDialog, changeGroup, showSnackbar, showAlert } f
 import { changeCategorySort, deleteCategory } from '../../BoardListPageFunc2';
 import { IBoardData } from 'boardList/structures/BoardStructures';
 import getText from 'GridaBoard/language/language';
-import { copyBoard, deleteBoardsFromTrash, restoreBoardsFromTrash } from '../../BoardListPageFunc';
+import { copyBoard, deleteBoardsFromTrash, restoreBoardsFromTrash, routeChange } from '../../BoardListPageFunc';
 import { forceUpdateBoardList } from '../../../GridaBoard/store/reducers/appConfigReducer';
 import { store } from 'GridaBoard/client/pages/GridaBoard';
+import { useHistory } from 'react-router-dom';
 
 const useStyle = makeStyles(theme => ({
   paper: {
@@ -89,8 +90,8 @@ const itemData = {
     placement: 'bottom-start',
     list: [openStr, changeNameStr, copyStr],
     runFunction: {
-      0: (val: IBoardData, routeChange) => {
-        routeChange(val.key);
+      0: (val: IBoardData, routeChanger) => {
+        routeChanger(val);
       },
       1: (val: IBoardData) => {
         showGroupDialog({
@@ -130,11 +131,10 @@ const itemData = {
 type Prop = {
   open: boolean;
   category?: Array<Array<any>>;
-  routeChange?: (idx: number) => void;
 };
 
 const GlobalDropdown = (props: Prop) => {
-  const { open, routeChange, category, ...rest } = props;
+  const { open, category, ...rest } = props;
   const dispatch = useDispatch();
 
   if (open === false) return null;
@@ -144,9 +144,17 @@ const GlobalDropdown = (props: Prop) => {
 
   const targetRef = dropDown.event.target as HTMLElement;
   const classes = useStyle();
+  const history = useHistory();
+
+  const routeChanger = async (data)=>{
+    if(await routeChange(data) !== false){
+      const path = `/app`;
+      await history.push(path);
+    }
+  }
 
   const runEvent = async index => {
-    await nowItemData.runFunction[index](dropDown.selected, routeChange);
+    await nowItemData.runFunction[index](dropDown.selected, routeChanger);
     hideDropDown();
     store.dispatch(forceUpdateBoardList());
   };

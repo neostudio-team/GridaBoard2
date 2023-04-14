@@ -191,6 +191,7 @@ const Login = () => {
               <div className={classes.loginBtns}>
                 <Button onClick = {signInWithGoogle}> <img src={googleLogo} alt="" />{getText("login_withGoogle")}</Button>
                 <Button onClick={signInWithApple}> <img src={appleLogo} alt="" />{getText("login_withApple")} </Button>
+                {/* <Button onClick={signInWithNDPC}> <img src={appleLogo} alt="" />{getText("login_withApple")} </Button> */}
               </div>
               <div className={classes.terms}>
                 {termsText.map(el=>{

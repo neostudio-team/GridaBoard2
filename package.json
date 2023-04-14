@@ -80,7 +80,8 @@
     "e:start": "concurrently \"cross-env NODE_ENV=development BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron .\"",
     "e:build": "npm run build && electron-builder",
     "test-deploy": "yarn versionConfig && yarn textPack && npm run build && firebase use test && firebase deploy",
-    "deploy": "yarn textPack && npm run build && firebase use live && firebase deploy"
+    "firebase-deploy": "yarn textPack && npm run build && firebase use live && firebase deploy --only hosting:firebase",
+    "deploy": "yarn textPack && npm run build && firebase use live && firebase deploy --only hosting:ndp"
   },
   "eslintConfig": {
     "extends": [
