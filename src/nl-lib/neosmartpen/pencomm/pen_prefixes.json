@@ -29,7 +29,9 @@
 		{ "namePrefix": "F121" },
 		{ "namePrefix": "NeosmartpenHL" },
 		{ "namePrefix": "NeosmartpenIC" },
-		{ "namePrefix": "NPEN" }
+		{ "namePrefix": "NPEN" },
+		{ "namePrefix": "Math Whiz Pen" },
+		{ "namePrefix": "Pio Pen_R1" }
 	]
 }
 
