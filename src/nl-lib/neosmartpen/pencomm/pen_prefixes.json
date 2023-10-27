@@ -31,7 +31,9 @@
 		{ "namePrefix": "NeosmartpenIC" },
 		{ "namePrefix": "NPEN" },
 		{ "namePrefix": "Math Whiz Pen" },
-		{ "namePrefix": "Pio Pen_R1" }
+		{ "namePrefix": "Pio Pen_R1" },
+		{ "namePrefix": "BlackboardSmart" },
+		{ "namePrefix": "Pio Pen" }
 	]
 }
 
